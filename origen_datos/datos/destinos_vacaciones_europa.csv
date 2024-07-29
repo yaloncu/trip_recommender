@@ -1,0 +1,36 @@
+nombre_destino,pais,tipo_vacacion,publico_dirigido
+Barcelona,España,Cultural;Playa;Romántica;Relax;Aventura;Gastronómica;Bienestar,Adultos;Jóvenes;Familias
+Santorini,Grecia,Playa;Romántica;Bienestar,Adultos
+Interlaken,Suiza,Montaña;Relax;Aventura,Adultos;Jóvenes
+Florencia,Italia,Cultural;Romántica;Gastronómica,Adultos;Jóvenes;Familias
+Ibiza,España,Playa;Relax;Aventura,Adultos;Jóvenes
+Chamonix,Francia,Montaña;Relax;Aventura,Adultos;Jóvenes;Familias
+Ámsterdam,Países Bajos,Cultural;Romántica;Gastronómica,Adultos
+Mykonos,Grecia,Playa;Romántica;Bienestar,Adultos
+Innsbruck,Austria,Montaña;Relax;Aventura,Familias;Adultos
+París,Francia,Cultural;Romántica;Relax;Gastronómica,Adultos;Jóvenes;Familias
+Costa del Sol,España,Playa;Relax;Gastronómica,Familias
+Zermatt,Suiza,Montaña;Relax;Aventura,Familias;Adultos
+Dubrovnik,Croacia,Cultural;Romántica;Gastronómica,Adultos;Jóvenes;Familias
+Mallorca,España,Playa;Relax;Bienestar,Familias
+Reykjavik,Islandia,Montaña;Relax;Aventura,Adultos;Jóvenes;Familias
+Praga,República Checa,Cultural;Romántica;Gastronómica,Adultos;Jóvenes;Familias
+Garmisch-Partenkirchen,Alemania,Montaña;Relax;Aventura,Familias;Adultos
+Lisboa,Portugal,Cultural;Romántica;Gastronómica,Adultos;Jóvenes;Familias
+Cerdeña,Italia,Playa;Relax;Bienestar,Familias
+Salzburgo,Austria,Cultural;Romántica;Gastronómica,Adultos;Jóvenes;Familias
+Tenerife,España,Playa;Relax;Bienestar,Adultos;Jóvenes;Familias
+Lucerna,Suiza,Montaña;Relax;Aventura,Adultos;Jóvenes;Familias
+Bruselas,Bélgica,Cultural;Romántica;Gastronómica,Adultos;Jóvenes;Familias
+Niza,Francia,Playa;Relax;Bienestar,Adultos;Jóvenes;Familias
+Edimburgo,Reino Unido,Cultural;Romántica;Gastronómica,Adultos;Jóvenes;Familias
+Sevilla,España,Cultural;Romántica;Gastronómica,Adultos;Jóvenes;Familias
+Budapest,Hungría,Cultural;Romántica;Gastronómica,Adultos;Jóvenes;Familias
+Sorrento,Italia,Playa;Romántica;Bienestar,Adultos
+Venecia,Italia,Cultural;Romántica;Gastronómica,Adultos;Jóvenes;Familias
+Lago di Como,Italia,Playa;Romántica;Bienestar,Adultos
+Bergen,Noruega,Montaña;Relax;Aventura,Adultos;Jóvenes;Familias
+Ginebra,Suiza,Cultural;Romántica;Gastronómica,Adultos;Jóvenes;Familias
+Oporto,Portugal,Cultural;Romántica;Gastronómica,Adultos;Jóvenes;Familias
+La Valleta,Malta,Playa;Romántica;Bienestar,Adultos;Jóvenes
+Helsinki,Finlandia,Cultural;Romántica;Gastronómica,Adultos;Jóvenes;Familias
