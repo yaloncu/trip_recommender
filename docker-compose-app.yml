@@ -1,22 +1,11 @@
 version: '3.9'
 
 services:
-  neo4j:
-    image: neo4j:latest
-    container_name: neo4j
-    environment:
-      NEO4J_AUTH: neo4j/12345678  
-    ports:
-      - "7687:7687"  # Bolt
-      - "7474:7474"  # HTTP
-    networks:
-      - mynetwork
-
   origen_datos:
     build:
       context: ./origen_datos
     volumes:
-      - ./origen_datos/datos:/datos
+      - datos:/datos
     networks:
       - mynetwork
 
@@ -25,9 +14,14 @@ services:
       context: ./procesamiento_datos
     depends_on:
       - origen_datos
+    volumes:
+      - datos:/datos
     networks:
       - mynetwork
 
+volumes:
+  datos:
+
 networks:
   mynetwork:
-    driver: bridge
+    external: true

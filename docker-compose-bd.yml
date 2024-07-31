@@ -1,0 +1,17 @@
+version: '3.9'
+
+services:
+  neo4j:
+    image: neo4j:latest
+    container_name: neo4j
+    environment:
+      NEO4J_AUTH: neo4j/12345678  
+    ports:
+      - "7687:7687"  # Bolt
+      - "7474:7474"  # HTTP
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork:
+    driver: bridge
