@@ -1,12 +1,24 @@
 <template>
   <div class="container">
     <h1>Welcome</h1>
+    <div class="buttons">
+      <button @click="goToLogin">Login</button>
+      <button @click="goToSignup">Sign Up</button>
+    </div>
   </div>     
 </template>
 
 <script>
 export default {
-  name: "Home"
+  name: "Home",
+  methods: {
+    goToLogin() {
+      this.$router.push('/login');
+    },
+    goToSignup() {
+      this.$router.push('/signup');
+    }
+  }
 }
 </script>
 
@@ -31,5 +43,22 @@ export default {
     color: white; 
     text-align: center; 
   }
+
+.buttons {
+  margin-top: 20px;
+}
+
+button {
+  margin: 10px;
+  padding: 10px 20px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #45a049;
+}
 </style>
 
