@@ -3,6 +3,9 @@ package com.example.mybackend.services;
 import com.example.mybackend.model.Group;
 import com.example.mybackend.model.User;
 import com.example.mybackend.repository.UserRepository;
+
+import jakarta.annotation.PostConstruct;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,10 +15,18 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
+    @PostConstruct
+    public void init() {
+        User user = new User();
+        user.setName("Test User");
+        user.setEmail("test@example.com");
+        userRepository.save(user);
+        System.out.println("Usuario de prueba creado.");
+        
+    }
     public User createUser(User user) {
-        // Aquí deberías agregar la lógica para guardar el usuario en Neo4j
-        // return userRepository.save(user);
-        return user; // Modifica esto para que funcione con tu repositorio
+        System.out.println("Intentando crear usuario: " + user);
+        return userRepository.save(user);
     }
     
     public User saveUser(User user) {
