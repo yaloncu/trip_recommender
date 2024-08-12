@@ -8,7 +8,10 @@ PASSWORD = "12345678"
 
 # función crea nodos de destinos
 def create_destination_node(tx,nombre_destino, pais, tipo_vacacion, publico_dirigido):
-    tx.run("CREATE (:Destino {nombre_destino: $nombre_destino, pais: $pais, tipo_vacacion: $tipo_vacacion, publico_dirigido: $publico_dirigido})", nombre_destino=nombre_destino, pais=pais, tipo_vacacion=tipo_vacacion, publico_dirigido=publico_dirigido)
+    tx.run("""
+    MERGE (d:Destino {nombre_destino: $nombre_destino})
+    ON CREATE SET d.pais = $pais, d.tipo_vacacion = $tipo_vacacion, d.publico_dirigido = $publico_dirigido
+    """, nombre_destino=nombre_destino, pais=pais, tipo_vacacion=tipo_vacacion, publico_dirigido=publico_dirigido)
 
 # driver de conexión
 driver = GraphDatabase.driver(URI, auth=(USERNAME, PASSWORD))

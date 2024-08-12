@@ -5,7 +5,6 @@ import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.GeneratedValue;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Node
@@ -13,19 +12,19 @@ public class User {
 
     @Id
     @GeneratedValue
-    private Long id;
+    private String id;
     private String name;
     private String email;
 
     @Relationship(type = "PERTENECE_A", direction = Relationship.Direction.OUTGOING)
-    private List<Group> groups = new ArrayList<>(); 
+    private List<Group> groups;
 
     // Getters y Setters
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
