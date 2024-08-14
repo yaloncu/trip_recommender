@@ -1,37 +1,47 @@
 <template>
-  <div>
-    <h1>Login Page</h1>
-    <button @click="signInWithGoogle">Login with Google</button>
+  <div class="login-container">
+    <h1>Login</h1>
+    <form @submit.prevent="login">
+      <div>
+        <label for="email">Email:</label>
+        <input type="email" v-model="email" id="email" required />
+      </div>
+      <div>
+        <label for="password">Password:</label>
+        <input type="password" v-model="password" id="password" required />
+      </div>
+      <button type="submit">Login</button>
+    </form>
   </div>
 </template>
 
 <script>
-import { auth, googleAuthProvider } from '../firebase';
-import { signInWithPopup } from 'firebase/auth';
 import axios from 'axios';
 
 export default {
-  name: 'Login',
+  data() {
+    return {
+      email: '',
+      password: ''
+    };
+  },
   methods: {
-    async loginWithGoogle() {
-      const auth = getAuth();
-      const provider = new GoogleAuthProvider();
+    async login() {
       try {
-        const result = await signInWithPopup(auth, provider);
-        const user = result.user;
-        await axios.post('http://localhost:8080/api/users/create', {
-          id: user.uid,
-          name: user.displayName,
-          email: user.email
+        const response = await axios.post('http://localhost:8080/api/login', {
+          email: this.email,
+          password: this.password
         });
-
-        console.log('User created successfully');
+        alert(response.data.message);
+        localStorage.setItem('token', response.data.token);
+        this.$router.push('/groups'); 
       } catch (error) {
-        console.error('Error during login:', error);
+        console.error('Error during login:', error.response.data.message);
+        this.$router.push('/groups'); 
       }
     }
   }
-}
+};
 </script>
 
 <style scoped>
@@ -45,6 +55,7 @@ export default {
   color: white;
   text-align: center;
 }
+
 
 button {
   margin: 10px;

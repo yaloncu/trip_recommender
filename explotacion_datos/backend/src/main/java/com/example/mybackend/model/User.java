@@ -5,6 +5,7 @@ import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.GeneratedValue;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Node
@@ -12,19 +13,20 @@ public class User {
 
     @Id
     @GeneratedValue
-    private String id;
+    private Long id;
     private String name;
     private String email;
+    private String password;
 
     @Relationship(type = "PERTENECE_A", direction = Relationship.Direction.OUTGOING)
-    private List<Group> groups;
+    private List<Group> groups = new ArrayList<>();
 
     // Getters y Setters
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -43,8 +45,23 @@ public class User {
     public void setEmail(String email) {
         this.email = email;
     }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
     
-    // Método auxiliar para añadir un grupo
+    public List<Group> getGroups() {
+        return groups;
+    }
+
+    public void setGroups(List<Group> groups) {
+        this.groups = groups;
+    }
+    
     public void addGroup(Group group) {
         this.groups.add(group);
     }

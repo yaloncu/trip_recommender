@@ -14,7 +14,6 @@ public class Group {
     @Id
     @GeneratedValue
     private Long id;
-
     private String name;
 
     @Relationship(type = "PERTENECE_A", direction = Relationship.Direction.INCOMING)
@@ -37,7 +36,14 @@ public class Group {
         this.name = name;
     }
     
-    // Método auxiliar para añadir un usuario
+    public List<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<User> users) {
+        this.users = users;
+    }
+    
     public void addUser(User user) {
         this.users.add(user);
     }

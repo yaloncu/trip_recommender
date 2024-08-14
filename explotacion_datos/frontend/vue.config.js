@@ -1,14 +1,6 @@
 module.exports = {
-  publicPath: process.env.NODE_ENV === 'production'
-    ? '/frontend/'
-    : '/',
-
+  publicPath: '/',
   devServer: {
-    proxy: {
-      '/api': {
-        target: 'http://localhost:8080',
-        changeOrigin: true
-      }
-    }
+    proxy: 'http://localhost:8080'
   }
 };

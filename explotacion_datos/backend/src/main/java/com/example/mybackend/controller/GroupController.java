@@ -22,6 +22,6 @@ public class GroupController {
     @GetMapping("/{name}")
     public ResponseEntity<Group> getGroupByName(@PathVariable String name) {
         Group group = groupService.getGroupByName(name);
-        return ResponseEntity.ok(group);
+        return group != null ? ResponseEntity.ok(group) : ResponseEntity.notFound().build();
     }
 }
