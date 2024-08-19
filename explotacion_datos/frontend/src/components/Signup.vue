@@ -33,7 +33,7 @@ export default {
   methods: {
     async signup() {
       try {
-        const response = await axios.post('/api/users/create', {
+        const response = await axios.post('/signup', {
           name: this.name,
           email: this.email,
           password: this.password
@@ -53,12 +53,12 @@ export default {
           console.error('Error response headers:', error.response.headers);
 
         } else if (error.request) {
-          this.$router.push('/groups');
+          //this.$router.push('/groups');
           // La solicitud se hizo pero no se recibió respuesta
           console.error('Error request:', error.request);
 
         } else {
-          this.$router.push('/groups');
+          //this.$router.push('/groups');
           // Algo pasó al configurar la solicitud
           console.error('Error message:', error.message);
 

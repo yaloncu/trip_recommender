@@ -14,12 +14,17 @@ public class User {
     @Id
     @GeneratedValue
     private Long id;
+    
     private String name;
     private String email;
     private String password;
 
     @Relationship(type = "PERTENECE_A", direction = Relationship.Direction.OUTGOING)
     private List<Group> groups = new ArrayList<>();
+
+    public User() {
+        System.out.println("estoy en el constructor");
+    }
 
     // Getters y Setters
     public Long getId() {

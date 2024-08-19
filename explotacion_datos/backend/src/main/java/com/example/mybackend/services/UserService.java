@@ -2,31 +2,39 @@ package com.example.mybackend.services;
 
 import com.example.mybackend.model.Group;
 import com.example.mybackend.model.User;
-import com.example.mybackend.config.Neo4jConnection;
 import com.example.mybackend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.neo4j.driver.Driver;
-import org.neo4j.driver.Session;
 
-import java.util.Map;
 
+@Service
 public class UserService {
 
-    private final Neo4jConnection neo4jConnection;
+    @Autowired
+    private UserRepository userRepository;
 
-    public UserService(Neo4jConnection neo4jConnection) {
-        this.neo4jConnection = neo4jConnection;
+    public User createUser(User user) {
+        return userRepository.save(user);
+    }
+    
+    public User saveUser(User user) {
+        return userRepository.save(user);
     }
 
-    public void createUser(String name, String email, String password) {
-        try (Session session = neo4jConnection.getDriver().session()) {
-            session.run("CREATE (u:User {name: $name, email: $email, password: $password})",
-                    Map.of("name", name, "email", email, "password", password));
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
+    public void addUserToGroup(User user, Group group) {
+        user.addGroup(group);
+        userRepository.save(user);
+    }
+
+    public boolean validateUser(String email, String password) {
+        User user = getUserByEmail(email);
+        if (user != null) {
+            return password.equals(user.getPassword());
         }
-    }
-
-    public void close() {
-        neo4jConnection.close();
+        return false;
     }
 }
