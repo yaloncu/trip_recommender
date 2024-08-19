@@ -23,7 +23,12 @@ public class User {
     private List<Group> groups = new ArrayList<>();
 
     public User() {
-        System.out.println("estoy en el constructor");
+    }
+
+    public User(String name, String email, String password) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
     }
 
     // Getters y Setters

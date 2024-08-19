@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequestMapping("/api")
 public class UserController {
 
     @Autowired
@@ -22,10 +23,14 @@ public class UserController {
 
     @PostMapping("/signup")
     public ResponseEntity<String> createUser(@RequestBody User user) {
-        System.out.println("Request received for creating user: " + user);
-        System.out.println("User details - Name: " + user.getName() + ", Email: " + user.getEmail() + ", Password: " + user.getPassword());
-        userService.createUser(user.getName(), user.getEmail(), user.getPassword());
-        return ResponseEntity.ok("User created successfully"+ user.getName());
+        System.out.println("holaaaa");
+        try {
+            userService.createUser(user.getName(), user.getEmail(), user.getPassword());
+            return ResponseEntity.ok("User created successfully: " + user.getName());
+        } catch (Exception e) {
+            e.printStackTrace(); 
+            return ResponseEntity.badRequest().body("Error creating user: " + e.getMessage());
+        }
     }
 
     @PostMapping("/test")
@@ -36,13 +41,13 @@ public class UserController {
 
     
 
-    /*@GetMapping("/{email}")
+    @GetMapping("/{email}")
     public ResponseEntity<User> getUserByEmail(@PathVariable String email) {
         User user = userService.getUserByEmail(email);
         return user != null ? ResponseEntity.ok(user) : ResponseEntity.notFound().build();
     }
 
-    @PostMapping("/login")
+    /*@PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody User loginRequest) {
         boolean isValid = userService.validateUser(loginRequest.getEmail(), loginRequest.getPassword());
         if (isValid) {

@@ -3,7 +3,7 @@ package com.example.mybackend;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@SpringBootApplication(scanBasePackages = "com.example.mybackend")
+@SpringBootApplication
 public class MybackendApplication {
 
 	public static void main(String[] args) {
