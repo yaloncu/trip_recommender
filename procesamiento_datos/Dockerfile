@@ -10,4 +10,4 @@ COPY procesamiento_de_datos.py /app/procesamiento_de_datos.py
 WORKDIR /app
 
 # ejecutar el archivo
-CMD ["sh", "-c", "sleep 10 && python procesamiento_de_datos.py"]
+CMD ["sh", "-c", "sleep 12 && python procesamiento_de_datos.py"]
