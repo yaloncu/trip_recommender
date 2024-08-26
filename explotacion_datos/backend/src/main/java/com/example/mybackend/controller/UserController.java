@@ -32,20 +32,17 @@ public class UserController {
         }
     }
 
-    @PostMapping("/test")
-    public ResponseEntity<String> testCreateUser(@RequestBody Map<String, String> request) {
-        String name = request.get("name");
-        return ResponseEntity.ok("Received name: " + name);
+    @RequestMapping(value = "/api/**", method = RequestMethod.OPTIONS)
+    public ResponseEntity<?> handleOptionsRequest() {
+        return ResponseEntity.ok().build();
     }
-/*
-    
 
-    @GetMapping("/{email}")
+    @GetMapping("/email")
     public ResponseEntity<User> getUserByEmail(@PathVariable String email) {
         User user = userService.getUserByEmail(email);
         return user != null ? ResponseEntity.ok(user) : ResponseEntity.notFound().build();
     }
-
+/*
     /*@PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody User loginRequest) {
         boolean isValid = userService.validateUser(loginRequest.getEmail(), loginRequest.getPassword());

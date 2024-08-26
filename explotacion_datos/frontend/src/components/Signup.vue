@@ -20,7 +20,10 @@
 </template>
 
 <script>
-import axios from 'axios';
+import axios from 'axios'; 
+axios.defaults.baseURL = 'http://localhost:8081';
+axios.defaults.headers.common['Accept'] = 'application/json';
+axios.defaults.headers.post['Content-Type'] = 'application/json';
 
 export default {
   data() {
@@ -33,35 +36,23 @@ export default {
   methods: {
     async signup() {
       try {
-        const response = await axios.post('/signup', {
+        const response = await axios.post('/api/signup', {
           name: this.name,
           email: this.email,
           password: this.password
-        }).then(response => {
-          console.log('User signed up successfully:', response.data);
-        })
-        .catch(error => {
-          console.error('Error during signup:', error);
         });
         console.log('User signed up successfully:', response.data);
         this.$router.push('/groups');
       } catch (error) {
+        console.error('Error during signup:', error);
         if (error.response) {
-          this.$router.push('/groups');
           console.error('Error response data:', error.response.data);
           console.error('Error response status:', error.response.status);
           console.error('Error response headers:', error.response.headers);
-
         } else if (error.request) {
-          //this.$router.push('/groups');
-          // La solicitud se hizo pero no se recibió respuesta
           console.error('Error request:', error.request);
-
         } else {
-          //this.$router.push('/groups');
-          // Algo pasó al configurar la solicitud
           console.error('Error message:', error.message);
-
         }
         console.error('Error config:', error.config);
       }
