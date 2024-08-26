@@ -23,7 +23,6 @@ public class UserController {
 
     @PostMapping("/signup")
     public ResponseEntity<String> createUser(@RequestBody User user) {
-        System.out.println("holaaaa");
         try {
             userService.createUser(user.getName(), user.getEmail(), user.getPassword());
             return ResponseEntity.ok("User created successfully: " + user.getName());
@@ -38,7 +37,7 @@ public class UserController {
         String name = request.get("name");
         return ResponseEntity.ok("Received name: " + name);
     }
-
+/*
     
 
     @GetMapping("/{email}")
