@@ -1,9 +1,49 @@
-2024-08-26T10:33:41.986+02:00  INFO 13564 --- [mybackend] [main] c.e.mybackend.MybackendApplicationTests  : Starting MybackendApplicationTests using Java 22.0.2 with PID 13564 (started by Yaiza in C:\Users\Yaiza\Documents\practicas\trip_recommender\explotacion_datos\backend)
-2024-08-26T10:33:41.994+02:00  INFO 13564 --- [mybackend] [main] c.e.mybackend.MybackendApplicationTests  : No active profile set, falling back to 1 default profile: "default"
-2024-08-26T10:33:42.310+02:00  INFO 13564 --- [mybackend] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Neo4j repositories in DEFAULT mode.
-2024-08-26T10:33:42.392+02:00  INFO 13564 --- [mybackend] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 73 ms. Found 2 Neo4j repository interfaces.
-2024-08-26T10:33:42.500+02:00  INFO 13564 --- [mybackend] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Neo4j repositories in DEFAULT mode.
-2024-08-26T10:33:42.500+02:00  INFO 13564 --- [mybackend] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 7 ms. Found 0 Neo4j repository interfaces.
-2024-08-26T10:33:42.930+02:00  WARN 13564 --- [mybackend] [main] o.s.d.n.c.mapping.Neo4jPersistentEntity  : The entity com.example.mybackend.model.User is using a Long value for storing internally generated Neo4j ids. The Neo4j internal Long Ids are deprecated, please consider using an external ID generator.
-2024-08-26T10:33:42.930+02:00  WARN 13564 --- [mybackend] [main] o.s.d.n.c.mapping.Neo4jPersistentEntity  : The entity com.example.mybackend.model.Group is using a Long value for storing internally generated Neo4j ids. The Neo4j internal Long Ids are deprecated, please consider using an external ID generator.
-2024-08-26T10:33:43.410+02:00  INFO 13564 --- [mybackend] [main] c.e.mybackend.MybackendApplicationTests  : Started MybackendApplicationTests in 1.686 seconds (process running for 2.494)
+2024-09-02T11:00:47.426+02:00  INFO 16244 --- [mybackend] [main] c.e.mybackend.MybackendApplicationTests  : Starting MybackendApplicationTests using Java 22.0.2 with PID 16244 (started by Yaiza in C:\Users\Yaiza\Documents\practicas\trip_recommender\explotacion_datos\backend)
+2024-09-02T11:00:47.433+02:00  INFO 16244 --- [mybackend] [main] c.e.mybackend.MybackendApplicationTests  : No active profile set, falling back to 1 default profile: "default"
+2024-09-02T11:00:47.830+02:00  INFO 16244 --- [mybackend] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Neo4j repositories in DEFAULT mode.
+2024-09-02T11:00:47.931+02:00  INFO 16244 --- [mybackend] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 102 ms. Found 2 Neo4j repository interfaces.
+2024-09-02T11:00:48.069+02:00  INFO 16244 --- [mybackend] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Neo4j repositories in DEFAULT mode.
+2024-09-02T11:00:48.080+02:00  INFO 16244 --- [mybackend] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 8 ms. Found 0 Neo4j repository interfaces.
+2024-09-02T11:00:48.564+02:00  WARN 16244 --- [mybackend] [main] o.s.d.n.c.mapping.Neo4jPersistentEntity  : The entity com.example.mybackend.model.Group is using a Long value for storing internally generated Neo4j ids. The Neo4j internal Long Ids are deprecated, please consider using an external ID generator.
+2024-09-02T11:00:48.579+02:00  WARN 16244 --- [mybackend] [main] o.s.d.n.c.mapping.Neo4jPersistentEntity  : The entity com.example.mybackend.model.User is using a Long value for storing internally generated Neo4j ids. The Neo4j internal Long Ids are deprecated, please consider using an external ID generator.
+2024-09-02T11:00:48.750+02:00  WARN 16244 --- [mybackend] [main] .s.s.UserDetailsServiceAutoConfiguration : 
+
+Using generated security password: dc0e29e1-03ff-4194-babb-3bbcd8fb1c29
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2024-09-02T11:00:48.782+02:00  INFO 16244 --- [mybackend] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2024-09-02T11:00:49.260+02:00  INFO 16244 --- [mybackend] [main] c.e.mybackend.MybackendApplicationTests  : Started MybackendApplicationTests in 2.113 seconds (process running for 2.952)
+2024-09-02T11:14:34.116+02:00  INFO 5080 --- [mybackend] [main] c.e.mybackend.MybackendApplicationTests  : Starting MybackendApplicationTests using Java 22.0.2 with PID 5080 (started by Yaiza in C:\Users\Yaiza\Documents\practicas\trip_recommender\explotacion_datos\backend)
+2024-09-02T11:14:34.116+02:00  INFO 5080 --- [mybackend] [main] c.e.mybackend.MybackendApplicationTests  : No active profile set, falling back to 1 default profile: "default"
+2024-09-02T11:14:34.445+02:00  INFO 5080 --- [mybackend] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Neo4j repositories in DEFAULT mode.
+2024-09-02T11:14:34.529+02:00  INFO 5080 --- [mybackend] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 85 ms. Found 2 Neo4j repository interfaces.
+2024-09-02T11:14:34.666+02:00  INFO 5080 --- [mybackend] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Neo4j repositories in DEFAULT mode.
+2024-09-02T11:14:34.666+02:00  INFO 5080 --- [mybackend] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 7 ms. Found 0 Neo4j repository interfaces.
+2024-09-02T11:14:35.128+02:00  WARN 5080 --- [mybackend] [main] o.s.d.n.c.mapping.Neo4jPersistentEntity  : The entity com.example.mybackend.model.Group is using a Long value for storing internally generated Neo4j ids. The Neo4j internal Long Ids are deprecated, please consider using an external ID generator.
+2024-09-02T11:14:35.144+02:00  WARN 5080 --- [mybackend] [main] o.s.d.n.c.mapping.Neo4jPersistentEntity  : The entity com.example.mybackend.model.User is using a Long value for storing internally generated Neo4j ids. The Neo4j internal Long Ids are deprecated, please consider using an external ID generator.
+2024-09-02T11:14:35.305+02:00  WARN 5080 --- [mybackend] [main] .s.s.UserDetailsServiceAutoConfiguration : 
+
+Using generated security password: ea33493c-6fd8-4af2-9051-a66bde771419
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2024-09-02T11:14:35.321+02:00  INFO 5080 --- [mybackend] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2024-09-02T11:14:35.747+02:00  INFO 5080 --- [mybackend] [main] c.e.mybackend.MybackendApplicationTests  : Started MybackendApplicationTests in 1.88 seconds (process running for 2.511)
+2024-09-02T12:54:15.955+02:00  INFO 20132 --- [mybackend] [main] c.e.mybackend.MybackendApplicationTests  : Starting MybackendApplicationTests using Java 22.0.2 with PID 20132 (started by Yaiza in C:\Users\Yaiza\Documents\practicas\trip_recommender\explotacion_datos\backend)
+2024-09-02T12:54:15.957+02:00  INFO 20132 --- [mybackend] [main] c.e.mybackend.MybackendApplicationTests  : No active profile set, falling back to 1 default profile: "default"
+2024-09-02T12:54:16.335+02:00  INFO 20132 --- [mybackend] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Neo4j repositories in DEFAULT mode.
+2024-09-02T12:54:16.422+02:00  INFO 20132 --- [mybackend] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 84 ms. Found 2 Neo4j repository interfaces.
+2024-09-02T12:54:16.562+02:00  INFO 20132 --- [mybackend] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Neo4j repositories in DEFAULT mode.
+2024-09-02T12:54:16.562+02:00  INFO 20132 --- [mybackend] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 7 ms. Found 0 Neo4j repository interfaces.
+2024-09-02T12:54:16.996+02:00  WARN 20132 --- [mybackend] [main] o.s.d.n.c.mapping.Neo4jPersistentEntity  : The entity com.example.mybackend.model.User is using a Long value for storing internally generated Neo4j ids. The Neo4j internal Long Ids are deprecated, please consider using an external ID generator.
+2024-09-02T12:54:17.012+02:00  WARN 20132 --- [mybackend] [main] o.s.d.n.c.mapping.Neo4jPersistentEntity  : The entity com.example.mybackend.model.Group is using a Long value for storing internally generated Neo4j ids. The Neo4j internal Long Ids are deprecated, please consider using an external ID generator.
+2024-09-02T12:54:17.171+02:00  WARN 20132 --- [mybackend] [main] .s.s.UserDetailsServiceAutoConfiguration : 
+
+Using generated security password: f487a3e2-7441-4f0c-a3d2-aa00437fa28e
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2024-09-02T12:54:17.196+02:00  INFO 20132 --- [mybackend] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2024-09-02T12:54:17.412+02:00 DEBUG 20132 --- [mybackend] [main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, CorsFilter, LogoutFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, ExceptionTranslationFilter, AuthorizationFilter
+2024-09-02T12:54:17.633+02:00  INFO 20132 --- [mybackend] [main] c.e.mybackend.MybackendApplicationTests  : Started MybackendApplicationTests in 1.933 seconds (process running for 2.681)

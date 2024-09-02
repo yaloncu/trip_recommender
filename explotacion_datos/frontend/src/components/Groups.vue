@@ -30,7 +30,7 @@
     },
     methods: {
       createGroup() {
-        this.$router.push('/create-group');
+        this.$router.push('/groups/create');
       },
       joinGroup() {
         this.$router.push('/join-group');

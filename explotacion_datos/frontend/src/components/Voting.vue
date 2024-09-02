@@ -1,19 +1,19 @@
 <template>
-    <div class="voting-container">
-      <h1>Vote for Your Preferred Vacation Types</h1>
-      <div class="options">
-        <label v-for="type in vacationTypes" :key="type">
-          <input 
-            type="checkbox" 
-            :value="type" 
-            v-model="selectedTypes" 
-          />
-          {{ type }}
-        </label>
-      </div>
-      <button @click="submitVotes">Submit Votes</button>
+  <div class="voting-container">
+    <h1>Vote for Your Preferred Vacation Types</h1>
+    <div class="options">
+      <label v-for="type in vacationTypes" :key="type">
+        <input 
+          type="checkbox" 
+          :value="type" 
+          v-model="selectedTypes" 
+        />
+        {{ type }}
+      </label>
     </div>
-  </template>
+    <button @click="submitVotes">Submit Votes</button>
+  </div>
+</template>
   
   <script>
   export default {

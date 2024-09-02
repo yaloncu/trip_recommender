@@ -40,7 +40,9 @@ export default {
           name: this.name,
           email: this.email,
           password: this.password
-        });
+        }, {
+        withCredentials: true
+      });
         console.log('User signed up successfully:', response.data);
         this.$router.push('/groups');
       } catch (error) {
