@@ -21,28 +21,39 @@ public class GroupService {
 
     private final Driver driver;
 
-    @Autowired
     public GroupService(Driver driver){
         this.driver = driver;
     }
 
-    public void createGroup(String name, List<User> users) {
+    public void createGroup(String name, String audience, List<User> users) {
         try (Session session = driver.session()) {
             session.executeWrite(tx -> {
-                tx.run("CREATE (g:Group {name: $name}) RETURN g",
-                        Map.of("name", name));
-                for (User user : users) {
-                    tx.run("MATCH (u:User {email: $email}) " +
-                            "MATCH (g:Group {name: $name}) " +
-                            "MERGE (u)-[:PERTENECE_A]->(g)",
-                            Map.of("email", user.getEmail(), "name", name));
-                }
+                tx.run("CREATE (g:Group {name: $name, audience: $audience})",
+                        Map.of("name", name, "audience", audience));
+                
                 return null;
             });
         } catch (Neo4jException e) {
             e.printStackTrace();
+            throw e;
         }
     }
+
+    public void joinGroup(Long groupId, String userEmail) {
+        try (Session session = driver.session()) {
+            session.executeWrite(tx -> {
+                tx.run("MATCH (u:User {email: $email}) " +
+                       "MATCH (g:Group) WHERE id(g) = $groupId " +
+                       "MERGE (u)-[:PERTENECE_A]->(g)",
+                       Map.of("email", userEmail, "groupId", groupId));
+                return null;
+            });
+        } catch (Neo4jException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Error joining group", e);
+        }
+    }
+    
 
     public Group getGroupByName(String name) {
         try (Session session = driver.session()) {
@@ -80,7 +91,6 @@ public class GroupService {
                             userNode.get("email").asString(),
                             userNode.get("password").asString()
                         );
-                        group.addUser(user);
                     }
 
                     return group;

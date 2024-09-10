@@ -1,5 +1,5 @@
 <template>
-    <div class="create-group-container">
+    <div class="create-container">
       <h1>Create New Group</h1>
       <form @submit.prevent="createGroup">
         <div>
@@ -28,8 +28,11 @@
     </div>
   </template>
   
-  <script>
-  import axios from 'axios';
+<script>
+import axios from 'axios';
+axios.defaults.baseURL = 'http://localhost:8081';
+axios.defaults.headers.common['Accept'] = 'application/json';
+axios.defaults.headers.post['Content-Type'] = 'application/json';
   
   export default {
     data() {
@@ -45,10 +48,17 @@
             name: this.groupName,
             audience: this.audience
           });
-          console.log('Group created successfully:', response.data);
-          this.$router.push('/groups'); 
+          this.$router.push('/groups');
         } catch (error) {
           console.error('Error during group creation:', error);
+          if (error.response) {
+            console.error('Error response data:', error.response.data);
+          } else if (error.request) {
+            console.error('Error request:', error.request);
+          } else {
+            console.error('Error message:', error.message);
+          }
+          alert('Failed to create group. Please try again.');
         }
       }
     }

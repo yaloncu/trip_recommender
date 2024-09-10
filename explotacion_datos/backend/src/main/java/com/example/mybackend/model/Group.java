@@ -15,6 +15,7 @@ public class Group {
     @GeneratedValue
     private Long id;
     private String name;
+    private String audience;
 
     @Relationship(type = "PERTENECE_A", direction = Relationship.Direction.INCOMING)
     private List<User> users = new ArrayList<>();
@@ -34,6 +35,14 @@ public class Group {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getAudience() {
+        return audience;
+    }
+
+    public void setAudience(String audience) {
+        this.audience = audience;
     }
     
     public List<User> getUsers() {

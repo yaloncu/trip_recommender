@@ -33,7 +33,7 @@
         this.$router.push('/groups/create');
       },
       joinGroup() {
-        this.$router.push('/join-group');
+        this.$router.push('/groups/join');
       }
     },
     mounted() {

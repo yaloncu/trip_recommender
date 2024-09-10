@@ -23,12 +23,14 @@ public class SecurityConfig {
     public void init() {
         System.out.println("SecurityConfig initialized");
     }
+    
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .csrf(csrf -> csrf.disable()) // Desactivar CSRF si no es necesario
             .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/api/groups/create").permitAll()
                 .anyRequest().permitAll() 
             )
             .httpBasic(httpBasic -> httpBasic.disable()) // Desactivar autenticación básica
