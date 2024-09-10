@@ -40,6 +40,11 @@ public class GroupService {
     }
 
     public void joinGroup(Long groupId, String userEmail) {
+        System.out.println("Received groupId: " + groupId);
+        System.out.println("Received userEmail: " + userEmail);
+        if (groupId == null || userEmail == null) {
+            throw new IllegalArgumentException("Group ID and email must not be null");
+        }
         try (Session session = driver.session()) {
             session.executeWrite(tx -> {
                 tx.run("MATCH (u:User {email: $email}) " +

@@ -31,7 +31,7 @@
       async joinGroup() {
         try {
           const response = await axios.post('/api/groups/join', {
-            groupName: this.groupName,
+            id: this.groupId,
             email: this.email
           });
           alert('Successfully joined the group!');

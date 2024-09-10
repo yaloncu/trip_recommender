@@ -45,8 +45,14 @@ public class GroupController {
     @PostMapping("/join")
     public ResponseEntity<Map<String, String>> joinGroup(@RequestBody JoinGroupRequest request) {
         try {
-            String userEmail = (String) request.getEmail();
-            Long groupId = Long.valueOf(request.getId().toString());
+            if (request.getId() == null || request.getEmail() == null) {
+                Map<String, String> errorResponse = new HashMap<>();
+                errorResponse.put("error", "Invalid request");
+                errorResponse.put("message", "Group ID and email must not be null");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+            }
+            String userEmail = request.getEmail();
+            Long groupId = request.getId();
 
             groupService.joinGroup(groupId, userEmail); 
 
