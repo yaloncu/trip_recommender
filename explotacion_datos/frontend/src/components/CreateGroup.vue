@@ -66,7 +66,7 @@ axios.defaults.headers.post['Content-Type'] = 'application/json';
   </script>
   
   <style scoped>
-  .create-group-container {
+  .create-container {
     display: flex;
     flex-direction: column;
     align-items: center;

@@ -16,7 +16,11 @@
 </template>
 
 <script>
-import axios from 'axios';
+import axios from 'axios'; 
+axios.defaults.baseURL = 'http://localhost:8081';
+axios.defaults.headers.common['Accept'] = 'application/json';
+axios.defaults.headers.post['Content-Type'] = 'application/json';
+
 
 export default {
   data() {
@@ -31,13 +35,14 @@ export default {
         const response = await axios.post('/api/login', {
           email: this.email,
           password: this.password
+        }, 
+        {
+        withCredentials: true
         });
-        alert(response.data.message);
-        localStorage.setItem('token', response.data.token);
+        console.log('User login up successfully:', response.data);
         this.$router.push('/groups'); 
       } catch (error) {
         console.error('Error during login:', error.response.data.message);
-        this.$router.push('/groups'); 
       }
     }
   }

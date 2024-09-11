@@ -42,10 +42,12 @@ public class UserController {
         User user = userService.getUserByEmail(email);
         return user != null ? ResponseEntity.ok(user) : ResponseEntity.notFound().build();
     }
-/*
-    /*@PostMapping("/login")
+
+    @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody User loginRequest) {
-        boolean isValid = userService.validateUser(loginRequest.getEmail(), loginRequest.getPassword());
+        String email = loginRequest.getEmail();
+        String password = loginRequest.getPassword();
+        boolean isValid = userService.validateUser(email, password);
         if (isValid) {
             return ResponseEntity.ok("Login successful");
         } else {
@@ -53,7 +55,7 @@ public class UserController {
         }
     }
 
-    @PostMapping("/{email}/groups/{groupName}")
+/*    @PostMapping("/{email}/groups/{groupName}")
     public ResponseEntity<Void> addUserToGroup(@PathVariable String email, @PathVariable String groupName) {
         User user = userService.getUserByEmail(email);
         Group group = groupService.getGroupByName(groupName);

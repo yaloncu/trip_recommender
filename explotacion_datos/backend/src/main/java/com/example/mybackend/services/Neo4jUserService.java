@@ -48,6 +48,19 @@ public class Neo4jUserService {
             e.printStackTrace();
         }
     }
+
+    public boolean validateUser(String email, String password){
+        try (Session session = driver.session()){
+            return session.executeRead(tx ->{
+                Result result = tx.run("MATCH (u:User {email: $email, password: $password}) RETURN COUNT(u) > 0 AS userExists",
+                Map.of("email", email, "password", password));
+                return result.single().get("userExists").asBoolean();
+            });
+        } catch (Neo4jException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
     
     public User getUserByEmail(String email) {
         try (Session session = driver.session()) {
