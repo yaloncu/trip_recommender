@@ -22,10 +22,18 @@
   </template>
   
   <script>
+
+  import axios from 'axios'; 
+  axios.defaults.baseURL = 'http://localhost:8081';
+  axios.defaults.headers.common['Accept'] = 'application/json';
+  axios.defaults.headers.post['Content-Type'] = 'application/json';
+
+
   export default {
     data() {
       return {
-        groups: [] 
+        groups: [],
+        userEmail: ''
       };
     },
     methods: {
@@ -33,12 +41,26 @@
         this.$router.push('/groups/create');
       },
       joinGroup() {
-        this.$router.push('/groups/join');
-      }
+        this.$router.push('/groups/joinWithPreferences');
+      },
+      goToVoting(groupId) {
+        this.$router.push(`/groups/${groupId}/voting`);
+      },
+      /*async fetchGroups() {
+        try {
+          if (!this.userEmail) {
+            console.error('User email is not set.');
+            return;
+          }
+          // Llamada al backend para obtener los grupos
+          const response = await axios.get(`/users/${this.userEmail}/groups`);
+          this.groups = response.data;
+        } catch (error) {
+          console.error('Error fetching groups:', error);
+        }
+      }*/
     },
-    mounted() {
-      // cargar los grupos
-    }
+    mounted() {}
   };
   </script>
   

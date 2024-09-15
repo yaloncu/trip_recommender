@@ -1,7 +1,7 @@
 <template>
     <div class="join-container">
       <h1>Join a Group</h1>
-      <form @submit.prevent="joinGroup">
+      <form @submit.prevent="joinGroupWithPreferences">
         <div>
           <label for="group-id">Group ID:</label>
           <input type="number" v-model="groupId" id="group-id" required />
@@ -11,6 +11,17 @@
           <label for="email">Your Email:</label>
           <input type="email" v-model="email" id="email" required />
         </div>
+
+        <div class="options">
+        <label v-for="type in vacationTypes" :key="type">
+          <input 
+            type="checkbox" 
+            :value="type" 
+            v-model="selectedTypes" 
+          />
+          {{ type }}
+        </label>
+      </div>
   
         <button type="submit">Join Group</button>
       </form>
@@ -23,17 +34,28 @@
   export default {
     data() {
       return {
-        groupId: '',  // ID del grupo al que unirse
-        email: ''     // Email del usuario
+        groupId: '',  
+        email: '',  
+        vacationTypes: [
+        'Cultural', 'Beach', 'Romantic', 'Relax', 
+        'Adventure', 'Gastronomy', 'Wellness', 'Mountain'
+      ],
+      selectedTypes: []   
       };
     },
     methods: {
-      async joinGroup() {
+      async joinGroupWithPreferences() {
+        if (this.selectedTypes.length === 0) {
+          alert('Please select at least one vacation type.');
+          return;
+        }
         try {
-          const response = await axios.post('/api/groups/join', {
+          await axios.post('/api/groups/joinWithPreferences', {
             id: this.groupId,
-            email: this.email
+            email: this.email,
+            preferences: this.selectedTypes[0]
           });
+
           alert('Successfully joined the group!');
           this.$router.push('/groups'); // Redirigir después de unirse al grupo
         } catch (error) {

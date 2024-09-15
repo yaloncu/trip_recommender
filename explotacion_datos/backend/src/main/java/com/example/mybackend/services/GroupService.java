@@ -39,23 +39,42 @@ public class GroupService {
         }
     }
 
-    public void joinGroup(Long groupId, String userEmail) {
-        System.out.println("Received groupId: " + groupId);
-        System.out.println("Received userEmail: " + userEmail);
-        if (groupId == null || userEmail == null) {
+    public void joinGroupWithPreferences(Long groupId, String userEmail, String preference) {
+        if (groupId == null || userEmail == null || preference == null) {
             throw new IllegalArgumentException("Group ID and email must not be null");
         }
         try (Session session = driver.session()) {
             session.executeWrite(tx -> {
-                tx.run("MATCH (u:User {email: $email}) " +
-                       "MATCH (g:Group) WHERE id(g) = $groupId " +
-                       "MERGE (u)-[:PERTENECE_A]->(g)",
-                       Map.of("email", userEmail, "groupId", groupId));
+                Result userResult = tx.run("MATCH (u:User {email: $email}) RETURN u",
+                    Map.of("email", userEmail));
+
+                if (!userResult.hasNext()) {
+                    throw new RuntimeException("User with email " + userEmail + " not found.");
+                }
+
+                // Verificar si el grupo existe
+                Result groupResult = tx.run("MATCH (g:Group) WHERE id(g) = $groupId RETURN g",
+                        Map.of("groupId", groupId));
+
+                if (!groupResult.hasNext()) {
+                    throw new RuntimeException("Group with ID " + groupId + " not found.");
+                }
+
+
+                // Unir al grupo
+                tx.run("MATCH (u:User {email: $email}) "+
+                    "MATCH (g:Group) WHERE id(g) = $groupId "+
+                    "MERGE (u)-[r:PERTENECE_A]->(g) "+
+                    "SET r.preference = $preference",
+                    Map.of("email", userEmail, "groupId", groupId, "preference", preference));
                 return null;
             });
         } catch (Neo4jException e) {
-            e.printStackTrace();
-            throw new RuntimeException("Error joining group", e);
+            System.err.println("Neo4jException: " + e.getMessage());
+            throw new RuntimeException("Neo4jException occurred while joining group with preferences: " + e.getMessage(), e);
+        } catch (RuntimeException e) {
+            System.err.println("RuntimeException: " + e.getMessage());
+            throw new RuntimeException("RuntimeException occurred while joining group with preferences: " + e.getMessage(), e);
         }
     }
     
@@ -108,4 +127,5 @@ public class GroupService {
             return null;
         }
     }
+
 }

@@ -16,6 +16,11 @@
 </template>
   
   <script>
+  import axios from 'axios'; 
+  axios.defaults.baseURL = 'http://localhost:8081';
+  axios.defaults.headers.common['Accept'] = 'application/json';
+  axios.defaults.headers.post['Content-Type'] = 'application/json';
+
   export default {
     data() {
       return {
@@ -23,7 +28,8 @@
           'Cultural', 'Beach', 'Romantic', 'Relax', 
           'Adventure', 'Gastronomy', 'Wellness', 'Mountain'
         ],
-        selectedTypes: []
+        selectedTypes: [],
+        userId:''
       };
     },
     methods: {

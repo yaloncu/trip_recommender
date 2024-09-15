@@ -6,6 +6,7 @@ import com.example.mybackend.services.GroupService;
 import com.example.mybackend.services.Neo4jUserService;
 import com.example.mybackend.services.UserService;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,6 +53,16 @@ public class UserController {
             return ResponseEntity.ok("Login successful");
         } else {
             return ResponseEntity.status(401).body("Invalid credentials");
+        }
+    }
+
+    @GetMapping("/users/{email}/groups")
+    public ResponseEntity<List<Group>> getUserGroups(@PathVariable String email) {
+        List<Group> groups = userService.getUserGroups(email);
+        if (!groups.isEmpty()) {
+            return ResponseEntity.ok(groups);
+        } else {
+            return ResponseEntity.noContent().build();
         }
     }
 

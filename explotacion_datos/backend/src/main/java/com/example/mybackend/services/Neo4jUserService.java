@@ -1,5 +1,7 @@
 package com.example.mybackend.services;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.neo4j.driver.Driver;
@@ -12,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.mybackend.model.User;
+import com.example.mybackend.model.Group;
+
 
 @Service
 public class Neo4jUserService {
@@ -82,6 +86,31 @@ public class Neo4jUserService {
         } catch (Neo4jException e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    public List<Group> getUserGroups(String email) {
+        try (Session session = driver.session()) {
+            return session.executeRead(tx -> {
+                Result result = tx.run(
+                    "MATCH (u:User {email: $email})-[:PERTENECE_A]->(g:Group) RETURN g",
+                    Map.of("email", email)
+                );
+
+                List<Group> groups = new ArrayList<>();
+                while (result.hasNext()) {
+                    var record = result.next();
+                    var node = record.get("g").asNode();
+                    Group group = new Group(
+                        node.get("name").asString() // Asegúrate de que el nodo `Group` tenga la propiedad `name`
+                    );
+                    groups.add(group);
+                }
+                return groups;
+            });
+        } catch (Neo4jException e) {
+            e.printStackTrace();
+            return new ArrayList<>();
         }
     }
 }

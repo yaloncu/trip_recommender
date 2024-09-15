@@ -37,7 +37,7 @@ const routes = [
     meta: { requiresAuth: false } 
   },
   {
-    path: '/groups/join',
+    path: '/groups/joinWithPreferences',
     name: 'JoinGroup',
     component: JoinGroup,
     meta: { requiresAuth: false } 

@@ -20,6 +20,12 @@ public class Group {
     @Relationship(type = "PERTENECE_A", direction = Relationship.Direction.INCOMING)
     private List<User> users = new ArrayList<>();
 
+    public Group(String name) {
+        this.name = name;
+    }
+    public Group() {
+    }
+
     // Getters y Setters
     public Long getId() {
         return id;
