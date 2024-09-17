@@ -5,7 +5,6 @@ import Signup from '../components/Signup.vue';
 import Groups from '../components/Groups.vue';
 import CreateGroup from '../components/CreateGroup.vue';
 import JoinGroup from '../components/JoinGroup.vue';
-import Voting from '../components/Voting.vue';
 import { auth } from '@/firebaseConfig'; 
 
 const routes = [
@@ -41,12 +40,6 @@ const routes = [
     name: 'JoinGroup',
     component: JoinGroup,
     meta: { requiresAuth: false } 
-  },
-  {
-    path: '/groups/:id/voting',
-    name: 'Voting',
-    component: Voting,
-    meta: { requiresAuth: false }
   }
 ];
 

@@ -51,9 +51,9 @@
         }
         try {
           await axios.post('/api/groups/joinWithPreferences', {
-            id: this.groupId,
+            groupId: this.groupId,
             email: this.email,
-            preferences: this.selectedTypes[0]
+            preference: this.selectedTypes[0]
           });
 
           alert('Successfully joined the group!');
