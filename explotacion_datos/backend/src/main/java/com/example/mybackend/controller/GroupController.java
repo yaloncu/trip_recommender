@@ -7,10 +7,12 @@ import com.example.mybackend.services.GroupService;
 import com.example.mybackend.services.Neo4jUserService;
 import com.example.mybackend.services.UserService;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.neo4j.driver.exceptions.Neo4jException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -60,50 +62,19 @@ public class GroupController {
         }
     }
 
-
-
-   /*@PostMapping("/join")
-    public ResponseEntity<Map<String, String>> joinGroup(@RequestBody JoinGroupRequest request) {
-        try {
-            if (request.getId() == null || request.getEmail() == null) {
-                Map<String, String> errorResponse = new HashMap<>();
-                errorResponse.put("error", "Invalid request");
-                errorResponse.put("message", "Group ID and email must not be null");
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
-            }
-            String userEmail = request.getEmail();
-            Long groupId = request.getId();
-
-            groupService.joinGroup(groupId, userEmail); 
-
-            Map<String, String> response = new HashMap<>();
-            response.put("message", "User successfully joined the group");
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            e.printStackTrace(); // Logs detallados para depuración
-            Map<String, String> errorResponse = new HashMap<>();
-            errorResponse.put("error", "Failed to join group");
-            errorResponse.put("message", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+    @PostMapping("/user")
+    public ResponseEntity<List<Map<String, Object>>> getUserGroups(@RequestBody Map<String, String> body) {
+        String email = body.get("email");
+        if (email == null || email.isEmpty()) {
+            throw new IllegalArgumentException("Email is required");
         }
-    }*/
+        List<Map<String, Object>> groups = groupService.getUserGroups(email);
+        return ResponseEntity.ok(groups);
+    }
 
-    /*@PostMapping("/vote")
-    public ResponseEntity<Map<String, String>> submitVotes(@RequestBody VoteRequest voteRequest) {
-        try {
-            groupService.submitVotes(voteRequest.getGroupId(), voteRequest.getEmail(), voteRequest.getVotes());
-            Map<String, String> response = new HashMap<>();
-            response.put("message", "Votes submitted successfully");
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            e.printStackTrace();
-            Map<String, String> errorResponse = new HashMap<>();
-            errorResponse.put("error", "Failed to submit votes");
-            errorResponse.put("message", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
-        }
-    }*/
 
+
+   
     @GetMapping("/{name}")
     public ResponseEntity<Group> getGroupByName(@PathVariable String name) {
         Group group = groupService.getGroupByName(name);

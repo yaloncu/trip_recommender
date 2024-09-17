@@ -30,7 +30,7 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable()) // Desactivar CSRF si no es necesario
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/login", "/api/signup","/api/groups/create", "api/groups/joinWithPreferences").permitAll()
+                .requestMatchers("/api/login", "/api/signup","/api/groups/create", "api/groups/joinWithPreferences", "/api/recommendations/**").permitAll()
                 .anyRequest().permitAll() 
             )
             .httpBasic(httpBasic -> httpBasic.disable()) // Desactivar autenticación básica

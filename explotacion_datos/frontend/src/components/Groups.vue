@@ -5,6 +5,7 @@
       <div class="options">
         <button @click="createGroup">Create New Group</button>
         <button @click="joinGroup">Join a Group</button>
+        <button @click="viewMyGroups">View my groups</button>
       </div>
       <div v-if="groups.length">
         <h2>Your Groups:</h2>
@@ -46,6 +47,9 @@
       goToVoting(groupId) {
         this.$router.push(`/groups/${groupId}/voting`);
       },
+      viewMyGroups() {
+        this.$router.push(`/groups/user`);
+      }
       /*async fetchGroups() {
         try {
           if (!this.userEmail) {

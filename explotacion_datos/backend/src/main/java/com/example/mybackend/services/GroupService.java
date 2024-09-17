@@ -1,5 +1,6 @@
 package com.example.mybackend.services;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -78,6 +79,24 @@ public class GroupService {
         }
     }
     
+    public List<Map<String, Object>> getUserGroups(String email) {
+        try (Session session = driver.session()) {
+            return session.executeRead(tx -> {
+                var result = tx.run(
+                    "MATCH (u:User {email: $email})-[:PERTENECE_A]->(g:Group) " +
+                    "RETURN g.name AS groupName, id(g) AS groupId, u.preference AS preference",
+                    Map.of("email", email)
+                );
+                List<Map<String, Object>> groups = new ArrayList<>();
+                while (result.hasNext()) {
+                    groups.add(result.next().asMap());
+                }
+                return groups;
+            });
+        } catch (Neo4jException e) {
+            throw new RuntimeException("Error retrieving groups for user", e);
+        }
+    }
 
     public Group getGroupByName(String name) {
         try (Session session = driver.session()) {

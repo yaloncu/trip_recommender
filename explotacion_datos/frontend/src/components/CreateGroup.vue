@@ -10,15 +10,15 @@
         <div>
           <h3>Select the audience:</h3>
           <div>
-            <input type="radio" id="adults" value="Adults" v-model="audience" />
+            <input type="radio" id="adults" value="Adultos" v-model="audience" />
             <label for="adults">Adults</label>
           </div>
           <div>
-            <input type="radio" id="youth" value="Youth" v-model="audience" />
+            <input type="radio" id="youth" value="Jóvenes" v-model="audience" />
             <label for="youth">Youth</label>
           </div>
           <div>
-            <input type="radio" id="families" value="Families" v-model="audience" />
+            <input type="radio" id="families" value="Familias" v-model="audience" />
             <label for="families">Families</label>
           </div>
         </div>

@@ -1,17 +1,46 @@
-2024-09-17T11:17:37.443+02:00  INFO 15064 --- [mybackend] [main] c.e.mybackend.MybackendApplicationTests  : Starting MybackendApplicationTests using Java 22.0.2 with PID 15064 (started by Yaiza in C:\Users\Yaiza\Documents\practicas\trip_recommender\explotacion_datos\backend)
-2024-09-17T11:17:37.451+02:00  INFO 15064 --- [mybackend] [main] c.e.mybackend.MybackendApplicationTests  : No active profile set, falling back to 1 default profile: "default"
-2024-09-17T11:17:38.044+02:00  INFO 15064 --- [mybackend] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Neo4j repositories in DEFAULT mode.
-2024-09-17T11:17:38.165+02:00  INFO 15064 --- [mybackend] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 119 ms. Found 2 Neo4j repository interfaces.
-2024-09-17T11:17:38.359+02:00  INFO 15064 --- [mybackend] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Neo4j repositories in DEFAULT mode.
-2024-09-17T11:17:38.367+02:00  INFO 15064 --- [mybackend] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 8 ms. Found 0 Neo4j repository interfaces.
-2024-09-17T11:17:38.989+02:00  WARN 15064 --- [mybackend] [main] o.s.d.n.c.mapping.Neo4jPersistentEntity  : The entity com.example.mybackend.model.Group is using a Long value for storing internally generated Neo4j ids. The Neo4j internal Long Ids are deprecated, please consider using an external ID generator.
-2024-09-17T11:17:39.005+02:00  WARN 15064 --- [mybackend] [main] o.s.d.n.c.mapping.Neo4jPersistentEntity  : The entity com.example.mybackend.model.User is using a Long value for storing internally generated Neo4j ids. The Neo4j internal Long Ids are deprecated, please consider using an external ID generator.
-2024-09-17T11:17:39.226+02:00  WARN 15064 --- [mybackend] [main] .s.s.UserDetailsServiceAutoConfiguration : 
+2024-09-18T00:14:04.289+02:00  INFO 12440 --- [mybackend] [main] c.e.mybackend.MybackendApplicationTests  : Starting MybackendApplicationTests using Java 22.0.2 with PID 12440 (started by Yaiza in C:\Users\Yaiza\Documents\practicas\trip_recommender\explotacion_datos\backend)
+2024-09-18T00:14:04.297+02:00  INFO 12440 --- [mybackend] [main] c.e.mybackend.MybackendApplicationTests  : No active profile set, falling back to 1 default profile: "default"
+2024-09-18T00:14:04.328+02:00 DEBUG 12440 --- [mybackend] [main] o.s.w.c.s.GenericWebApplicationContext   : Refreshing org.springframework.web.context.support.GenericWebApplicationContext@49ef32e0
+2024-09-18T00:14:04.657+02:00  INFO 12440 --- [mybackend] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Neo4j repositories in DEFAULT mode.
+2024-09-18T00:14:04.760+02:00  INFO 12440 --- [mybackend] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 98 ms. Found 2 Neo4j repository interfaces.
+2024-09-18T00:14:04.889+02:00  INFO 12440 --- [mybackend] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Neo4j repositories in DEFAULT mode.
+2024-09-18T00:14:04.897+02:00  INFO 12440 --- [mybackend] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 7 ms. Found 0 Neo4j repository interfaces.
+2024-09-18T00:14:05.414+02:00  WARN 12440 --- [mybackend] [main] o.s.d.n.c.mapping.Neo4jPersistentEntity  : The entity com.example.mybackend.model.Group is using a Long value for storing internally generated Neo4j ids. The Neo4j internal Long Ids are deprecated, please consider using an external ID generator.
+2024-09-18T00:14:05.432+02:00  WARN 12440 --- [mybackend] [main] o.s.d.n.c.mapping.Neo4jPersistentEntity  : The entity com.example.mybackend.model.User is using a Long value for storing internally generated Neo4j ids. The Neo4j internal Long Ids are deprecated, please consider using an external ID generator.
+2024-09-18T00:14:05.612+02:00  WARN 12440 --- [mybackend] [main] .s.s.UserDetailsServiceAutoConfiguration : 
 
-Using generated security password: a512508e-b443-4d00-87ef-98394f1c4a5f
+Using generated security password: 95a4c2e4-06d4-446c-8251-1a21055eff9a
 
 This generated password is for development use only. Your security configuration must be updated before running your application in production.
 
-2024-09-17T11:17:39.266+02:00  INFO 15064 --- [mybackend] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
-2024-09-17T11:17:39.605+02:00 DEBUG 15064 --- [mybackend] [main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, CorsFilter, LogoutFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, ExceptionTranslationFilter, AuthorizationFilter
-2024-09-17T11:17:39.920+02:00  INFO 15064 --- [mybackend] [main] c.e.mybackend.MybackendApplicationTests  : Started MybackendApplicationTests in 2.908 seconds (process running for 4.077)
+2024-09-18T00:14:05.643+02:00  INFO 12440 --- [mybackend] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2024-09-18T00:14:05.814+02:00 DEBUG 12440 --- [mybackend] [main] s.w.s.m.m.a.RequestMappingHandlerMapping : 12 mappings in 'requestMappingHandlerMapping'
+2024-09-18T00:14:05.907+02:00 DEBUG 12440 --- [mybackend] [main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Patterns [/webjars/**, /**] in 'resourceHandlerMapping'
+2024-09-18T00:14:05.944+02:00 DEBUG 12440 --- [mybackend] [main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, CorsFilter, LogoutFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, ExceptionTranslationFilter, AuthorizationFilter
+2024-09-18T00:14:06.089+02:00 DEBUG 12440 --- [mybackend] [main] s.w.s.m.m.a.RequestMappingHandlerAdapter : ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+2024-09-18T00:14:06.118+02:00 DEBUG 12440 --- [mybackend] [main] .m.m.a.ExceptionHandlerExceptionResolver : ControllerAdvice beans: 0 @ExceptionHandler, 1 ResponseBodyAdvice
+2024-09-18T00:14:06.183+02:00  INFO 12440 --- [mybackend] [main] c.e.mybackend.MybackendApplicationTests  : Started MybackendApplicationTests in 2.155 seconds (process running for 2.836)
+2024-09-18T00:14:06.771+02:00 DEBUG 12440 --- [mybackend] [SpringApplicationShutdownHook] o.s.w.c.s.GenericWebApplicationContext   : Closing org.springframework.web.context.support.GenericWebApplicationContext@49ef32e0, started on Wed Sep 18 00:14:04 CEST 2024
+2024-09-18T00:20:01.624+02:00  INFO 908 --- [mybackend] [main] c.e.mybackend.MybackendApplicationTests  : Starting MybackendApplicationTests using Java 22.0.2 with PID 908 (started by Yaiza in C:\Users\Yaiza\Documents\practicas\trip_recommender\explotacion_datos\backend)
+2024-09-18T00:20:01.625+02:00  INFO 908 --- [mybackend] [main] c.e.mybackend.MybackendApplicationTests  : No active profile set, falling back to 1 default profile: "default"
+2024-09-18T00:20:01.655+02:00 DEBUG 908 --- [mybackend] [main] o.s.w.c.s.GenericWebApplicationContext   : Refreshing org.springframework.web.context.support.GenericWebApplicationContext@49ef32e0
+2024-09-18T00:20:02.017+02:00  INFO 908 --- [mybackend] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Neo4j repositories in DEFAULT mode.
+2024-09-18T00:20:02.124+02:00  INFO 908 --- [mybackend] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 102 ms. Found 2 Neo4j repository interfaces.
+2024-09-18T00:20:02.266+02:00  INFO 908 --- [mybackend] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Neo4j repositories in DEFAULT mode.
+2024-09-18T00:20:02.273+02:00  INFO 908 --- [mybackend] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 7 ms. Found 0 Neo4j repository interfaces.
+2024-09-18T00:20:02.771+02:00  WARN 908 --- [mybackend] [main] o.s.d.n.c.mapping.Neo4jPersistentEntity  : The entity com.example.mybackend.model.User is using a Long value for storing internally generated Neo4j ids. The Neo4j internal Long Ids are deprecated, please consider using an external ID generator.
+2024-09-18T00:20:02.786+02:00  WARN 908 --- [mybackend] [main] o.s.d.n.c.mapping.Neo4jPersistentEntity  : The entity com.example.mybackend.model.Group is using a Long value for storing internally generated Neo4j ids. The Neo4j internal Long Ids are deprecated, please consider using an external ID generator.
+2024-09-18T00:20:02.952+02:00  WARN 908 --- [mybackend] [main] .s.s.UserDetailsServiceAutoConfiguration : 
+
+Using generated security password: e5cf5043-998b-42a3-97f0-9b3c42705df9
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2024-09-18T00:20:02.971+02:00  INFO 908 --- [mybackend] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2024-09-18T00:20:03.108+02:00 DEBUG 908 --- [mybackend] [main] s.w.s.m.m.a.RequestMappingHandlerMapping : 12 mappings in 'requestMappingHandlerMapping'
+2024-09-18T00:20:03.198+02:00 DEBUG 908 --- [mybackend] [main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Patterns [/webjars/**, /**] in 'resourceHandlerMapping'
+2024-09-18T00:20:03.238+02:00 DEBUG 908 --- [mybackend] [main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, CorsFilter, LogoutFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, ExceptionTranslationFilter, AuthorizationFilter
+2024-09-18T00:20:03.382+02:00 DEBUG 908 --- [mybackend] [main] s.w.s.m.m.a.RequestMappingHandlerAdapter : ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+2024-09-18T00:20:03.411+02:00 DEBUG 908 --- [mybackend] [main] .m.m.a.ExceptionHandlerExceptionResolver : ControllerAdvice beans: 0 @ExceptionHandler, 1 ResponseBodyAdvice
+2024-09-18T00:20:03.482+02:00  INFO 908 --- [mybackend] [main] c.e.mybackend.MybackendApplicationTests  : Started MybackendApplicationTests in 2.111 seconds (process running for 2.813)
+2024-09-18T00:20:04.101+02:00 DEBUG 908 --- [mybackend] [SpringApplicationShutdownHook] o.s.w.c.s.GenericWebApplicationContext   : Closing org.springframework.web.context.support.GenericWebApplicationContext@49ef32e0, started on Wed Sep 18 00:20:01 CEST 2024

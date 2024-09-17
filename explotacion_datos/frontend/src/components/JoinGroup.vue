@@ -37,8 +37,8 @@
         groupId: '',  
         email: '',  
         vacationTypes: [
-        'Cultural', 'Beach', 'Romantic', 'Relax', 
-        'Adventure', 'Gastronomy', 'Wellness', 'Mountain'
+        'Cultural', 'Playa', 'Romantica', 'Relax', 
+        'Aventura', 'Gastronómica', 'Bienestar', 'Montaña'
       ],
       selectedTypes: []   
       };
