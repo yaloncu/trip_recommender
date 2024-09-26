@@ -16,16 +16,16 @@
 
     <div class="groups-content">
       <div v-if="groups.length">
-        <h2>Available Groups:</h2>
+        <h2>Available Public Groups:</h2>
         <ul>
-          <li v-for="group in groups" :key="group.id" class="group-item">
-            <span>{{ group.name }}</span>
-            <button class="join-button" @click="joinGroup(group.id)">Join Group</button>
+          <li v-for="group in groups" :key="group.name" class="group-item">
+            <span class="group-name">{{ group.name }} - Audience: {{ group.audience }}</span>
+            <button class="join-button" @click="viewGroupDetails(group.name)">View group</button>
           </li>
         </ul>
       </div>
       <div v-else>
-        <p>No groups available at the moment.</p>
+        <p>No public groups available at the moment.</p>
       </div>
     </div>
     <button class="button" @click="joinSpecificGroup">Join an especific group</button>
@@ -54,20 +54,43 @@ export default {
     joinSpecificGroup() {
       this.$router.push('/groups/joinWithPreferences');
     },
+    viewGroupDetails(groupName) {
+      this.$router.push({ name: 'GroupDetails', params: { groupName } });
+    },
     async fetchGroups() {
       try {
-        const response = await axios.get('/api/groups');
+        const response = await axios.get('/api/groups/public');
         this.groups = response.data;
       } catch (error) {
         console.error('Error fetching groups:', error);
       }
     },
-    joinGroup(groupId) {
-      console.log('Joining group:', groupId);
+    joinGroup(groupName) {
+      let userEmail = prompt("Please enter your email:");
+      if (!userEmail || !this.validateEmail(userEmail)) {
+        alert('Invalid email. Please enter a valid email address.');
+        return;
+      }
+      axios.post('/api/groups/joinWithPreferences', {
+        groupName: groupName,
+        email: userEmail,
+        preference: 'default' 
+      })
+      .then(response => {
+        alert(`Successfully joined group: ${groupName}`);
+      })
+      .catch(error => {
+        console.error('Error joining group:', error);
+        alert('Failed to join group');
+      });
+    },
+    validateEmail(email) {
+      const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return re.test(String(email).toLowerCase());
     }
   },
   mounted() {
-    this.fetchGroups(); // Al montar el componente, obtenemos los grupos
+    this.fetchGroups(); 
   }
 };
 </script>
@@ -117,6 +140,10 @@ export default {
   cursor: pointer;
   transition: all 0.2s ease-in-out;
   box-shadow: rgba(0, 0, 0, 0.1) 0px 20px 10px -15px;
+}
+.group-name {
+  color: #16a085; 
+  font-weight: bold;
 }
 
 .button:hover {
@@ -207,9 +234,6 @@ ul {
 }
 
 .join-button {
-  position: absolute;
-  top: 20px;
-  left: 20px;
   background: linear-gradient(45deg, #16a085 0%, #1abc9c 100%);
   color: white;
   font-size: 1.5rem;
@@ -227,5 +251,20 @@ ul {
 
 .join-button:active {
   transform: scale(0.95);
+}
+
+.email-input {
+  padding: 10px;
+  font-size: 1rem;
+  margin-bottom: 20px;
+  border: 2px solid #1abc9c;
+  border-radius: 10px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.email-input:focus {
+  border-color: #16a085;
+  outline: none;
 }
 </style>

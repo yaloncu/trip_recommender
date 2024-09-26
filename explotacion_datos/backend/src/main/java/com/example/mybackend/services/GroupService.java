@@ -1,6 +1,7 @@
 package com.example.mybackend.services;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -83,14 +84,21 @@ public class GroupService {
         try (Session session = driver.session()) {
             return session.executeRead(tx -> {
                 var result = tx.run(
-                    "MATCH (u:User {email: $email})-[:PERTENECE_A]->(g:Group) " +
-                    "RETURN g.name AS groupName, id(g) AS groupId, u.preference AS preference",
+                    "MATCH (u:User {email: $email})-[r:PERTENECE_A]->(g:Group) " +
+                    "RETURN g.name AS groupName, r.preference AS preference, id(g) AS groupId", // También obtenemos el ID del grupo
                     Map.of("email", email)
                 );
+
                 List<Map<String, Object>> groups = new ArrayList<>();
                 while (result.hasNext()) {
-                    groups.add(result.next().asMap());
+                    var record = result.next();
+                    Map<String, Object> groupData = new HashMap<>();
+                    groupData.put("groupName", record.get("groupName").asString());
+                    groupData.put("preference", record.containsKey("preference") ? record.get("preference").asString() : "No preference");
+                    groupData.put("groupId", record.get("groupId").asLong());
+                    groups.add(groupData);
                 }
+
                 return groups;
             });
         } catch (Neo4jException e) {
@@ -101,44 +109,24 @@ public class GroupService {
     public Group getGroupByName(String name) {
         try (Session session = driver.session()) {
             return session.executeRead(tx -> {
-                Result result = tx.run("MATCH (g:Group {name: $name})-[:PERTENECE_A]->(u:User) RETURN g, collect(u) as users",
-                        Map.of("name", name));
+                Result result = tx.run(
+                    "MATCH (g:Group {name: $name}) " +
+                    "RETURN g",
+                    Map.of("name", name)
+                );
+                
                 if (result.hasNext()) {
                     var record = result.next();
-                    
-                    // Obtener el nodo de grupo
                     var groupNode = record.get("g").asNode();
-                    
-                    // Crear el objeto Group
+    
                     Group group = new Group();
                     group.setName(groupNode.get("name").asString());
-                    
-                    // Manejar el ID (si existe)
-                    if (groupNode.containsKey("id")) {
-                        Object idValue = groupNode.get("id");
-                        if (idValue instanceof Number) {
-                            group.setId(((Number) idValue).longValue());
-                        } else {
-                            // Manejo de error si el ID no es un número
-                            System.out.println("ID no es del tipo Long. Valor: " + idValue);
-                            group.setId(null);
-                        }
-                    }
-
-                    // Obtener los nodos de usuarios
-                    List<Object> userNodes = record.get("users").asList();
-                    for (Object userNodeObj : userNodes) {
-                        var userNode = (org.neo4j.driver.internal.InternalNode) userNodeObj;
-                        var user = new User(
-                            userNode.get("name").asString(),
-                            userNode.get("email").asString(),
-                            userNode.get("password").asString()
-                        );
-                    }
-
+                    group.setAudience(groupNode.get("audience").asString());
+                    group.setPrivated(groupNode.get("privated").asString());
+    
                     return group;
                 } else {
-                    return null;
+                    return null; 
                 }
             });
         } catch (Neo4jException e) {
@@ -147,4 +135,40 @@ public class GroupService {
         }
     }
 
+    public List<Group> getPublicGroups() {
+        try (Session session = driver.session()) {
+            return session.executeRead(tx -> {
+                var result = tx.run("MATCH (g:Group {privated: 'public'}) RETURN g");
+                List<Group> publicGroups = new ArrayList<>();
+                while (result.hasNext()) {
+                    var record = result.next();
+                    var groupNode = record.get("g").asNode();
+                    
+                    Group group = new Group();
+                    group.setName(groupNode.get("name").asString());
+                    group.setAudience(groupNode.get("audience").asString());
+                    group.setPrivated(groupNode.get("privated").asString());
+    
+                    publicGroups.add(group);
+                }
+                return publicGroups;
+            });
+        } catch (Neo4jException e) {
+            throw new RuntimeException("Error retrieving public groups", e);
+        }
+    }
+    
+    public void leaveGroup(String email, String groupName) {
+        try (Session session = driver.session()) {
+            session.executeWrite(tx -> {
+                tx.run("MATCH (u:User {email: $email})-[r:PERTENECE_A]->(g:Group {name: $groupName}) " +
+                       "DELETE r",
+                       Map.of("email", email, "groupName", groupName));
+                return null;
+            });
+        } catch (Neo4jException e) {
+            throw new RuntimeException("Error while leaving the group", e);
+        }
+    }
+    
 }

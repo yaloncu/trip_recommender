@@ -6,13 +6,14 @@
     <h1 class="main-title">Your groups</h1>
     <div class="card">
       <input v-model="userEmail" type="email" placeholder="Enter your email" class="input email-input" />
-      <button @click="fetchUserGroups" class="create-group-button">Fetch Groups</button>
+      <button @click="fetchUserGroups" class="create-group-button">Fetch groups</button>
 
       <div v-if="groups.length">
         <ul>
           <li v-for="group in groups" :key="group.groupId" class="group-item">
-            {{ group.groupName }} - Preference: {{ group.preference }}
-            <button @click="viewRecommendation(group.groupId)" class="recommend-button">Ver Recomendación</button>
+            {{ group.groupName }} - Preference: {{ group.preference || 'No preference' }}
+            <button @click="viewRecommendation(group.groupId)" class="recommend-button">See recomendation</button>
+            <button @click="leaveGroup(group.groupName)" class="leave-button">Leave group</button>
           </li>
         </ul>
       </div>
@@ -68,6 +69,21 @@ export default {
       } catch (error) {
         console.error('Error fetching recommendations:', error);
         alert('Error al obtener las recomendaciones.');
+      }
+    },
+    async leaveGroup(groupName) {
+      if (!confirm(`Are you sure you want to leave the group ${groupName}?`)) {
+        return;
+      }
+      try {
+        const response = await axios.delete(`/api/groups/leave`, {
+          data: { email: this.userEmail, groupName: groupName }
+        });
+        alert(response.data.message);
+        this.fetchUserGroups();
+      } catch (error) {
+        console.error('Error leaving group:', error);
+        alert('Error al salir del grupo.');
       }
     }
   },
@@ -208,4 +224,19 @@ ul {
 .recommend-button:hover {
   background-color: #2f855a;
 }
+
+.leave-button {
+  margin-left: 10px;
+  padding: 5px 10px;
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+.leave-button:hover {
+  background-color: #c0392b;
+}
+
 </style>

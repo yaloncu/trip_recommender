@@ -62,6 +62,17 @@ public class GroupController {
         }
     }
 
+    @GetMapping("/public")
+    public ResponseEntity<List<Group>> getPublicGroups() {
+        try {
+            List<Group> publicGroups = groupService.getPublicGroups();
+            return ResponseEntity.ok(publicGroups);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
+
     @PostMapping("/user")
     public ResponseEntity<List<Map<String, Object>>> getUserGroups(@RequestBody Map<String, String> body) {
         String email = body.get("email");
@@ -79,6 +90,24 @@ public class GroupController {
     public ResponseEntity<Group> getGroupByName(@PathVariable String name) {
         Group group = groupService.getGroupByName(name);
         return group != null ? ResponseEntity.ok(group) : ResponseEntity.notFound().build();
+    }
+
+    @DeleteMapping("/leave")
+    public ResponseEntity<Map<String, String>> leaveGroup(@RequestBody Map<String, String> body) {
+        String email = body.get("email");
+        String groupName = body.get("groupName");
+        try {
+            groupService.leaveGroup(email, groupName);
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Successfully left the group");
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Failed to leave the group");
+            errorResponse.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
     }
 
 }

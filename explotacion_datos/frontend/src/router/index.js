@@ -6,6 +6,7 @@ import Groups from '../components/Groups.vue';
 import CreateGroup from '../components/CreateGroup.vue';
 import JoinGroup from '../components/JoinGroup.vue';
 import UserGroups from '@/components/UserGroups.vue';
+import GroupDetails from '@/components/GroupDetails.vue'; 
 import { auth } from '@/firebaseConfig'; 
 
 const routes = [
@@ -47,6 +48,11 @@ const routes = [
     name: 'UserGroups',
     component: UserGroups,
     meta: { requiresAuth: false } 
+  },
+  {
+    path: '/groups/:groupName', 
+    name: 'GroupDetails',
+    component: GroupDetails
   }
 ];
 
