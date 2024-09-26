@@ -3,17 +3,17 @@ package com.example.mybackend.model;
 import java.util.List;
 
 public class JoinGroupWithPreferencesRequest {
-    private Long groupId;
+    private String groupName;
     private String email;
     private String preference;
 
     // Getters y Setters
-    public Long getGroupId() {
-        return groupId;
+    public String getGroupName() {
+        return groupName;
     }
 
-    public void setGroupId(Long groupId) {
-        this.groupId = groupId;
+    public void setGroupName(String groupId) {
+        this.groupName = groupId;
     }
 
     public String getEmail() {

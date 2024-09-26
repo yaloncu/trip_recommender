@@ -26,11 +26,11 @@ public class GroupService {
         this.driver = driver;
     }
 
-    public void createGroup(String name, String audience, List<User> users) {
+    public void createGroup(String name, String audience, String privated, List<User> users) {
         try (Session session = driver.session()) {
             session.executeWrite(tx -> {
-                tx.run("CREATE (g:Group {name: $name, audience: $audience})",
-                        Map.of("name", name, "audience", audience));
+                tx.run("CREATE (g:Group {name: $name, audience: $audience, privated: $privated})",
+                        Map.of("name", name, "audience", audience, "privated", privated));
                 
                 return null;
             });
@@ -40,8 +40,8 @@ public class GroupService {
         }
     }
 
-    public void joinGroupWithPreferences(Long groupId, String userEmail, String preference) {
-        if (groupId == null || userEmail == null || preference == null) {
+    public void joinGroupWithPreferences(String groupName, String userEmail, String preference) {
+        if (groupName == null || userEmail == null || preference == null) {
             throw new IllegalArgumentException("Group ID and email must not be null");
         }
         try (Session session = driver.session()) {
@@ -54,20 +54,20 @@ public class GroupService {
                 }
 
                 // Verificar si el grupo existe
-                Result groupResult = tx.run("MATCH (g:Group) WHERE id(g) = $groupId RETURN g",
-                        Map.of("groupId", groupId));
+                Result groupResult = tx.run("MATCH (g:Group {name: $name}) RETURN g",
+                        Map.of("name", groupName));
 
                 if (!groupResult.hasNext()) {
-                    throw new RuntimeException("Group with ID " + groupId + " not found.");
+                    throw new RuntimeException("Group with name " + groupName + " not found.");
                 }
 
 
                 // Unir al grupo
                 tx.run("MATCH (u:User {email: $email}) "+
-                    "MATCH (g:Group) WHERE id(g) = $groupId "+
+                    "MATCH (g:Group {name: $name}) "+
                     "MERGE (u)-[r:PERTENECE_A]->(g) "+
                     "SET r.preference = $preference",
-                    Map.of("email", userEmail, "groupId", groupId, "preference", preference));
+                    Map.of("email", userEmail, "name", groupName, "preference", preference));
                 return null;
             });
         } catch (Neo4jException e) {

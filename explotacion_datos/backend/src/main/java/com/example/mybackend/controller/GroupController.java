@@ -32,7 +32,7 @@ public class GroupController {
     @PostMapping("/create")
     public ResponseEntity<Map<String, String>> createGroup(@RequestBody Group group) {
         try {
-            groupService.createGroup(group.getName(), group.getAudience(), null); // Llamada sin esperar ID
+            groupService.createGroup(group.getName(), group.getAudience(),group.getPrivated(), null); // Llamada sin esperar ID
             Map<String, String> response = new HashMap<>();
             response.put("message", "Group created successfully");
             return ResponseEntity.ok(response);
@@ -49,7 +49,7 @@ public class GroupController {
     @PostMapping("/joinWithPreferences")
     public ResponseEntity<Map<String, String>> joinGroupWithPreferences(@RequestBody JoinGroupWithPreferencesRequest request) {
         try {
-            groupService.joinGroupWithPreferences(request.getGroupId(), request.getEmail(), request.getpreference());
+            groupService.joinGroupWithPreferences(request.getGroupName(), request.getEmail(), request.getpreference());
             Map<String, String> response = new HashMap<>();
             response.put("message", "User successfully joined the group with preference");
             return ResponseEntity.ok(response);

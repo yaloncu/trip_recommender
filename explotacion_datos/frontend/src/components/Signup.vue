@@ -1,21 +1,35 @@
 <template>
   <div class="signup-container">
-    <h1>Sign Up</h1>
-    <form @submit.prevent="signup">
-      <div>
-        <label for="name">Name:</label>
-        <input type="text" v-model="name" id="name" required />
-      </div>
-      <div>
-        <label for="email">Email:</label>
-        <input type="email" v-model="email" id="email" required />
-      </div>
-      <div>
-        <label for="password">Password:</label>
-        <input type="password" v-model="password" id="password" required />
-      </div>
-      <button type="submit">Sign Up</button>
-    </form>
+    <div class="container">
+      <div class="heading">Sign Up</div>
+      <form class="form" @submit.prevent="signup">
+        <input
+          placeholder="Name"
+          id="name"
+          v-model="name"
+          type="text"
+          class="input"
+          required
+        />
+        <input
+          placeholder="E-mail"
+          id="email"
+          v-model="email"
+          type="email"
+          class="input"
+          required
+        />
+        <input
+          placeholder="Password"
+          id="password"
+          v-model="password"
+          type="password"
+          class="input"
+          required
+        />
+        <input value="Sign Up" type="submit" class="signup-button" />
+      </form>
+    </div>
   </div>
 </template>
 
@@ -41,22 +55,12 @@ export default {
           email: this.email,
           password: this.password
         }, {
-        withCredentials: true
-      });
+          withCredentials: true
+        });
         console.log('User signed up successfully:', response.data);
         this.$router.push('/groups');
       } catch (error) {
-        console.error('Error during signup:', error);
-        if (error.response) {
-          console.error('Error response data:', error.response.data);
-          console.error('Error response status:', error.response.status);
-          console.error('Error response headers:', error.response.headers);
-        } else if (error.request) {
-          console.error('Error request:', error.request);
-        } else {
-          console.error('Error message:', error.message);
-        }
-        console.error('Error config:', error.config);
+        console.error('Error during signup:', error.response.data.message);
       }
     }
   }
@@ -70,21 +74,71 @@ export default {
   align-items: center;
   justify-content: center;
   height: 100vh;
-  background-color: #191a1a;
-  color: white;
+  background-color: #2c3e50;
   text-align: center;
 }
 
-button {
-  margin: 10px;
-  padding: 10px 20px;
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-  cursor: pointer;
+.container {
+  max-width: 400px;
+  width: 100%;
+  background: #34495e; 
+  border-radius: 40px;
+  padding: 30px 40px;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 20px;
 }
 
-button:hover {
-  background-color: #45a049;
+.heading {
+  text-align: center;
+  font-weight: 900;
+  font-size: 30px;
+  color: #1abc9c; 
+}
+
+.form {
+  margin-top: 20px;
+  width: 100%;
+}
+
+.input {
+  width: 100%;
+  background: white;
+  border: none;
+  padding: 15px 20px;
+  border-radius: 20px;
+  margin-top: 15px;
+  box-shadow: #cff0ff 0px 10px 10px -5px;
+  border-inline: 2px solid transparent;
+  box-sizing: border-box;
+}
+
+.input::placeholder {
+  color: rgb(170, 170, 170);
+}
+
+.input:focus {
+  outline: none;
+  border-inline: 2px solid #1abc9c; 
+}
+
+.signup-button {
+  display: block;
+  width: 100%;
+  font-weight: bold;
+  background: linear-gradient(45deg, #16a085 0%, #1abc9c 100%); /* Verde lima */
+  color: white;
+  padding-block: 15px;
+  margin: 20px auto;
+  border-radius: 20px;
+  border: none;
+  transition: all 0.2s ease-in-out;
+}
+
+.signup-button:hover {
+  background: #1abc9c; 
+  transform: scale(1.03);
+}
+
+.signup-button:active {
+  transform: scale(0.95);
 }
 </style>

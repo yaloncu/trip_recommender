@@ -1,11 +1,13 @@
 <template>
   <div class="container">
-    <h1>Welcome</h1>
-    <div class="buttons">
-      <button @click="goToLogin">Login</button>
-      <button @click="goToSignup">Sign Up</button>
+    <div class="welcome-container">
+      <div class="heading">Welcome</div>
+      <div class="buttons">
+        <button class="login-button" @click="goToLogin">Login</button>
+        <button class="signup-button" @click="goToSignup">Sign Up</button>
+      </div>
     </div>
-  </div>     
+  </div>
 </template>
 
 <script>
@@ -23,42 +25,57 @@ export default {
 </script>
 
 <style scoped>
-  html, body {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-  }
+.container {
+  font-family: 'Domine', serif;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #2c3e50; 
+}
 
-  .container {
-    width: 100%;
-    height: 100vh; 
-    display: flex; 
-    justify-content: center; 
-    align-items: center; 
-    --color: rgba(114, 114, 114, 0.3);
-    background-color: #191a1a;
-    background-image: linear-gradient(0deg, transparent 24%, var(--color) 25%, var(--color) 26%, transparent 27%, transparent 74%, var(--color) 75%, var(--color) 76%, transparent 77%, transparent),
-        linear-gradient(90deg, transparent 24%, var(--color) 25%, var(--color) 26%, transparent 27%, transparent 74%, var(--color) 75%, var(--color) 76%, transparent 77%, transparent);
-    background-size: 55px 55px;
-    color: white; 
-    text-align: center; 
-  }
+.welcome-container {
+  max-width: 400px;
+  width: 100%;
+  background: #34495e; 
+  border-radius: 40px;
+  padding: 30px 40px;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 20px;
+}
+
+.heading {
+  font-weight: 700;
+  font-size: 30px;
+  color: #1abc9c; 
+  margin-bottom: 20px;
+}
 
 .buttons {
-  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 15px;
 }
 
-button {
-  margin: 10px;
-  padding: 10px 20px;
-  background-color: #4CAF50;
+.login-button, .signup-button {
+  font-weight: 700;
+  background: linear-gradient(45deg, #16a085 0%, #1abc9c 100%); /* Verde lima */
   color: white;
+  padding-block: 15px;
+  width: 100px;
+  border-radius: 20px;
   border: none;
   cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 20px;
 }
 
-button:hover {
-  background-color: #45a049;
+.login-button:hover, .signup-button:hover {
+  background: #1abc9c; 
+  transform: scale(1.03);
+}
+
+.login-button:active, .signup-button:active {
+  transform: scale(0.95);
 }
 </style>
-

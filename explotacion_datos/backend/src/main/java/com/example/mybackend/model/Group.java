@@ -15,6 +15,7 @@ public class Group {
     @GeneratedValue
     private Long id;
     private String name;
+    private String privated;
     private String audience;
 
     @Relationship(type = "PERTENECE_A", direction = Relationship.Direction.INCOMING)
@@ -33,6 +34,14 @@ public class Group {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getPrivated(){
+        return privated;
+    }
+
+    public void setPrivated(String privated){
+        this.privated = privated;
     }
 
     public String getName() {
