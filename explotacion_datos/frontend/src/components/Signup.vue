@@ -1,10 +1,10 @@
 <template>
   <div class="signup-container">
     <div class="container">
-      <div class="heading">Sign Up</div>
+      <div class="heading">{{ $t('signup') }}</div>
       <form class="form" @submit.prevent="signup">
         <input
-          placeholder="Name"
+          :placeholder="$t('name')"
           id="name"
           v-model="name"
           type="text"
@@ -20,14 +20,14 @@
           required
         />
         <input
-          placeholder="Password"
+          :placeholder="$t('password')"
           id="password"
           v-model="password"
           type="password"
           class="input"
           required
         />
-        <input value="Sign Up" type="submit" class="signup-button" />
+        <button type="submit" class="signup-button">{{ $t('signup') }}</button>
       </form>
     </div>
   </div>

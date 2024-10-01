@@ -17,6 +17,9 @@ public class Group {
     private String name;
     private String privated;
     private String audience;
+    private String email;
+    private boolean isClosed;
+    private String type;
 
     @Relationship(type = "PERTENECE_A", direction = Relationship.Direction.INCOMING)
     private List<User> users = new ArrayList<>();
@@ -59,6 +62,14 @@ public class Group {
     public void setAudience(String audience) {
         this.audience = audience;
     }
+
+    public boolean isClosed() {
+        return isClosed;
+    }
+
+    public void setClosed(boolean isClosed) {
+        this.isClosed = isClosed;
+    }
     
     public List<User> getUsers() {
         return users;
@@ -66,6 +77,22 @@ public class Group {
 
     public void setUsers(List<User> users) {
         this.users = users;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getType() {
+        return type; 
+    }
+
+    public void setType(String type) {
+        this.type = type; 
     }
     
     public void addUser(User user) {

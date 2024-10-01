@@ -32,7 +32,7 @@ public class GroupController {
     @PostMapping("/create")
     public ResponseEntity<Map<String, String>> createGroup(@RequestBody Group group) {
         try {
-            groupService.createGroup(group.getName(), group.getAudience(),group.getPrivated(), null); // Llamada sin esperar ID
+            groupService.createGroup(group.getName(), group.getEmail(), group.getAudience(), group.getPrivated(), group.isClosed(), group.getType());
             Map<String, String> response = new HashMap<>();
             response.put("message", "Group created successfully");
             return ResponseEntity.ok(response);
@@ -40,11 +40,26 @@ public class GroupController {
             e.printStackTrace();
             Map<String, String> errorResponse = new HashMap<>();
             errorResponse.put("error", "Failed to create group");
-            errorResponse.put("message", e.getMessage()); // Añadir el mensaje de la excepción para más contexto
+            errorResponse.put("message", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
     }
 
+    @PutMapping("/close/{name}")
+    public ResponseEntity<Map<String, String>> closeGroup(@PathVariable String name) {
+        try {
+            groupService.closeGroup(name);
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Group closed successfully");
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Failed to close group");
+            errorResponse.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
+    }
     
     @PostMapping("/joinWithPreferences")
     public ResponseEntity<Map<String, String>> joinGroupWithPreferences(@RequestBody JoinGroupWithPreferencesRequest request) {

@@ -2,6 +2,7 @@ FROM node:18
 WORKDIR /app
 
 COPY frontend/package*.json ./
+RUN npm install vue-i18n
 RUN ls -al /app
 
 RUN npm install

@@ -1,6 +1,6 @@
 <template>
   <div class="user-container">
-    <button class="join-button" @click="joinGroup">Join</button>
+    <button class="join-button" @click="joinGroup">{{ $t('join') }}</button>
     <div class="profile-button-wrapper">
       <div class="profile-button-container">
         <a title="Go to profile page" @click="viewMyGroups" class="profile-button">
@@ -10,32 +10,40 @@
         </a>
       </div>
     </div>
-    <h1 class="main-title">Create a group</h1>
+    <h1 class="main-title">{{ $t('createGroup') }}</h1>
 
     <div class="card">
-      <input v-model="groupName" type="text" placeholder="Enter the group name" class="input name-group" />
+      <input v-model="groupName" type="text" :placeholder= "$t('enterGroupName')"  class="input name-group" />
+      <input v-model="userEmail" type="email" :placeholder= "$t('enterYourEmail')"  class="input name-group" />
 
       <div>
-        <h3>Select the audience:</h3>
+        <h3>{{ $t('selectAudience') }}</h3>
         <div class="customCheckBoxHolder">
           <input class="customCheckBoxInput" id="adults" type="radio" value="Adultos" v-model="audience">
           <label class="customCheckBoxWrapper" for="adults">
             <div class="customCheckBox">
-              <div class="inner">Adults</div>
+              <div class="inner">{{ $t('adults') }}</div>
             </div>
           </label>
 
           <input class="customCheckBoxInput" id="youth" type="radio" value="Jóvenes" v-model="audience">
           <label class="customCheckBoxWrapper" for="youth">
             <div class="customCheckBox">
-              <div class="inner">Youth</div>
+              <div class="inner">{{ $t('youth') }}</div>
             </div>
           </label>
 
           <input class="customCheckBoxInput" id="families" type="radio" value="Familias" v-model="audience">
           <label class="customCheckBoxWrapper" for="families">
             <div class="customCheckBox">
-              <div class="inner">Families</div>
+              <div class="inner">{{ $t('families') }}</div>
+            </div>
+          </label>
+
+          <input class="customCheckBoxInput" id="3age" type="radio" value="TerceraEdad" v-model="audience">
+          <label class="customCheckBoxWrapper" for="3age">
+            <div class="customCheckBox">
+              <div class="inner">{{ $t('thirdAge') }}</div>
             </div>
           </label>
         </div>
@@ -43,25 +51,39 @@
 
       
       <div>
-        <h3>Select the privacity:</h3>
+        <h3>{{ $t('selectPrivacity') }}</h3>
         <div class="customCheckBoxHolder">
           <input class="customCheckBoxInput" id="private" type="radio" value="private" v-model="privated">
           <label class="customCheckBoxWrapper" for="private">
             <div class="customCheckBox">
-              <div class="inner">Private</div>
+              <div class="inner">{{ $t('private') }}</div>
             </div>
           </label>
 
           <input class="customCheckBoxInput" id="public" type="radio" value="public" v-model="privated">
           <label class="customCheckBoxWrapper" for="public">
             <div class="customCheckBox">
-              <div class="inner">Public</div>
+              <div class="inner">{{ $t('public') }}</div>
             </div>
           </label>
         </div>
       </div>
 
-        <button @click="createGroup" class="create-group-button">create group</button>
+      <div>
+        <h3>{{ $t('selectType') }}</h3>
+        <div class="customCheckBoxHolder2">
+          <label v-for="(type, index) in vacationTypes" :key="index">
+            <input 
+              type="checkbox" 
+              :value="type" 
+              v-model="selectedTypes" 
+            />
+            {{ $t(type) }} 
+          </label>
+        </div>
+      </div>
+
+        <button @click="createGroup" class="create-group-button">{{ $t('createTheGroup') }}</button>
 
 
     </div>
@@ -76,7 +98,13 @@ export default {
     return {
       groupName: '', 
       audience: '', 
-      Privated: '', 
+      privated: '', 
+      userEmail: '',
+      vacationTypes: [
+        'cultural', 'beach', 'romantic', 'relax', 
+        'adventure', 'gastronomic', 'welfare', 'mountain'
+      ],
+      selectedTypes: []   
     };
   },
   methods: {
@@ -87,11 +115,17 @@ export default {
       this.$router.push('/groups/user');
     },
     async createGroup() {
+      if (!this.groupName || !this.userEmail || !this.audience || !this.privated) {
+        alert('All fields are required!');
+        return;
+      }
       try {
         const response = await axios.post('/api/groups/create', {
           name: this.groupName,
           audience: this.audience,
-          privated: this.privated
+          privated: this.privated,
+          email: this.userEmail,
+          type: this.selectedTypes[0]
         });
         this.$router.push('/groups');
       } catch (error) {
@@ -275,6 +309,12 @@ ul {
   margin: 5px;
   display: flex;
   justify-content: center;
+  align-items: center;
+}
+
+.customCheckBoxHolder2 {
+  display: flex;
+  flex-direction: column;
   align-items: center;
 }
 

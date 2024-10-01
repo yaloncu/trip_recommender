@@ -1,6 +1,6 @@
 <template>
   <div class="groups-container">
-    <button class="create-button" @click="createGroup">Create</button>
+    <button class="create-button" @click="createGroup">{{ $t('create') }}</button>
 
     <div class="profile-button-wrapper">
       <div class="profile-button-container">
@@ -12,23 +12,23 @@
       </div>
     </div>
 
-    <h1 class="main-title">Join a Group</h1>
+    <h1 class="main-title">{{ $t('joinAGroup') }}</h1>
 
     <div class="groups-content">
       <div v-if="groups.length">
-        <h2>Available Public Groups:</h2>
+        <h2>{{ $t('AvailablePublicGroups') }}</h2>
         <ul>
           <li v-for="group in groups" :key="group.name" class="group-item">
-            <span class="group-name">{{ group.name }} - Audience: {{ group.audience }}</span>
-            <button class="join-button" @click="viewGroupDetails(group.name)">View group</button>
+            <span class="group-name">{{ group.name }} - {{ $t('audience') }}: {{ group.audience }}</span>
+            <button class="join-button" @click="viewGroupDetails(group.name)">{{ $t('viewGroup') }}</button>
           </li>
         </ul>
       </div>
       <div v-else>
-        <p>No public groups available at the moment.</p>
+        <p>{{ $t('noGroupsAvailable') }}</p>
       </div>
     </div>
-    <button class="button" @click="joinSpecificGroup">Join an especific group</button>
+    <button class="button" @click="joinSpecificGroup">{{ $t('joinSpecificGroup') }}</button>
   </div>
 </template>
 

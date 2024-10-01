@@ -1,7 +1,7 @@
 <template>
   <div class="login-container">
     <div class="container">
-      <div class="heading">Login</div>
+      <div class="heading">{{ $t('login') }}</div>
       <form class="form" @submit.prevent="login">
         <input
           placeholder="E-mail"
@@ -12,14 +12,14 @@
           required
         />
         <input
-          placeholder="Password"
+          :placeholder="$t('password')"
           id="password"
           v-model="password"
           type="password"
           class="input"
           required
         />
-        <input value="Login" type="submit" class="login-button" />
+        <button type="submit" class="login-button">{{ $t('login') }}</button>
       </form>
     </div>
   </div>

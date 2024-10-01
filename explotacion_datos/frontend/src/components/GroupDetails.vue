@@ -1,15 +1,15 @@
 <template>
     <div class="group-details-container">
-      <h1>Group: {{ group.name }}</h1>
-      <p><strong>Audience:</strong> {{ group.audience }}</p>
-      <p><strong>Description:</strong> {{ group.description }}</p>
+      <h1>{{ $t('group') }} {{ group.name }}</h1>
+      <p><strong>{{ $t('audience') }}</strong> {{ group.audience }}</p>
+      <p><strong>{{ $t('description') }}</strong> {{ group.description }}</p>
       
       <div v-if="!isMember">
-        <input v-model="userEmail" placeholder="Enter your email" class="email-input" />
-        <button class="join-button" @click="joinGroup">Join Group</button>
+        <input v-model="userEmail" placeholder="{{ $t('enterYourEmail') }}" class="email-input" />
+        <button class="join-button" @click="joinGroup">{{ $t('joinAGroup') }}</button>
       </div>
       <div v-else>
-        <p>You are already a member of this group.</p>
+        <p>{{ $t('alreadyMember') }}</p>
       </div>
     </div>
   </template>

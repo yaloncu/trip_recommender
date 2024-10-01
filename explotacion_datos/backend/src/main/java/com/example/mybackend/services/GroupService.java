@@ -1,6 +1,7 @@
 package com.example.mybackend.services;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,17 +28,30 @@ public class GroupService {
         this.driver = driver;
     }
 
-    public void createGroup(String name, String audience, String privated, List<User> users) {
+    public void createGroup(String groupName, String email, String audience, String privated, boolean isClosed, String tripType) {
         try (Session session = driver.session()) {
             session.executeWrite(tx -> {
-                tx.run("CREATE (g:Group {name: $name, audience: $audience, privated: $privated})",
-                        Map.of("name", name, "audience", audience, "privated", privated));
-                
+                tx.run("CREATE (g:Group {name: $groupName, email: $email, audience: $audience, privated: $privated, isClosed: false, tripType: $tripType})", Map.of("groupName", groupName, "email", email, "audience", audience, "privated", privated, "isClosed", isClosed, "tripType", tripType));
+                tx.run("MATCH (u:User {email: $email}), (g:Group {name: $groupName}) " +
+                       "CREATE (u)-[:PERTENECE_A]->(g)",
+                       Map.of("email", email, "groupName", groupName));
                 return null;
             });
         } catch (Neo4jException e) {
-            e.printStackTrace();
-            throw e;
+            System.err.println("Error creando el grupo: " + e.getMessage());
+            throw new RuntimeException("Error creando el grupo: " + e.getMessage(), e);
+        }
+    }
+    
+    public void closeGroup(String groupName) {
+        try (Session session = driver.session()) {
+            session.executeWrite(tx -> {
+                tx.run("MATCH (g:Group {name: $groupName}) SET g.isClosed = true", 
+                        Map.of("groupName", groupName));
+                return null;
+            });
+        } catch (Neo4jException e) {
+            throw new RuntimeException("Error cerrando el grupo", e);
         }
     }
 
@@ -54,16 +68,14 @@ public class GroupService {
                     throw new RuntimeException("User with email " + userEmail + " not found.");
                 }
 
-                // Verificar si el grupo existe
                 Result groupResult = tx.run("MATCH (g:Group {name: $name}) RETURN g",
                         Map.of("name", groupName));
 
-                if (!groupResult.hasNext()) {
+                if (!groupResult.hasNext() && groupResult.next().get("closed").asBoolean()) {
                     throw new RuntimeException("Group with name " + groupName + " not found.");
                 }
 
 
-                // Unir al grupo
                 tx.run("MATCH (u:User {email: $email}) "+
                     "MATCH (g:Group {name: $name}) "+
                     "MERGE (u)-[r:PERTENECE_A]->(g) "+

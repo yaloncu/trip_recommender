@@ -1,24 +1,25 @@
 <template>
   <div class="user-container">
-    <button class="join-button" @click="joinGroup">Join</button>
-    <button class="create-button" @click="createGroup">Create</button>
+    <button class="join-button" @click="joinGroup">{{ $t('join') }}</button>
+    <button class="create-button" @click="createGroup">{{ $t('create') }}</button>
 
     <h1 class="main-title">Your groups</h1>
     <div class="card">
-      <input v-model="userEmail" type="email" placeholder="Enter your email" class="input email-input" />
-      <button @click="fetchUserGroups" class="create-group-button">Fetch groups</button>
+      <input v-model="userEmail" type="email" :placeholder="$t('enterYourEmail')" class="input email-input" />
+      <button @click="fetchUserGroups" class="create-group-button">{{ $t('fetchGroups') }}</button>
 
       <div v-if="groups.length">
         <ul>
           <li v-for="group in groups" :key="group.groupId" class="group-item">
-            {{ group.groupName }} - Preference: {{ group.preference || 'No preference' }}
-            <button @click="viewRecommendation(group.groupId)" class="recommend-button">See recomendation</button>
-            <button @click="leaveGroup(group.groupName)" class="leave-button">Leave group</button>
+            {{ group.groupName }} - {{ $t('preference') }}: {{ group.preference || 'No preference' }}
+            <button @click="viewRecommendation(group.groupId)" class="recommend-button">{{ $t('recomendation') }}</button>
+            <button @click="leaveGroup(group.groupName)" class="leave-button">{{ $t('leaveGroup') }}</button>
+            <button v-if="isAdmin(group.email)" @click="closeGroup(group.groupName)" class="close-button">{{ $t('closeGroup') }}</button>
           </li>
         </ul>
       </div>
       <div v-else>
-        <p>You don't belong to any group</p>
+        <p>{{ $t('notBelongGroup') }}</p>
       </div>
     </div>
   </div>
@@ -35,11 +36,25 @@ export default {
     };
   },
   methods: {
+    fetchGroups() {
+      axios.get('/api/groups')
+          .then(response => {
+              this.groups = response.data; 
+          })
+          .catch(error => {
+              console.error("Error fetching groups:", error);
+          });
+    },
     joinGroup() {
       this.$router.push('/groups');
     },
     createGroup() {
       this.$router.push('/groups/create');
+    },
+    isAdmin(groupEmail) {
+      console.log("Admin Email:", groupEmail);
+      console.log("User Email:", this.userEmail);
+      return groupEmail === this.userEmail;
     },
     async fetchUserGroups() {
       if (!this.userEmail) {
@@ -54,6 +69,19 @@ export default {
       } catch (error) {
         console.error('Error fetching groups:', error);
         alert('Error loading your groups.');
+      }
+    },
+    async closeGroup(groupName) {
+      if (!confirm(`Are you sure you want to close the group ${groupName}?`)) {
+        return;
+      }
+      try {
+        const response = await axios.put(`/api/groups/close/${groupName}`);
+        alert(response.data.message);
+        this.fetchUserGroups(); 
+      } catch (error) {
+        console.error('Error closing group:', error);
+        alert('Error al cerrar el grupo.');
       }
     },
     async viewRecommendation(groupId) {

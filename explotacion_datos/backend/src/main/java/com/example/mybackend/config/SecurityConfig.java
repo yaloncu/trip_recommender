@@ -8,12 +8,14 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
 import jakarta.annotation.PostConstruct;
 
 import org.springframework.web.cors.CorsConfigurationSource;
 
 import java.util.Arrays;
+import java.util.Locale;
 
 @Configuration
 @EnableWebSecurity
@@ -51,4 +53,5 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", configuration); // Aplicar configuración a todas las rutas
         return source;
     }
+
 }

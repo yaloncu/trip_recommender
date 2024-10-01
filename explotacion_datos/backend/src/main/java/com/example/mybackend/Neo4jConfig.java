@@ -1,5 +1,7 @@
 package com.example.mybackend;
 
+import java.util.Locale;
+
 import org.neo4j.driver.AuthTokens;
 import org.neo4j.driver.Driver;
 import org.neo4j.driver.GraphDatabase;
@@ -13,4 +15,5 @@ public class Neo4jConfig {
     public Driver neo4jDriver() {
         return GraphDatabase.driver("bolt://neo4j:7687", AuthTokens.basic("neo4j", "12345678"));
     }
+
 }

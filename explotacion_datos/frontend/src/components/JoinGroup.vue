@@ -1,32 +1,39 @@
 <template>
   <div class="join-container">
-    <button class="create-button" @click="back">Back</button>
+    <button class="create-button" @click="back">{{ $t('back') }}</button>
+    
+    <h1 class="main-title">{{ $t('joinAGroup') }}</h1>
+    
+    <div class="card">
+      <input 
+        v-model="groupName" 
+        type="text" 
+        :placeholder="$t('enterGroupName')"  
+        class="input name-group" 
+      />
+      <input 
+        v-model="email" 
+        type="email" 
+        :placeholder="$t('enterYourEmail')"  
+        class="input name-group" 
+      />
 
-    <h1>Join a Group</h1>
-    <form @submit.prevent="joinGroupWithPreferences">
       <div>
-        <label for="group-name">Group name:</label>
-        <input type="text" v-model="groupName" id="group-name" required />
+        <h3>{{ $t('selectType') }}</h3>
+        <div class="customCheckBoxHolder">
+          <label v-for="(type, index) in vacationTypes" :key="index">
+            <input 
+              type="checkbox" 
+              :value="type" 
+              v-model="selectedTypes" 
+            />
+            {{ $t(type) }}
+          </label>
+        </div>
       </div>
 
-      <div>
-        <label for="email">Your Email:</label>
-        <input type="email" v-model="email" id="email" required />
-      </div>
-
-      <div class="options">
-        <label v-for="type in vacationTypes" :key="type">
-          <input 
-            type="checkbox" 
-            :value="type" 
-            v-model="selectedTypes" 
-          />
-          {{ type }}
-        </label>
-      </div>
-
-      <button type="submit" class="join-button">Join Group</button>
-    </form>
+      <button @click="joinGroupWithPreferences" class="create-group-button">{{ $t('joinGroup') }}</button>
+    </div>
   </div>
 </template>
 
@@ -39,8 +46,8 @@ export default {
       groupName: '',  
       email: '',  
       vacationTypes: [
-        'Cultural', 'Playa', 'Romantica', 'Relax', 
-        'Aventura', 'Gastronómica', 'Bienestar', 'Montaña'
+        'cultural', 'beach', 'romantic', 'relax', 
+        'adventure', 'gastronomic', 'welfare', 'mountain'
       ],
       selectedTypes: []   
     };
@@ -51,7 +58,7 @@ export default {
     },
     async joinGroupWithPreferences() {
       if (this.selectedTypes.length === 0) {
-        alert('Please select at least one vacation type.');
+        alert('Por favor, selecciona al menos un tipo de vacaciones.');
         return;
       }
       try {
@@ -63,11 +70,11 @@ export default {
 
         this.$router.push('/groups'); 
       } catch (error) {
-        console.error('Error joining group:', error);
+        console.error('Error al unirse al grupo:', error);
         if (error.response) {
-          alert(`Failed to join group: ${error.response.data.message}`);
+          alert(`Error al unirse al grupo: ${error.response.data.message}`);
         } else {
-          alert('Failed to join group. Please try again.');
+          alert('Error al unirse al grupo. Por favor, intenta de nuevo.');
         }
       }
     }
@@ -77,6 +84,7 @@ export default {
 
 <style scoped>
 .join-container {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -87,41 +95,6 @@ export default {
   text-align: center;
 }
 
-form {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-}
-
-label {
-  margin-right: 10px;
-}
-
-input[type="text"],
-input[type="email"],
-input[type="number"] {
-  margin-top: 10px;
-  padding: 10px;
-  border-radius: 20px;
-  border: 2px solid #1abc9c; 
-  background-color: #34495e; 
-  color: white;
-  width: 100%;
-}
-
-input[type="text"]::placeholder,
-input[type="email"]::placeholder,
-input[type="number"]::placeholder {
-  color: rgb(170, 170, 170);
-}
-
-input[type="text"]:focus,
-input[type="email"]:focus,
-input[type="number"]:focus {
-  outline: none;
-  border: 2px solid #1abc9c; 
-}
 .create-button {
   position: absolute;
   top: 20px;
@@ -145,18 +118,96 @@ input[type="number"]:focus {
   transform: scale(0.95);
 }
 
-.join-button {
-  margin-top: 20px;
-  padding: 10px 20px;
-  background-color: #38a169; 
-  color: white;
-  border: none;
+.main-title {
+  color: #1abc9c;
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+.card {
+  max-width: 400px;
+  width: 100%;
+  background: #34495e;
   border-radius: 20px;
-  cursor: pointer;
+  padding: 30px 40px;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 20px;
+}
+
+.input {
+  width: 100%;
+  background: white;
+  border: none;
+  padding: 15px 20px;
+  border-radius: 20px;
+  margin-top: 15px;
+  box-shadow: #cff0ff 0px 10px 10px -5px;
+  border-inline: 2px solid transparent;
+  box-sizing: border-box;
+}
+
+.input:focus {
+  outline: none;
+  border-inline: 2px solid #1abc9c;
+}
+
+.create-group-button {
+  display: block;
+  width: 100%;
+  font-weight: bold;
+  background: linear-gradient(45deg, #16a085 0%, #1abc9c 100%);
+  color: white;
+  padding-block: 15px;
+  margin-top: 20px;
+  border-radius: 20px;
+  border: none;
   transition: all 0.2s ease-in-out;
 }
 
-.join-button:hover {
-  background-color: #2f855a; 
+.create-group-button:hover {
+  background: #1abc9c;
+  transform: scale(1.03);
+}
+
+.create-group-button:active {
+  transform: scale(0.95);
+}
+
+.customCheckBoxHolder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.customCheckBox {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 8px 15px;
+  border-radius: 8px;
+  background-color: rgba(0, 0, 0, 0.16);
+  transition: background-color 0.3s;
+}
+
+.customCheckBox:hover {
+  background-color: #2c2c2c;
+}
+
+.customCheckBoxInput {
+  display: none;
+}
+
+.customCheckBoxInput:checked + .customCheckBoxWrapper .customCheckBox {
+  background-color: #2d6737;
+  color: white;
+}
+
+.customCheckBoxInput:checked + .customCheckBoxWrapper .customCheckBox:hover {
+  background-color: #34723f;
+}
+
+.inner {
+  font-size: 16px;
+  font-weight: 700;
+  color: white;
 }
 </style>

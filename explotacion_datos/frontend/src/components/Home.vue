@@ -1,10 +1,22 @@
 <template>
   <div class="container">
+    <!-- Language Selector in the top-right corner -->
+    <div class="language-selector">
+      <span>{{ $t('lang.change') }}</span>:
+      <select id="locales" v-model="selectedLocale" @change="changeLocale">
+        <option value="en">{{ $t('lang.eng') }}</option>
+        <option value="fr">{{ $t('lang.fr') }}</option>
+        <option value="es">{{ $t('lang.es') }}</option>
+        <option value="de">{{ $t('lang.de') }}</option>
+      </select>
+    </div>
+
+    <!-- Welcome container -->
     <div class="welcome-container">
-      <div class="heading">Welcome</div>
+      <div class="heading">{{ $t('Welcome') }}</div>
       <div class="buttons">
-        <button class="login-button" @click="goToLogin">Login</button>
-        <button class="signup-button" @click="goToSignup">Sign Up</button>
+        <button class="login-button" @click="goToLogin">{{ $t('login') }}</button>
+        <button class="signup-button" @click="goToSignup">{{ $t('signup') }}</button>
       </div>
     </div>
   </div>
@@ -13,12 +25,22 @@
 <script>
 export default {
   name: "Home",
+  data() {
+    return {
+      selectedLocale: this.$i18n.locale // Locale actual
+    };
+  },
   methods: {
     goToLogin() {
       this.$router.push('/login');
     },
     goToSignup() {
       this.$router.push('/signup');
+    },
+    changeLocale() {
+      if (this.selectedLocale) {
+        this.$i18n.locale = this.selectedLocale; // Cambio de idioma
+      }
     }
   }
 }
@@ -33,6 +55,28 @@ export default {
   justify-content: center;
   align-items: center;
   background-color: #2c3e50; 
+  position: relative;
+}
+
+.language-selector {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  font-size: 16px;
+  color: #ecf0f1; 
+}
+
+.language-selector select {
+  padding: 5px;
+  border-radius: 5px;
+  border: 1px solid #1abc9c;
+  background-color: #34495e;
+  color: #ecf0f1;
+}
+
+.language-selector select:focus {
+  outline: none;
+  border-color: #1abc9c;
 }
 
 .welcome-container {
@@ -59,7 +103,7 @@ export default {
 
 .login-button, .signup-button {
   font-weight: 700;
-  background: linear-gradient(45deg, #16a085 0%, #1abc9c 100%); /* Verde lima */
+  background: linear-gradient(45deg, #16a085 0%, #1abc9c 100%);
   color: white;
   padding-block: 15px;
   width: 100px;
@@ -71,7 +115,7 @@ export default {
 }
 
 .login-button:hover, .signup-button:hover {
-  background: #1abc9c; 
+  background: #1abc9c;
   transform: scale(1.03);
 }
 
