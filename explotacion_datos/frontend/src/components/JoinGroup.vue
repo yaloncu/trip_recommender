@@ -23,9 +23,9 @@
         <div class="customCheckBoxHolder">
           <label v-for="(type, index) in vacationTypes" :key="index">
             <input 
-              type="checkbox" 
+              type="radio" 
               :value="type" 
-              v-model="selectedTypes" 
+              v-model="selectedType" 
             />
             {{ $t(type) }}
           </label>
@@ -49,7 +49,7 @@ export default {
         'cultural', 'beach', 'romantic', 'relax', 
         'adventure', 'gastronomic', 'welfare', 'mountain'
       ],
-      selectedTypes: []   
+      selectedType: ''
     };
   },
   methods: {
@@ -57,15 +57,11 @@ export default {
       this.$router.push('/groups');
     },
     async joinGroupWithPreferences() {
-      if (this.selectedTypes.length === 0) {
-        alert('Por favor, selecciona al menos un tipo de vacaciones.');
-        return;
-      }
       try {
         await axios.post('/api/groups/joinWithPreferences', {
           groupName: this.groupName,
           email: this.email,
-          preference: this.selectedTypes[0]
+          preference: this.selectedType
         });
 
         this.$router.push('/groups'); 

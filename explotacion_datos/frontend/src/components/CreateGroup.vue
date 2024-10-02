@@ -74,9 +74,9 @@
         <div class="customCheckBoxHolder2">
           <label v-for="(type, index) in vacationTypes" :key="index">
             <input 
-              type="checkbox" 
+              type="radio" 
               :value="type" 
-              v-model="selectedTypes" 
+              v-model="selectedType" 
             />
             {{ $t(type) }} 
           </label>
@@ -104,7 +104,7 @@ export default {
         'cultural', 'beach', 'romantic', 'relax', 
         'adventure', 'gastronomic', 'welfare', 'mountain'
       ],
-      selectedTypes: []   
+      selectedType: '' 
     };
   },
   methods: {
@@ -125,7 +125,7 @@ export default {
           audience: this.audience,
           privated: this.privated,
           email: this.userEmail,
-          type: this.selectedTypes[0]
+          type: this.selectedType
         });
         this.$router.push('/groups');
       } catch (error) {
