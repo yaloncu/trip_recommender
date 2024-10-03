@@ -9,6 +9,8 @@ services:
     ports:
       - "7687:7687"  # Bolt
       - "7474:7474"  # HTTP
+    volumes:
+      - neo4j_data:/data
     networks:
       - mynetwork
 
@@ -55,6 +57,7 @@ services:
 
 volumes:
   datos:
+  neo4j_data:
 
 networks:
   mynetwork:

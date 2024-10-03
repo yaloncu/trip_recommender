@@ -5,7 +5,7 @@
       <p><strong>{{ $t('description') }}</strong> {{ group.description }}</p>
       
       <div v-if="!isMember">
-        <input v-model="userEmail" placeholder="{{ $t('enterYourEmail') }}" class="email-input" />
+        <input v-model="userEmail" :placeholder="$t('enterYourEmail')" class="email-input" />
         <button class="join-button" @click="joinGroup">{{ $t('joinAGroup') }}</button>
       </div>
       <div v-else>

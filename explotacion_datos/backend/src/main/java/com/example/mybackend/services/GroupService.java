@@ -33,8 +33,9 @@ public class GroupService {
             session.executeWrite(tx -> {
                 tx.run("CREATE (g:Group {name: $groupName, email: $email, audience: $audience, privated: $privated, isClosed: false, tripType: $tripType})", Map.of("groupName", groupName, "email", email, "audience", audience, "privated", privated, "isClosed", isClosed, "tripType", tripType));
                 tx.run("MATCH (u:User {email: $email}), (g:Group {name: $groupName}) " +
-                       "CREATE (u)-[:PERTENECE_A]->(g)",
-                       Map.of("email", email, "groupName", groupName));
+                       "CREATE (u)-[r:PERTENECE_A]->(g)" +
+                       "SET r.preference = $preference",
+                       Map.of("email", email, "groupName", groupName, "preference", tripType));
                 return null;
             });
         } catch (Neo4jException e) {

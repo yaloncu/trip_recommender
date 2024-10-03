@@ -20,11 +20,11 @@ public class RecommendationController {
     }
 
     @GetMapping("/api/recommendations/{groupId}")
-    public ResponseEntity<List<String>> getRecommendations(@PathVariable Long groupId) {
+    public ResponseEntity<String> getRecommendations(@PathVariable Long groupId) {
         try {
             recommendationService.createGroupDestinationRecommendations(groupId);
-            List<String> recommendations = recommendationService.getRecommendations(groupId);
-            return ResponseEntity.ok(recommendations);
+            //List<String> recommendations = recommendationService.getRecommendations(groupId);
+            return ResponseEntity.ok("recommendations");
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);

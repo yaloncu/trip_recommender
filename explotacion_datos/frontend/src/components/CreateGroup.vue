@@ -101,8 +101,8 @@ export default {
       privated: '', 
       userEmail: '',
       vacationTypes: [
-        'cultural', 'beach', 'romantic', 'relax', 
-        'adventure', 'gastronomic', 'welfare', 'mountain'
+        'Cultural', 'Playa', 'Romántica', 'Relax', 
+        'Aventura', 'Gastronómica', 'Bienestar', 'Montaña'
       ],
       selectedType: '' 
     };

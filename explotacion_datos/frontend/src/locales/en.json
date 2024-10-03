@@ -42,12 +42,12 @@
   "audience": "Audience:",
   "description": "Description:",
   "alreadyMember": "You are already a member of this group.",
-  "beach": "Beach",
-  "cultural": "Cultural",
-  "romantic": "Romantic",
-  "relax": "Relax",
-  "adventure": "Adventure",
-  "gastronomic": "Gastronomic",
-  "welfare": "Welfare",
-  "mountain": "Mountain"
+  "Playa": "Beach",
+  "Cultural": "Cultural",
+  "Romántica": "Romantic",
+  "Relax": "Relax",
+  "Aventura": "Adventure",
+  "Gastronómica": "Gastronomic",
+  "Bienestar": "Welfare",
+  "Montaña": "Mountain"
 }

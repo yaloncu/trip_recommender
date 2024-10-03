@@ -25,9 +25,7 @@ public class RecommendationService {
                 Result result = tx.run(
                     "MATCH (g:Group)<-[r:PERTENECE_A]-(u:User) " +
                     "WHERE id(g) = $groupId " +
-                    "WITH u, g, r.preference AS travelType " +
-                    "RETURN travelType, count(*) AS frequency " +
-                    "ORDER BY frequency DESC LIMIT 1",
+                    "RETURN g.tripType",
                     Map.of("groupId", groupId)
                 );
     
@@ -44,7 +42,7 @@ public class RecommendationService {
                 "MATCH (g:Group)<-[:PERTENECE_A]-(u:User) " +
                 "MATCH (d:Destino) " +
                 "WHERE id(g) = $groupId AND $travelType IN d.tipo_vacacion " +
-                "AND ANY(a IN g.audience WHERE a IN d.publico_dirigido) " +
+                "AND g.audience IN d.publico_dirigido " +
                 "MERGE (g)-[:RECOMIENDA]->(d) " +
                 "RETURN d",
                 Map.of("groupId", groupId, "travelType", mostFrequentTravelType)
