@@ -39,10 +39,9 @@ public class RecommendationService {
 
               session.executeWrite(tx -> {
             Result destinationsResult = tx.run(
-                "MATCH (g:Group)<-[:PERTENECE_A]-(u:User) " +
+                "MATCH (g:Group)" +
                 "MATCH (d:Destino) " +
                 "WHERE id(g) = $groupId AND $travelType IN d.tipo_vacacion " +
-                "AND g.audience IN d.publico_dirigido " +
                 "MERGE (g)-[:RECOMIENDA]->(d) " +
                 "RETURN d",
                 Map.of("groupId", groupId, "travelType", mostFrequentTravelType)

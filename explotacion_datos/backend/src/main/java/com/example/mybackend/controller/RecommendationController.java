@@ -23,7 +23,7 @@ public class RecommendationController {
     public ResponseEntity<String> getRecommendations(@PathVariable Long groupId) {
         try {
             recommendationService.createGroupDestinationRecommendations(groupId);
-            //List<String> recommendations = recommendationService.getRecommendations(groupId);
+            List<String> recommendations = recommendationService.getRecommendations(groupId);
             return ResponseEntity.ok("recommendations");
         } catch (Exception e) {
             e.printStackTrace();

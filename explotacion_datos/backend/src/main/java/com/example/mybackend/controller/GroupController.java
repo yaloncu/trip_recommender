@@ -11,8 +11,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import org.neo4j.driver.exceptions.Neo4jException;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +23,8 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/groups")
 public class GroupController {
+
+    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(GroupController.class);
 
     @Autowired
     private GroupService groupService;
@@ -94,8 +98,13 @@ public class GroupController {
         if (email == null || email.isEmpty()) {
             throw new IllegalArgumentException("Email is required");
         }
-        List<Map<String, Object>> groups = groupService.getUserGroups(email);
-        return ResponseEntity.ok(groups);
+        try {
+            List<Map<String, Object>> groups = groupService.getUserGroups(email);
+            return ResponseEntity.ok(groups);
+        } catch (Exception e) {
+            logger.error("Error retrieving groups for email: {}", email, e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
 
 
