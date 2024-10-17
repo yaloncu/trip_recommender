@@ -4,7 +4,6 @@ import com.example.mybackend.model.Group;
 import com.example.mybackend.model.User;
 import com.example.mybackend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 
@@ -13,11 +12,8 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
-    private PasswordEncoder passwordEncoder;
-
 
     public User createUser(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword())); // Codificar la contraseña
         return userRepository.save(user);
     }
     

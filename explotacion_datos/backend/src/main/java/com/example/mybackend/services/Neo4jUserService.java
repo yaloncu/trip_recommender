@@ -6,6 +6,8 @@ import java.util.Map;
 
 import org.neo4j.driver.Driver;
 import org.neo4j.driver.Session;
+import org.neo4j.driver.Transaction;
+import org.neo4j.driver.TransactionWork;
 import org.neo4j.driver.Result;
 import org.neo4j.driver.exceptions.Neo4jException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,13 +16,11 @@ import org.springframework.stereotype.Service;
 import com.example.mybackend.model.User;
 import com.example.mybackend.model.Group;
 
+
 @Service
 public class Neo4jUserService {
 
     private final Driver driver;
-
-    // Contador estático para ID de usuario
-    private static long userIdCounter = 0;
 
     @Autowired
     public Neo4jUserService(Driver driver) {
@@ -30,36 +30,34 @@ public class Neo4jUserService {
     public void createUser(String name, String email, String password) {
         try (Session session = driver.session()) {
             session.executeWrite(tx -> {
-                long userId = ++userIdCounter; // Incrementar el contador y asignar ID
-                tx.run("CREATE (u:User {userId: $userId, name: $name, email: $email, password: $password})",
-                        Map.of("userId", userId, "name", name, "email", email, "password", password));
+                tx.run("CREATE (u:User {name: $name, email: $email, password: $password}) RETURN u",
+                        Map.of("name", name, "email", email, "password", password));
                 return null;
             });
         } catch (Neo4jException e) {
             e.printStackTrace();
-            throw new RuntimeException("Error al crear el usuario", e);
         }
     }
 
     public void addUserToGroup(String email, String groupName) {
         try (Session session = driver.session()) {
             session.executeWrite(tx -> {
-                tx.run("MATCH (u:User {email: $email}), (g:Group {name: $groupName}) " +
+                tx.run("MATCH (u:User {email: $email}) " +
+                       "MATCH (g:Group {name: $groupName}) " +
                        "MERGE (u)-[:PERTENECE_A]->(g)",
                        Map.of("email", email, "groupName", groupName));
                 return null;
             });
         } catch (Neo4jException e) {
             e.printStackTrace();
-            throw new RuntimeException("Error al agregar usuario al grupo", e);
         }
     }
 
-    public boolean validateUser(String email, String password) {
-        try (Session session = driver.session()) {
-            return session.executeRead(tx -> {
+    public boolean validateUser(String email, String password){
+        try (Session session = driver.session()){
+            return session.executeRead(tx ->{
                 Result result = tx.run("MATCH (u:User {email: $email, password: $password}) RETURN COUNT(u) > 0 AS userExists",
-                        Map.of("email", email, "password", password));
+                Map.of("email", email, "password", password));
                 return result.single().get("userExists").asBoolean();
             });
         } catch (Neo4jException e) {
@@ -67,12 +65,12 @@ public class Neo4jUserService {
             return false;
         }
     }
-
+    
     public User getUserByEmail(String email) {
         try (Session session = driver.session()) {
             return session.executeRead(tx -> {
                 Result result = tx.run("MATCH (u:User {email: $email}) RETURN u",
-                        Map.of("email", email));
+                                        Map.of("email", email));
                 if (result.hasNext()) {
                     var record = result.next();
                     var node = record.get("u").asNode();
@@ -94,8 +92,10 @@ public class Neo4jUserService {
     public List<Group> getUserGroups(String email) {
         try (Session session = driver.session()) {
             return session.executeRead(tx -> {
-                Result result = tx.run("MATCH (u:User {email: $email})-[:PERTENECE_A]->(g:Group) RETURN g",
-                        Map.of("email", email));
+                Result result = tx.run(
+                    "MATCH (u:User {email: $email})-[:PERTENECE_A]->(g:Group) RETURN g",
+                    Map.of("email", email)
+                );
 
                 List<Group> groups = new ArrayList<>();
                 while (result.hasNext()) {
@@ -110,7 +110,7 @@ public class Neo4jUserService {
             });
         } catch (Neo4jException e) {
             e.printStackTrace();
-            return new ArrayList<>(); // Retorna una lista vacía en caso de error
+            return new ArrayList<>();
         }
     }
 }

@@ -21,42 +21,21 @@ public class RecommendationService {
 
     public void createGroupDestinationRecommendations(Long groupId) {
         try (Session session = driver.session()) {
-            String mostFrequentTravelType = session.executeRead(tx -> {
-                Result result = tx.run(
-                    "MATCH (g:Group)<-[r:PERTENECE_A]-(u:User) " +
-                    "WHERE id(g) = $groupId " +
-                    "RETURN g.tripType",
+            session.executeWrite(tx -> {
+                tx.run(
+                    "MATCH (g:Group) " +
+                    "MATCH (d:Destino) " +
+                    "WHERE id(g) = $groupId AND g.tripType IN d.tipo_vacacion " +
+                    "AND g.audience IN d.publico_dirigido " +
+                    "MERGE (g)-[:RECOMIENDA]->(d) ",
                     Map.of("groupId", groupId)
                 );
-    
-                if (!result.hasNext()) {
-                    throw new RuntimeException("No travel type found for group with ID " + groupId);
-                }
-    
-                return result.next().get("travelType").asString();
+                return null;
             });
-
-
-              session.executeWrite(tx -> {
-            Result destinationsResult = tx.run(
-                "MATCH (g:Group)" +
-                "MATCH (d:Destino) " +
-                "WHERE id(g) = $groupId AND $travelType IN d.tipo_vacacion " +
-                "MERGE (g)-[:RECOMIENDA]->(d) " +
-                "RETURN d",
-                Map.of("groupId", groupId, "travelType", mostFrequentTravelType)
-            );
-
-            if (!destinationsResult.hasNext()) {
-                throw new RuntimeException("No destinations found for group with ID " + groupId + " and travel type " + mostFrequentTravelType);
-            }
-
-            return null;
-        });
-    } catch (Neo4jException e) {
-        throw new RuntimeException("Error creating recommendations between group and destinations", e);
+        } catch (Neo4jException e) {
+            throw new RuntimeException("Error creating recommendations between group and destinations", e);
+        }
     }
-}
 
     public List<String> getRecommendations(Long groupId) {
         try (Session session = driver.session()) {
