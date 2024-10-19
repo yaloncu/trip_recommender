@@ -88,9 +88,11 @@ export default {
       try {
         const response = await axios.get(`/api/recommendations/${groupId}`);
         const recommendations = response.data;
-
         if (Array.isArray(recommendations) && recommendations.length > 0) {
-          alert(`Recomendaciones: ${recommendations.join(', ')}`);
+          this.$router.push({ 
+            path: `/groups/${groupId}/recommendations`, 
+            query: { recommendations: JSON.stringify(recommendations) } 
+          });
         } else {
           alert('No hay recomendaciones disponibles.');
         }

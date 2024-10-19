@@ -28,14 +28,14 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.disable()) // Desactivar CSRF si no es necesario
+            .csrf(csrf -> csrf.disable()) 
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/login", "/api/signup","/api/groups/create", "api/groups/joinWithPreferences", "/api/recommendations/**").permitAll()
                 .anyRequest().permitAll() 
             )
-            .httpBasic(httpBasic -> httpBasic.disable()) // Desactivar autenticación básica
-            .formLogin(formLogin -> formLogin.disable()) // Desactivar formulario de login
-            .cors(cors -> cors.configurationSource(corsConfigurationSource())); // Configuración CORS
+            .httpBasic(httpBasic -> httpBasic.disable()) 
+            .formLogin(formLogin -> formLogin.disable()) 
+            .cors(cors -> cors.configurationSource(corsConfigurationSource())); 
         return http.build();
     }
 
