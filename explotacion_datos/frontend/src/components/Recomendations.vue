@@ -6,12 +6,15 @@
       <div class="cards-container">
         <div class="card" v-for="(city, index) in recommendations" :key="index">
             <h2>{{ city }}</h2>
+            <button class="vote-button" @click="voteForCity(city)">{{ $t('vote') }}</button>
         </div>
       </div>
     </div>
 </template>
   
   <script>
+  import axios from 'axios';
+
   export default {
     data() {
       return {
@@ -20,7 +23,23 @@
     },
     methods: {
       goBack() {
-        this.$router.push('/groups');
+        this.$router.push('/groups/user');
+      },
+      async voteForCity(city) {
+        const groupId = this.$route.params.groupId;
+        const userId = this.$route.params.userId;
+        
+        try {
+            await axios.post('/api/vote', {
+            groupId,
+            userId,
+            city
+            });
+            alert(`Votaste por ${city}!`);
+        } catch (error) {
+            console.error('Error al votar:', error.response ? error.response.data : error.message || error);
+            alert('Error al votar, intenta nuevamente.');
+        }
       }
     },
     mounted() {
@@ -83,5 +102,17 @@
 }
 .back-button:hover {
   transform: scale(1.03);
+}
+
+.vote-button {
+  background: #38a169;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.vote-button:hover {
+  background: #2f855a;
 }
 </style>

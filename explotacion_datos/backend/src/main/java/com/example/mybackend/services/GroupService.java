@@ -31,7 +31,7 @@ public class GroupService {
     public void createGroup(String groupName, String email, String audience, String privated, boolean isClosed, String tripType) {
         try (Session session = driver.session()) {
             session.executeWrite(tx -> {
-                tx.run("CREATE (g:Group {name: $groupName, email: $email, audience: $audience, privated: $privated, isClosed: false, tripType: $tripType})", Map.of("groupName", groupName, "email", email, "audience", audience, "privated", privated, "isClosed", isClosed, "tripType", tripType));
+                tx.run("CREATE (g:Group {name: $groupName, email: $email, audience: $audience, privated: $privated, isClosed: false, isClosedVoting: false, tripType: $tripType})", Map.of("groupName", groupName, "email", email, "audience", audience, "privated", privated, "isClosed", isClosed, "tripType", tripType));
                 tx.run("MATCH (u:User {email: $email}), (g:Group {name: $groupName}) " +
                        "CREATE (u)-[r:PERTENECE_A]->(g)" +
                        "SET r.preference = $preference",
@@ -98,7 +98,7 @@ public class GroupService {
             return session.executeRead(tx -> {
                 var result = tx.run(
                     "MATCH (u:User {email: $email})-[r:PERTENECE_A]->(g:Group) " +
-                    "RETURN g.name AS groupName, r.preference AS preference, id(g) AS groupId", // También obtenemos el ID del grupo
+                    "RETURN g.name AS groupName, g.email AS email, g.isClosed AS isClosed, r.preference AS preference, id(g) AS groupId", // También obtenemos el ID del grupo
                     Map.of("email", email)
                 );
 
@@ -109,6 +109,8 @@ public class GroupService {
                     groupData.put("groupName", record.get("groupName").asString());
                     groupData.put("preference", record.containsKey("preference") ? record.get("preference").asString() : "No preference");
                     groupData.put("groupId", record.get("groupId").asLong());
+                    groupData.put("email", record.get("email").asString());
+                    groupData.put("isClosed", record.get("isClosed").asBoolean());
                     groups.add(groupData);
                 }
 
@@ -151,7 +153,7 @@ public class GroupService {
     public List<Group> getPublicGroups() {
         try (Session session = driver.session()) {
             return session.executeRead(tx -> {
-                var result = tx.run("MATCH (g:Group {privated: 'public'}) RETURN g");
+                var result = tx.run("MATCH (g:Group {privated: 'public', isClosed: false}) RETURN g");
                 List<Group> publicGroups = new ArrayList<>();
                 while (result.hasNext()) {
                     var record = result.next();

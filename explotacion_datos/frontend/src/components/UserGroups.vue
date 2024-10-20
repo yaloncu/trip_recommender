@@ -12,9 +12,10 @@
         <ul>
           <li v-for="group in groups" :key="group.groupId" class="group-item">
             {{ group.groupName }} - {{ $t('preference') }}: {{ group.preference || 'No preference' }}
-            <button @click="viewRecommendation(group.groupId)" class="recommend-button">{{ $t('recomendation') }}</button>
+            <button v-if="group.isClosed && !group.isClosedVoting" @click="viewRecommendation(group.groupId)" class="recommend-button">{{ $t('recomendation') }}</button>
+            <button v-if="isAdmin(group.email) && !group.isClosed"  @click="closeGroup(group.groupName)" class="close-button">{{ $t('closeGroup') }}</button>
+            <button v-if="isAdmin(group.email) && group.isClosed && !group.isClosedVoting" @click="closeVoting(group.groupId)" class="close-button">{{ $t('closeVoting') }}</button>
             <button @click="leaveGroup(group.groupName)" class="leave-button">{{ $t('leaveGroup') }}</button>
-            <button v-if="isAdmin(group.email)" @click="closeGroup(group.groupName)" class="close-button">{{ $t('closeGroup') }}</button>
           </li>
         </ul>
       </div>
@@ -90,8 +91,8 @@ export default {
         const recommendations = response.data;
         if (Array.isArray(recommendations) && recommendations.length > 0) {
           this.$router.push({ 
-            path: `/groups/${groupId}/recommendations`, 
-            query: { recommendations: JSON.stringify(recommendations) } 
+            path: `/groups/${groupId}/recommendations/${this.userEmail}`, 
+            query: { recommendations: JSON.stringify(recommendations)} 
           });
         } else {
           alert('No hay recomendaciones disponibles.');
@@ -99,6 +100,19 @@ export default {
       } catch (error) {
         console.error('Error fetching recommendations:', error);
         alert('Error al obtener las recomendaciones.');
+      }
+    },
+    async closeVoting(groupId) {
+      if (!confirm(`¿Estás seguro de que deseas cerrar la votación para el grupo con ID ${groupId}?`)) {
+        return;
+      }
+      try {
+        const response = await axios.post(`/api/groups/closeVoting/${groupId}`);
+        alert(response.data.message);
+        this.fetchUserGroups(); 
+      } catch (error) {
+        console.error('Error cerrando la votación:', error);
+        alert('Error al cerrar la votación.');
       }
     },
     async leaveGroup(groupName) {
@@ -252,6 +266,20 @@ ul {
 }
 
 .recommend-button:hover {
+  background-color: #2f855a;
+}
+
+.close-button {
+  margin-left: 10px;
+  padding: 5px 10px;
+  background-color: #38a169;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+.close-button:hover {
   background-color: #2f855a;
 }
 

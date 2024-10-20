@@ -30,7 +30,7 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable()) 
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/login", "/api/signup","/api/groups/create", "api/groups/joinWithPreferences", "/api/recommendations/**").permitAll()
+                .requestMatchers("/api/login", "/api/signup","/api/groups/create", "api/groups/joinWithPreferences", "/api/recommendations/**", "/api/vote").permitAll()
                 .anyRequest().permitAll() 
             )
             .httpBasic(httpBasic -> httpBasic.disable()) 

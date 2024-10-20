@@ -56,7 +56,7 @@ const routes = [
     component: GroupDetails
   },
   {
-    path: '/groups/:groupId/recommendations',
+    path: '/groups/:groupId/recommendations/:userId',
     name: 'Recommendations',
     component: Recommendations
   }

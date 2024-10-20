@@ -19,6 +19,7 @@ public class Group {
     private String audience;
     private String email;
     private boolean isClosed;
+    private boolean isClosedVoting;
     private String type;
 
     @Relationship(type = "PERTENECE_A", direction = Relationship.Direction.INCOMING)
@@ -65,6 +66,14 @@ public class Group {
 
     public boolean isClosed() {
         return isClosed;
+    }
+
+    public void setClosedVoting(boolean isClosed) {
+        this.isClosedVoting = isClosed;
+    }
+
+    public boolean isClosedVoting() {
+        return isClosedVoting;
     }
 
     public void setClosed(boolean isClosed) {
