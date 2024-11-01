@@ -5,6 +5,7 @@ import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.GeneratedValue;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +22,8 @@ public class Group {
     private boolean isClosed;
     private boolean isClosedVoting;
     private String type;
+    private LocalDate departureDate;
+    private LocalDate returnDate;
 
     @Relationship(type = "PERTENECE_A", direction = Relationship.Direction.INCOMING)
     private List<User> users = new ArrayList<>();
@@ -102,6 +105,22 @@ public class Group {
 
     public void setType(String type) {
         this.type = type; 
+    }
+
+    public LocalDate getDepartureDate() {
+        return departureDate;
+    }
+
+    public void setDepartureDate(LocalDate deparDate) {
+        this.departureDate = deparDate;
+    }
+
+    public LocalDate getReturnDate() {
+        return returnDate;
+    }
+
+    public void setReturnDate(LocalDate retrunDate) {
+        this.returnDate = retrunDate;
     }
     
     public void addUser(User user) {

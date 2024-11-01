@@ -1,7 +1,11 @@
 package com.example.mybackend.services;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +17,7 @@ import org.neo4j.driver.TransactionWork;
 import org.neo4j.driver.Result;
 import org.neo4j.driver.exceptions.Neo4jException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
 import com.example.mybackend.model.Group;
@@ -28,10 +33,10 @@ public class GroupService {
         this.driver = driver;
     }
 
-    public void createGroup(String groupName, String email, String audience, String privated, boolean isClosed, String tripType) {
+    public void createGroup(String groupName, String email, String audience, String privated, boolean isClosed, String tripType, LocalDate departureDate, LocalDate returnDate) {
         try (Session session = driver.session()) {
             session.executeWrite(tx -> {
-                tx.run("CREATE (g:Group {name: $groupName, email: $email, audience: $audience, privated: $privated, isClosed: false, isClosedVoting: false, tripType: $tripType})", Map.of("groupName", groupName, "email", email, "audience", audience, "privated", privated, "isClosed", isClosed, "tripType", tripType));
+                tx.run("CREATE (g:Group {name: $groupName, email: $email, audience: $audience, privated: $privated, isClosed: false, isClosedVoting: false, tripType: $tripType, departureDate: $departureDate, returnDate: $returnDate})", Map.of("groupName", groupName, "email", email, "audience", audience, "privated", privated, "isClosed", isClosed, "tripType", tripType, "departureDate", departureDate, "returnDate", returnDate));
                 tx.run("MATCH (u:User {email: $email}), (g:Group {name: $groupName}) " +
                        "CREATE (u)-[r:PERTENECE_A]->(g)" +
                        "SET r.preference = $preference",
@@ -53,6 +58,20 @@ public class GroupService {
             });
         } catch (Neo4jException e) {
             throw new RuntimeException("Error cerrando el grupo", e);
+        }
+    }
+
+    public void closeVoting(String groupName) {
+        try (Session session = driver.session()) {
+            session.executeWrite(tx -> {
+                tx.run(
+                    "MATCH (g:Group {name: $groupName}) SET g.isVotingClosed = true", 
+                    Map.of("groupName", groupName)
+                );
+                return null;
+            });
+        } catch (Neo4jException e) {
+            throw new RuntimeException("Error cerrando la votación", e);
         }
     }
 
@@ -138,7 +157,13 @@ public class GroupService {
                     group.setName(groupNode.get("name").asString());
                     group.setAudience(groupNode.get("audience").asString());
                     group.setPrivated(groupNode.get("privated").asString());
-    
+                    
+                    LocalDate departureDate = groupNode.get("departureDate").asLocalDate();
+                    LocalDate arrivalDate = groupNode.get("returnDate").asLocalDate();
+                    
+                    group.setDepartureDate(departureDate);
+                    group.setReturnDate(arrivalDate);
+            
                     return group;
                 } else {
                     return null; 

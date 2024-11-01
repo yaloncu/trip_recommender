@@ -6,6 +6,8 @@
       
       <div v-if="!isMember">
         <input v-model="userEmail" :placeholder="$t('enterYourEmail')" class="email-input" />
+        <p><strong>{{ $t('departureDate') }}</strong> {{ formattedDepartureDate }}</p>
+        <p><strong>{{ $t('returnDate') }}</strong> {{ formattedReturnDate }}</p>
         <button class="join-button" @click="joinGroup">{{ $t('joinAGroup') }}</button>
       </div>
       <div v-else>
@@ -24,6 +26,14 @@
         userEmail: '',
         isMember: false
       };
+    },
+    computed: {
+      formattedDepartureDate() {
+        return this.group.departureDate ? new Date(this.group.departureDate).toLocaleDateString() : '';
+      },
+      formattedReturnDate() {
+        return this.group.returnDate ? new Date(this.group.returnDate).toLocaleDateString() : '';
+      }
     },
     methods: {
       async fetchGroupDetails() {

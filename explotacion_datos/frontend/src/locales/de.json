@@ -50,5 +50,7 @@
   "Gastronómica": "Gastronomisch",
   "Bienestar": "Wohlbefinden",
   "Montaña": "Berg",
-  "recommendationsForGroup": "Stadt Empfehlungen"
+  "recommendationsForGroup": "Stadt Empfehlungen",
+  "departureDate": "Abreisedatum",
+  "returnDate": "Rückgabedatum"
 }

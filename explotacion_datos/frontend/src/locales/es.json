@@ -50,5 +50,7 @@
   "Gastronómica": "Gastronómica",
   "Bienestar": "Bienestar",
   "Montaña": "Montaña",
-  "recommendationsForGroup": "Recomendaciones de Ciudades"
+  "recommendationsForGroup": "Recomendaciones de Ciudades",
+  "departureDate": "Fecha de salida",
+  "returnDate": "Fecha de regreso"
 }

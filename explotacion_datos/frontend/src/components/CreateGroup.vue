@@ -83,6 +83,14 @@
         </div>
       </div>
 
+      <div v-if="privated === 'public'">
+        <label>{{ $t('departureDate') }}</label>
+        <input type="date" v-model="departureDate" class="input date-group" />
+
+        <label>{{ $t('returnDate') }}</label>
+        <input type="date" v-model="returnDate" class="input date-group" />
+      </div>
+
         <button @click="createGroup" class="create-group-button">{{ $t('createTheGroup') }}</button>
 
 
@@ -104,7 +112,10 @@ export default {
         'Cultural', 'Playa', 'Romántica', 'Relax', 
         'Aventura', 'Gastronómica', 'Bienestar', 'Montaña'
       ],
-      selectedType: '' 
+      selectedType: '' ,
+      departureDate: new Date().toISOString().slice(0, 10), 
+      returnDate: new Date().toISOString().slice(0, 10) 
+
     };
   },
   methods: {
@@ -125,7 +136,9 @@ export default {
           audience: this.audience,
           privated: this.privated,
           email: this.userEmail,
-          type: this.selectedType
+          type: this.selectedType,
+          departureDate: this.departureDate,
+          returnDate: this.returnDate
         });
         this.$router.push('/groups');
       } catch (error) {

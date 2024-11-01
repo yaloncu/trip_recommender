@@ -81,21 +81,24 @@ public class RecommendationService {
         }
     }
 
-    public void closeVoting(Long groupId) {
+    public String getFinalDestination(Long groupId) {
         try (Session session = driver.session()) {
-            session.executeWrite(tx -> {
-                tx.run(
-                    "MATCH (g:Group) " +
+            return session.executeRead(tx -> {
+                var result = tx.run(
+                    "MATCH (g:Group)-[:EN_VOTO]->(v:Vote)<-[:VOTADO_EN]-(d:Destino) " +
                     "WHERE id(g)=$groupId " +
-                    "SET g.isVotingClosed = true", 
+                    "RETURN d.nombre_destino AS destination, COUNT(v) AS votes " +
+                    "ORDER BY votes DESC LIMIT 1", 
                     Map.of("groupId", groupId)
                 );
-                return null;
+                var record = result.single();
+                return record.get("destination").asString();
             });
         } catch (Neo4jException e) {
-            throw new RuntimeException("Error al cerrar la votación", e);
+            throw new RuntimeException("Error al obtener el destino final", e);
         }
     }
+    
     
 }
 

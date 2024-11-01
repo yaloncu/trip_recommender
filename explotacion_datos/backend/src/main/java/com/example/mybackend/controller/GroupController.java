@@ -7,6 +7,7 @@ import com.example.mybackend.services.GroupService;
 import com.example.mybackend.services.Neo4jUserService;
 import com.example.mybackend.services.UserService;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.Map;
 
 import org.neo4j.driver.exceptions.Neo4jException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,7 +34,7 @@ public class GroupController {
     @PostMapping("/create")
     public ResponseEntity<Map<String, String>> createGroup(@RequestBody Group group) {
         try {
-            groupService.createGroup(group.getName(), group.getEmail(), group.getAudience(), group.getPrivated(), group.isClosed(), group.getType());
+            groupService.createGroup(group.getName(), group.getEmail(), group.getAudience(), group.getPrivated(), group.isClosed(), group.getType(), group.getDepartureDate(), group.getReturnDate());
             Map<String, String> response = new HashMap<>();
             response.put("message", "Group created successfully");
             return ResponseEntity.ok(response);
@@ -58,6 +60,16 @@ public class GroupController {
             errorResponse.put("error", "Failed to close group");
             errorResponse.put("message", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
+    }
+
+    @PutMapping("/closeVoting/{name}")
+    public ResponseEntity<String> closeVoting(@PathVariable String groupName) {
+        try {
+            groupService.closeVoting(groupName); 
+            return ResponseEntity.ok("Votación cerrada con éxito.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al cerrar la votación.");
         }
     }
     

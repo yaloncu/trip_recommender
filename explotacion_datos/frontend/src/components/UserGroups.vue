@@ -13,9 +13,12 @@
           <li v-for="group in groups" :key="group.groupId" class="group-item">
             {{ group.groupName }} - {{ $t('preference') }}: {{ group.preference || 'No preference' }}
             <button v-if="group.isClosed && !group.isClosedVoting" @click="viewRecommendation(group.groupId)" class="recommend-button">{{ $t('recomendation') }}</button>
+            <p>{{ $t('departureDate') }}: {{ group.departureDate }}</p> 
+            <p>{{ $t('arrivalDate') }}: {{ group.arrivalDate }}</p> 
             <button v-if="isAdmin(group.email) && !group.isClosed"  @click="closeGroup(group.groupName)" class="close-button">{{ $t('closeGroup') }}</button>
-            <button v-if="isAdmin(group.email) && group.isClosed && !group.isClosedVoting" @click="closeVoting(group.groupId)" class="close-button">{{ $t('closeVoting') }}</button>
+            <button v-if="isAdmin(group.email) && group.isClosed && !group.isClosedVoting" @click="closeVoting(group.groupName)" class="close-button">{{ $t('closeVoting') }}</button>
             <button @click="leaveGroup(group.groupName)" class="leave-button">{{ $t('leaveGroup') }}</button>
+            <button v-if="group.isVotingClosed" @click="viewFinalDestination(group.groupId)" class="final-destination-button">{{ $t('viewFinalDestination') }}</button>
           </li>
         </ul>
       </div>
@@ -72,19 +75,6 @@ export default {
         alert('Error loading your groups.');
       }
     },
-    async closeGroup(groupName) {
-      if (!confirm(`Are you sure you want to close the group ${groupName}?`)) {
-        return;
-      }
-      try {
-        const response = await axios.put(`/api/groups/close/${groupName}`);
-        alert(response.data.message);
-        this.fetchUserGroups(); 
-      } catch (error) {
-        console.error('Error closing group:', error);
-        alert('Error al cerrar el grupo.');
-      }
-    },
     async viewRecommendation(groupId) {
       try {
         const response = await axios.get(`/api/recommendations/${groupId}`);
@@ -102,17 +92,45 @@ export default {
         alert('Error al obtener las recomendaciones.');
       }
     },
-    async closeVoting(groupId) {
-      if (!confirm(`¿Estás seguro de que deseas cerrar la votación para el grupo con ID ${groupId}?`)) {
+    async closeGroup(groupName) {
+      if (!confirm(`Are you sure you want to close the group ${groupName}?`)) {
         return;
       }
       try {
-        const response = await axios.post(`/api/groups/closeVoting/${groupId}`);
+        const response = await axios.put(`/api/groups/close/${groupName}`);
         alert(response.data.message);
         this.fetchUserGroups(); 
       } catch (error) {
-        console.error('Error cerrando la votación:', error);
+        console.error('Error closing group:', error);
+        alert('Error al cerrar el grupo.');
+      }
+    },
+    async closeVoting(groupName) {
+      if (!confirm(`Are you sure you want to close voting for the group ${groupName}?`)) {
+        return;
+      }
+      try {
+        const response = await axios.put(`/api/groups/closeVoting/${groupName}`);
+        alert(response.data.message);
+        this.fetchUserGroups(); 
+      } catch (error) {
+        console.error('Error closing voting:', error);
         alert('Error al cerrar la votación.');
+      }
+    },
+    async viewFinalDestination(groupId) {
+      try {
+        const response = await axios.get(`/api/groups/${groupId}/finalDestination`);
+        const finalDestination = response.data.destination;
+
+        if (finalDestination) {
+          alert(`El destino final es: ${finalDestination}`);
+        } else {
+          alert('No hay un destino final disponible aún.');
+        }
+      } catch (error) {
+        console.error('Error al obtener el destino final:', error);
+        alert('Error al obtener el destino final.');
       }
     },
     async leaveGroup(groupName) {

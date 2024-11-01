@@ -65,15 +65,4 @@ public class UserController {
             return ResponseEntity.noContent().build();
         }
     }
-
-/*    @PostMapping("/{email}/groups/{groupName}")
-    public ResponseEntity<Void> addUserToGroup(@PathVariable String email, @PathVariable String groupName) {
-        User user = userService.getUserByEmail(email);
-        Group group = groupService.getGroupByName(groupName);
-        if (user != null && group != null) {
-            userService.addUserToGroup(user, group);
-            return ResponseEntity.ok().build();
-        }
-        return ResponseEntity.notFound().build();
-    }*/
 }

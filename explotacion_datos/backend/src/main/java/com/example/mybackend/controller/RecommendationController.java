@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.mybackend.services.RecommendationService;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
@@ -35,16 +37,21 @@ public class RecommendationController {
         }
     }
 
-    @PostMapping("/groups/closeVoting/{groupId}")
-    public ResponseEntity<String> closeVoting(@PathVariable Long groupId) {
+    @GetMapping("/groups/{groupId}/finalDestination")
+    public ResponseEntity<Map<String, String>> getFinalDestination(@PathVariable Long groupId) {
         try {
-            recommendationService.closeVoting(groupId); 
-            return ResponseEntity.ok("Votación cerrada con éxito.");
+            String finalDestination = recommendationService.getFinalDestination(groupId);
+            if (finalDestination != null) {
+                Map<String, String> response = new HashMap<>();
+                response.put("destination", finalDestination);
+                return ResponseEntity.ok(response);
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            }
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al cerrar la votación.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
-
 
     @PostMapping("/vote")
     public ResponseEntity<String> voteForCity(@RequestBody VoteRequest voteRequest) {
