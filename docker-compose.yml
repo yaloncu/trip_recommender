@@ -55,6 +55,35 @@ services:
     networks:
       - mynetwork
 
+  rasa:
+    image: rasa/rasa:3.5.3
+    volumes:
+      - ./rasa:/app  
+    working_dir: /app
+    command:
+      - run
+      - --enable-api
+      - --cors
+      - "*"
+    ports:
+      - "5005:5005"
+    networks:
+      - mynetwork
+    depends_on:
+      - rasa-actions
+
+  rasa-actions:
+    image: rasa/rasa-sdk:latest
+    volumes:
+      - ./rasa/actions:/app/actions
+    working_dir: /app
+    command:
+      rasa run actions
+    ports:
+      - "5055:5055"
+    networks:
+      - mynetwork
+
 volumes:
   datos:
   neo4j_data:

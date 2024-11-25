@@ -1,0 +1,27 @@
+version: "3.1"
+nlu:
+- intent: greet
+  examples: |
+    - Hola
+    - Buenos días
+    - Buenas tardes
+    - Qué tal
+    - Hola, ¿cómo estás?
+- intent: provide_preference
+  examples: |
+    - Me gusta viajar a la playa
+    - Quiero un viaje de aventura
+    - Prefiero un destino tranquilo
+    - [aventura](preference)
+
+- intent: provide_audience
+  examples: |
+    - Somos una familia
+    - Es para una pareja
+    - [amigos](audience)
+
+- intent: provide_date
+  examples: |
+    - Quiero viajar el [15 de diciembre](date)
+    - Planeo un viaje en [enero](date)
+    - Prefiero ir en [marzo del 2024](date)

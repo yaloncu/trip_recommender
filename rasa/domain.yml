@@ -1,0 +1,43 @@
+version: "3.1"
+
+intents:
+  - greet
+  - recommend_group
+  - goodbye
+
+entities:
+  - preference
+  - audience
+  - date
+
+slots:
+  preference:
+    type: text
+    mappings:
+      - type: from_entity
+        entity: preference
+
+  audience:
+    type: text
+    mappings:
+      - type: from_entity
+        entity: audience
+
+  date:
+    type: text
+    mappings:
+      - type: from_entity
+        entity: date
+        
+responses:
+  utter_greet:
+    - text: "¡Hola! ¿En qué puedo ayudarte hoy?"
+  utter_goodbye:
+    - text: "¡Hasta luego! Espero haberte ayudado."
+  utter_ask_preference:
+    - text: "¿Qué tipo de grupo estás buscando? (por ejemplo, aventura, relajación)"
+  utter_recommend:
+    - text: "Con base en tus preferencias, te recomiendo los siguientes grupos: {group_list}"
+
+actions:
+  - action_recommend_group

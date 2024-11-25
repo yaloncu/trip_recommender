@@ -1,0 +1,9 @@
+language: es
+pipeline:
+- name: WhitespaceTokenizer
+- name: CountVectorsFeaturizer
+- name: DIETClassifier
+policies:
+- name: MemoizationPolicy
+- name: RulePolicy
+assistant_id: 20241125-185551-plain-continent
