@@ -52,5 +52,13 @@
   "Montaña": "Montaña",
   "recommendationsForGroup": "Recomendaciones de Ciudades",
   "departureDate": "Fecha de salida",
-  "returnDate": "Fecha de regreso"
+  "returnDate": "Fecha de regreso",
+  "arrivalDate": "Fecha de regreso",
+  "selectAvailabilityDates": "Selecciona las fechas disponibles",
+  "delete": "eliminar",
+  "addDateRange": "Añadir rango de fechas",
+  "availabilityStartDate": "Posible fecha de salida",
+  "availabilityEndDate": "Posible fecha de llegada",
+  "leaveGroup": "Abandonar grupo",
+  "closeVoting": "Cerrar grupo"
 }

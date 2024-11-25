@@ -52,5 +52,13 @@
   "Montaña": "Montagne",
   "recommendationsForGroup": "Recommandations de Villes",
   "departureDate": "Date de départ",
-  "returnDate": "Date de retour"
+  "returnDate": "Date de retour",
+  "arrivalDate": "Date de retour",
+  "selectAvailabilityDates": "Sélectionnez les dates disponibles",
+  "delete": "Éliminer",
+  "addDateRange": "Ajouter une plage de dates",
+  "availabilityStartDate": "Date de départ possible",
+  "availabilityEndDate": "Date d'arrivée possible",
+  "leaveGroup": "Quitter le groupe",
+  "closeVoting": "Clôture du vote"
 }

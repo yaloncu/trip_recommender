@@ -83,6 +83,20 @@
         </div>
       </div>
 
+      <div v-if="privated === 'private'">
+        <h3>{{ $t('selectAvailabilityDates') }}</h3>
+        <div v-for="(range, index) in dateRanges" :key="index" class="date-range">
+          <label>{{ $t('availabilityStartDate') }}</label>
+          <input type="date" v-model="range.start" class="input date-group" />
+
+          <label>{{ $t('availabilityEndDate') }}</label>
+          <input type="date" v-model="range.end" class="input date-group" />
+          
+          <button @click="removeDateRange(index)">{{ $t('delete') }}</button>
+        </div>
+        <button @click="addDateRange">{{ $t('addDateRange') }}</button>
+      </div>
+
       <div v-if="privated === 'public'">
         <label>{{ $t('departureDate') }}</label>
         <input type="date" v-model="departureDate" class="input date-group" />
@@ -91,7 +105,7 @@
         <input type="date" v-model="returnDate" class="input date-group" />
       </div>
 
-        <button @click="createGroup" class="create-group-button">{{ $t('createTheGroup') }}</button>
+      <button @click="createGroup" class="create-group-button">{{ $t('createTheGroup') }}</button>
 
 
     </div>
@@ -113,12 +127,18 @@ export default {
         'Aventura', 'Gastronómica', 'Bienestar', 'Montaña'
       ],
       selectedType: '' ,
-      departureDate: new Date().toISOString().slice(0, 10), 
-      returnDate: new Date().toISOString().slice(0, 10) 
-
+      departureDate: '', 
+      returnDate: '', 
+      dateRanges: [{ start: '', end: '' }] 
     };
   },
   methods: {
+    addDateRange() {
+      this.dateRanges.push({ start: '', end: '' });
+    },
+    removeDateRange(index) {
+      this.dateRanges.splice(index, 1);
+    },
     joinGroup() {
       this.$router.push('/groups');
     },
@@ -131,15 +151,20 @@ export default {
         return;
       }
       try {
-        const response = await axios.post('/api/groups/create', {
+        const requestData = {
           name: this.groupName,
           audience: this.audience,
           privated: this.privated,
           email: this.userEmail,
           type: this.selectedType,
-          departureDate: this.departureDate,
-          returnDate: this.returnDate
-        });
+          departureDate: this.privated === 'public' ? this.departureDate : null,
+          returnDate: this.privated === 'public' ? this.returnDate : null,
+          availabilityStartDate: this.privated === 'private' ? this.dateRanges.map(range => range.start) : [],
+          availabilityEndDate: this.privated === 'private' ? this.dateRanges.map(range => range.end) : []
+        };
+        console.log("Data being sent to backend:", requestData);
+        const response = await axios.post('/api/groups/create', requestData);
+
         this.$router.push('/groups');
       } catch (error) {
         console.error('Error during group creation:', error);

@@ -32,6 +32,16 @@
         </div>
       </div>
 
+      <div>
+        <h3>{{ $t('selectAvailabilityDates') }}</h3>
+        <div v-for="(range, index) in dateRanges" :key="index" class="date-range">
+          <input type="date" v-model="range.start" />
+          <input type="date" v-model="range.end" />
+          <button @click="removeDateRange(index)">{{ $t('delete') }}</button>
+        </div>
+        <button @click="addDateRange">{{ $t('addDateRange') }}</button>
+      </div>
+
       <button @click="joinGroupWithPreferences" class="create-group-button">{{ $t('joinGroup') }}</button>
     </div>
   </div>
@@ -49,21 +59,31 @@ export default {
         'Cultural', 'Playa', 'Romántica', 'Relax', 
         'Aventura', 'Gastronómica', 'Bienestar', 'Montaña'
       ],
-      selectedType: ''
+      selectedType: '',
+      dateRanges: [{ start: '', end: '' }]
     };
   },
   methods: {
     back() {
       this.$router.push('/groups');
     },
+    addDateRange() {
+      this.dateRanges.push({ start: '', end: '' });
+    },
+    removeDateRange(index) {
+      this.dateRanges.splice(index, 1);
+    },
     async joinGroupWithPreferences() {
+      const availabilityStartDates = this.dateRanges.map(range => range.start);
+      const availabilityEndDates = this.dateRanges.map(range => range.end);
       try {
         await axios.post('/api/groups/joinWithPreferences', {
           groupName: this.groupName,
           email: this.email,
-          preference: this.selectedType
+          preference: this.selectedType,
+          availabilityStartDates,
+          availabilityEndDates
         });
-
         this.$router.push('/groups'); 
       } catch (error) {
         console.error('Error al unirse al grupo:', error);

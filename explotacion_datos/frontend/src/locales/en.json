@@ -50,5 +50,15 @@
   "Gastronómica": "Gastronomic",
   "Bienestar": "Welfare",
   "Montaña": "Mountain",
-  "recommendationsForGroup": "City Recommendations"
+  "recommendationsForGroup": "City Recommendations",
+  "departureDate": "Departure date",
+  "returnDate": "Return date",
+  "arrivalDate": "Return date",
+  "selectAvailabilityDates": "Select the available dates",
+  "delete": "Delete",
+  "addDateRange": "Add date range",
+  "availabilityStartDate": "Possible departure date",
+  "availabilityEndDate": "Possible arrival date",
+  "leaveGroup": "Leave group",
+  "closeVoting": "Close voting"
 }

@@ -13,9 +13,10 @@
           <li v-for="group in groups" :key="group.groupId" class="group-item">
             {{ group.groupName }} - {{ $t('preference') }}: {{ group.preference || 'No preference' }}
             <button v-if="group.isClosed && !group.isClosedVoting" @click="viewRecommendation(group.groupId)" class="recommend-button">{{ $t('recomendation') }}</button>
-            <p>{{ $t('departureDate') }}: {{ group.departureDate }}</p> 
-            <p>{{ $t('arrivalDate') }}: {{ group.arrivalDate }}</p> 
-            <button v-if="isAdmin(group.email) && !group.isClosed"  @click="closeGroup(group.groupName)" class="close-button">{{ $t('closeGroup') }}</button>
+            <p>{{ $t('departureDate') }}: {{ group.departureDate ? new Date(group.departureDate).toLocaleDateString() : 'No departure date available' }}</p>
+            <p>{{ $t('arrivalDate') }}: {{ group.returnDate ? new Date(group.returnDate).toLocaleDateString() : 'No return date available' }}</p>
+            <button v-if="isAdmin(group.email) && !group.isClosed && group.privated==='public'"  @click="closeGroup(group.groupName)" class="close-button">{{ $t('closeGroup') }} </button>
+            <button v-if="isAdmin(group.email) && !group.isClosed && group.privated==='private'"  @click="closeGroupPrivate(group.groupName)" class="close-button">{{ $t('closeGroup') }}</button>
             <button v-if="isAdmin(group.email) && group.isClosed && !group.isClosedVoting" @click="closeVoting(group.groupName)" class="close-button">{{ $t('closeVoting') }}</button>
             <button @click="leaveGroup(group.groupName)" class="leave-button">{{ $t('leaveGroup') }}</button>
             <button v-if="group.isVotingClosed" @click="viewFinalDestination(group.groupId)" class="final-destination-button">{{ $t('viewFinalDestination') }}</button>
@@ -40,14 +41,21 @@ export default {
     };
   },
   methods: {
-    fetchGroups() {
-      axios.get('/api/groups')
-          .then(response => {
-              this.groups = response.data; 
-          })
-          .catch(error => {
-              console.error("Error fetching groups:", error);
-          });
+    async fetchGroups() {
+      if (!this.userEmail) {
+        return;
+      }
+
+      try {
+        const response = await axios.post(`/api/groups/user`, {
+          email: this.userEmail 
+        });
+        console.log('Fetched groups:', response.data); // Log para verificar las fechas
+        this.groups = response.data;
+      } catch (error) {
+        console.error('Error fetching groups:', error);
+        alert('Error loading your groups.');
+      }
     },
     joinGroup() {
       this.$router.push('/groups');
@@ -58,17 +66,18 @@ export default {
     isAdmin(groupEmail) {
       console.log("Admin Email:", groupEmail);
       console.log("User Email:", this.userEmail);
-      return groupEmail === this.userEmail;
+      return groupEmail.trim().toLowerCase() === this.userEmail.trim().toLowerCase();
     },
     async fetchUserGroups() {
       if (!this.userEmail) {
         return;
       }
-      
+
       try {
         const response = await axios.post(`/api/groups/user`, {
           email: this.userEmail 
         });
+        console.log('Fetched groups:', response.data); // Log para depuración
         this.groups = response.data;
       } catch (error) {
         console.error('Error fetching groups:', error);
@@ -98,6 +107,19 @@ export default {
       }
       try {
         const response = await axios.put(`/api/groups/close/${groupName}`);
+        alert(response.data.message);
+        this.fetchUserGroups(); 
+      } catch (error) {
+        console.error('Error closing group:', error);
+        alert('Error al cerrar el grupo.');
+      }
+    },
+    async closeGroupPrivate(groupName) {
+      if (!confirm(`Are you sure you want to close the group ${groupName}?`)) {
+        return;
+      }
+      try {
+        const response = await axios.post(`/api/groups/closePrivate/${groupName}`);
         alert(response.data.message);
         this.fetchUserGroups(); 
       } catch (error) {

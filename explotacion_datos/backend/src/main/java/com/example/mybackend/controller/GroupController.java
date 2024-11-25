@@ -19,10 +19,14 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @RestController
 @RequestMapping("/api/groups")
 public class GroupController {
+
+    private static final Logger logger = LoggerFactory.getLogger(GroupController.class);
 
     @Autowired
     private GroupService groupService;
@@ -34,7 +38,7 @@ public class GroupController {
     @PostMapping("/create")
     public ResponseEntity<Map<String, String>> createGroup(@RequestBody Group group) {
         try {
-            groupService.createGroup(group.getName(), group.getEmail(), group.getAudience(), group.getPrivated(), group.isClosed(), group.getType(), group.getDepartureDate(), group.getReturnDate());
+            groupService.createGroup(group.getName(), group.getEmail(), group.getAudience(), group.getPrivated(), group.isClosed(), group.getType(), group.getDepartureDate(), group.getReturnDate(), group.getAvailabilityStartDate(), group.getAvailabilityEndDate());
             Map<String, String> response = new HashMap<>();
             response.put("message", "Group created successfully");
             return ResponseEntity.ok(response);
@@ -63,6 +67,27 @@ public class GroupController {
         }
     }
 
+    @PostMapping("/closePrivate/{name}")
+    public ResponseEntity<Map<String, String>> closeGroupPrivate(@PathVariable String name) {
+        try {
+            logger.info("Closing group: {}", name);
+            groupService.closeGroup(name);
+            logger.info("Group closed successfully: {}", name);
+            groupService.recommendDateUsingSlidingWindow(name);
+            logger.info("Recommended dates calculated for group: {}", name);
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Group closed successfully and dates recommended");
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Failed to close group and recommend dates");
+            errorResponse.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
+    }
+
+
     @PutMapping("/closeVoting/{name}")
     public ResponseEntity<String> closeVoting(@PathVariable String groupName) {
         try {
@@ -76,7 +101,7 @@ public class GroupController {
     @PostMapping("/joinWithPreferences")
     public ResponseEntity<Map<String, String>> joinGroupWithPreferences(@RequestBody JoinGroupWithPreferencesRequest request) {
         try {
-            groupService.joinGroupWithPreferences(request.getGroupName(), request.getEmail(), request.getpreference());
+            groupService.joinGroupWithPreferences(request.getGroupName(), request.getEmail(), request.getpreference(), request.getAvailabilityStartDates(), request.getAvailabilityEndDates());
             Map<String, String> response = new HashMap<>();
             response.put("message", "User successfully joined the group with preference");
             return ResponseEntity.ok(response);

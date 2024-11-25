@@ -5,6 +5,8 @@ import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.GeneratedValue;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
+import groovyjarjarantlr4.v4.parse.v4ParserException;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +26,8 @@ public class Group {
     private String type;
     private LocalDate departureDate;
     private LocalDate returnDate;
+    private List<LocalDate> availabilityStartDates;
+    private List<LocalDate> availabilityEndDates;
 
     @Relationship(type = "PERTENECE_A", direction = Relationship.Direction.INCOMING)
     private List<User> users = new ArrayList<>();
@@ -121,6 +125,22 @@ public class Group {
 
     public void setReturnDate(LocalDate retrunDate) {
         this.returnDate = retrunDate;
+    }
+
+    public List<LocalDate> getAvailabilityStartDate() {
+        return availabilityStartDates;
+    }
+
+    public void setAvailabilityStartDate(List<LocalDate> startDate) {
+        this.availabilityStartDates = startDate;
+    }
+
+    public List<LocalDate> getAvailabilityEndDate() {
+        return availabilityEndDates;
+    }
+
+    public void setAvailabilityEndDate(List<LocalDate> endDate) {
+        this.availabilityEndDates = endDate;
     }
     
     public void addUser(User user) {

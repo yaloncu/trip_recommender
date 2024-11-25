@@ -20,6 +20,8 @@
         <ul>
           <li v-for="group in groups" :key="group.name" class="group-item">
             <span class="group-name">{{ group.name }} - {{ $t('audience') }}: {{ group.audience }}</span>
+            <p class="group-name"><strong>{{ $t('departureDate') }}</strong> {{ group.departureDate ? new Date(group.departureDate).toLocaleDateString() : 'No departure date available' }}</p>
+            <p class="group-name"><strong>{{ $t('returnDate') }}</strong> {{ group.returnDate ? new Date(group.returnDate).toLocaleDateString() : 'No return date available' }}</p>
             <button class="join-button" @click="viewGroupDetails(group.name)">{{ $t('viewGroup') }}</button>
           </li>
         </ul>
@@ -60,6 +62,7 @@ export default {
     async fetchGroups() {
       try {
         const response = await axios.get('/api/groups/public');
+        console.log('Groups fetched:', response.data); 
         this.groups = response.data;
       } catch (error) {
         console.error('Error fetching groups:', error);
@@ -94,6 +97,7 @@ export default {
   }
 };
 </script>
+
 
 <style scoped>
 .groups-container {
