@@ -16,7 +16,7 @@
 
     <div class="groups-content">
       <div v-if="groups.length">
-        <h2>{{ $t('AvailablePublicGroups') }}</h2>
+        <h2>{{ $t('availablePublicGroups') }}</h2>
         <ul>
           <li v-for="group in groups" :key="group.name" class="group-item">
             <span class="group-name">{{ group.name }} - {{ $t('audience') }}: {{ group.audience }}</span>
@@ -31,11 +31,20 @@
       </div>
     </div>
     <button class="button" @click="joinSpecificGroup">{{ $t('joinSpecificGroup') }}</button>
+    <button class="chatbot-button" @click="toggleChatbot">
+      💬
+    </button>
+
+    <!-- Contenedor del Chatbot -->
+    <div v-if="isChatbotVisible" class="chatbot-container">
+      <Chatbot />
+    </div>
   </div>
 </template>
 
 <script>
 import axios from 'axios';
+import Chatbot from "@/components/Chatbot.vue";
 axios.defaults.baseURL = 'http://localhost:8081';
 axios.defaults.headers.common['Accept'] = 'application/json';
 axios.defaults.headers.post['Content-Type'] = 'application/json';
@@ -43,10 +52,14 @@ axios.defaults.headers.post['Content-Type'] = 'application/json';
 export default {
   data() {
     return {
-      groups: [] 
+      groups: [],
+      isChatbotVisible: false,
     };
   },
   methods: {
+    toggleChatbot() {
+      this.isChatbotVisible = !this.isChatbotVisible;
+    },
     createGroup() {
       this.$router.push('/groups/create');
     },
@@ -94,12 +107,47 @@ export default {
   },
   mounted() {
     this.fetchGroups(); 
-  }
+  },
+  components: {
+    Chatbot,
+  },
 };
 </script>
 
 
 <style scoped>
+.chatbot-button {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #1abc9c;
+  color: white;
+  font-size: 2rem;
+  border: none;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out;
+}
+
+.chatbot-button:hover {
+  transform: scale(1.1);
+}
+
+.chatbot-container {
+  position: fixed;
+  bottom: 100px;
+  right: 20px;
+  width: 400px;
+  height: 500px;
+  background: white;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  overflow: hidden;
+  z-index: 1000;
+}
 .groups-container {
   position: relative;
   display: flex;

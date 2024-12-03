@@ -87,6 +87,9 @@ export default {
 .form {
   margin-top: 20px;
   width: 100%;
+  display: flex;
+  flex-direction: column; 
+  gap: 15px;
 }
 
 .input {

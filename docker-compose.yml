@@ -38,7 +38,7 @@ services:
       context: ./explotacion_datos
       dockerfile: frontend/Dockerfile
     ports:
-      - "8080:8080"
+      - "8080:80"
     networks:
       - mynetwork
 

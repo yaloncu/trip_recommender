@@ -162,4 +162,32 @@ public class GroupController {
         }
     }
 
+    @GetMapping("/triptype/{triptype}")
+    public ResponseEntity<List<Group>> getGroupsByTheme(@PathVariable String triptype) {
+        try {
+            List<Group> groups = groupService.getGroupsByTheme(triptype);
+            if (groups.isEmpty()) {
+                return ResponseEntity.noContent().build();
+            }
+            return ResponseEntity.ok(groups);
+        } catch (Exception e) {
+            logger.error("Error retrieving groups by theme: {}", triptype, e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
+    @GetMapping("/audience/{audience}")
+    public ResponseEntity<List<Group>> getGroupsByAudience(@PathVariable String audience) {
+        try {
+            List<Group> groups = groupService.getGroupsByAudience(audience);
+            if (groups.isEmpty()) {
+                return ResponseEntity.noContent().build();
+            }
+            return ResponseEntity.ok(groups);
+        } catch (Exception e) {
+            logger.error("Error retrieving groups by audience: {}", audience, e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
 }

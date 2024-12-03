@@ -7,12 +7,83 @@ nlu:
     - Buenas tardes
     - Qué tal
     - Hola, ¿cómo estás?
-- intent: provide_preference
+
+- intent: get_available_groups
   examples: |
-    - Me gusta viajar a la playa
-    - Quiero un viaje de aventura
-    - Prefiero un destino tranquilo
-    - [aventura](preference)
+    - ¿Qué grupos están disponibles?
+    - Enséñame los grupos públicos
+    - Quiero ver los grupos disponibles
+    - ¿Hay algún grupo abierto?
+    - Quiero saber los grupos que hay
+    - ¿Hay algún grupo al que pueda unirme?
+    - Quiero ver todos los grupos abiertos
+    - Muéstrame los grupos a los que puedo unirme
+    - ¿Cuáles son los grupos disponibles ahora?
+    - Enséñame grupos públicos para unirme
+
+- intent: preference_cultural
+  examples: |
+    - Prefiero grupos culturales
+    - Estoy buscando un viaje cultural
+    - Me gustaría participar en actividades culturales
+    - Quiero un grupo relacionado con la [cultura](preference)
+    - Mi preferencia es un viaje cultural
+
+- intent: preference_playa
+  examples: |
+    - Prefiero grupos de playa
+    - Me gustaría viajar a un destino de playa
+    - Estoy buscando un grupo para relajación en la playa
+    - Quiero un grupo relacionado con [playa](preference)
+    - Mi preferencia es un viaje a la playa
+
+- intent: preference_romantica
+  examples: |
+    - Prefiero grupos románticos
+    - Me gustaría viajar en un entorno romántico
+    - Estoy buscando un viaje para parejas
+    - Quiero un grupo relacionado con [romántica](preference)
+    - Mi preferencia es un viaje romántico
+
+- intent: preference_relax
+  examples: |
+    - Prefiero grupos de relax
+    - Estoy buscando un viaje para relajarme
+    - Me gustaría un grupo tranquilo
+    - Quiero un grupo relacionado con [relax](preference)
+    - Mi preferencia es un viaje relajante
+
+- intent: preference_aventura
+  examples: |
+    - Prefiero grupos de aventura
+    - Estoy buscando un viaje de aventura
+    - Me gustaría participar en actividades de aventura
+    - Quiero un grupo relacionado con [aventura](preference)
+    - Mi preferencia es un viaje aventurero
+
+- intent: preference_gastronomica
+  examples: |
+    - Prefiero grupos gastronómicos
+    - Estoy buscando un viaje para degustar comida
+    - Me gustaría un grupo relacionado con la gastronomía
+    - Quiero un grupo relacionado con [gastronomía](preference)
+    - Mi preferencia es un viaje gastronómico
+
+- intent: preference_bienestar
+  examples: |
+    - Prefiero grupos de bienestar
+    - Estoy buscando un viaje para el cuidado personal
+    - Me gustaría un grupo relacionado con la salud y el bienestar
+    - Quiero un grupo relacionado con [bienestar](preference)
+    - Mi preferencia es un viaje de bienestar
+
+- intent: preference_montana
+  examples: |
+    - Prefiero grupos de montaña
+    - Estoy buscando un viaje a la montaña
+    - Me gustaría un grupo relacionado con la naturaleza
+    - Quiero un grupo relacionado con [montaña](preference)
+    - Mi preferencia es un viaje a la montaña
 
 - intent: provide_audience
   examples: |

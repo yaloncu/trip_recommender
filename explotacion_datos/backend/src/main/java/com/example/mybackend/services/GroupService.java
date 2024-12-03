@@ -232,6 +232,75 @@ public class GroupService {
             throw new RuntimeException("Error retrieving public groups", e);
         }
     }
+
+    public List<Group> getGroupsByTheme(String triptype) {
+        try (Session session = driver.session()) {
+            return session.executeRead(tx -> {
+                var result = tx.run(
+                    "MATCH (g:Group {tripType: $triptype}) " +
+                    "RETURN g",
+                    Map.of("triptype", triptype)
+                );
+    
+                List<Group> groups = new ArrayList<>();
+                while (result.hasNext()) {
+                    var record = result.next();
+                    var groupNode = record.get("g").asNode();
+    
+                    Group group = new Group();
+                    group.setName(groupNode.get("name").asString());
+                    group.setAudience(groupNode.get("audience").asString());
+                    group.setPrivated(groupNode.get("privated").asString());
+                    if (groupNode.containsKey("departureDate")) {
+                        group.setDepartureDate(groupNode.get("departureDate").asLocalDate());
+                    }
+                    if (groupNode.containsKey("returnDate")) {
+                        group.setReturnDate(groupNode.get("returnDate").asLocalDate());
+                    }
+                    group.setType(groupNode.get("tripType").asString());
+                    groups.add(group);
+                }
+                return groups;
+            });
+        } catch (Neo4jException e) {
+            throw new RuntimeException("Error retrieving groups by theme", e);
+        }
+    }
+    
+    public List<Group> getGroupsByAudience(String audience) {
+        try (Session session = driver.session()) {
+            return session.executeRead(tx -> {
+                var result = tx.run(
+                    "MATCH (g:Group {audience: $audience}) " +
+                    "RETURN g",
+                    Map.of("audience", audience)
+                );
+    
+                List<Group> groups = new ArrayList<>();
+                while (result.hasNext()) {
+                    var record = result.next();
+                    var groupNode = record.get("g").asNode();
+    
+                    Group group = new Group();
+                    group.setName(groupNode.get("name").asString());
+                    group.setAudience(groupNode.get("audience").asString());
+                    group.setPrivated(groupNode.get("privated").asString());
+                    if (groupNode.containsKey("departureDate")) {
+                        group.setDepartureDate(groupNode.get("departureDate").asLocalDate());
+                    }
+                    if (groupNode.containsKey("returnDate")) {
+                        group.setReturnDate(groupNode.get("returnDate").asLocalDate());
+                    }
+                    group.setType(groupNode.get("tripType").asString());
+                    groups.add(group);
+                }
+                return groups;
+            });
+        } catch (Neo4jException e) {
+            throw new RuntimeException("Error retrieving groups by audience", e);
+        }
+    }
+    
     
     public void leaveGroup(String email, String groupName) {
         try (Session session = driver.session()) {
@@ -300,6 +369,8 @@ public class GroupService {
                 }
                 userAvailabilityArrays.add(availabilityArray);
             }
+
+
     
             // Aplicar Sliding Window 
             int maxCount = 0;

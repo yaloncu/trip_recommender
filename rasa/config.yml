@@ -3,6 +3,7 @@ pipeline:
 - name: WhitespaceTokenizer
 - name: CountVectorsFeaturizer
 - name: DIETClassifier
+  constrain_similarities: true
 policies:
 - name: MemoizationPolicy
 - name: RulePolicy

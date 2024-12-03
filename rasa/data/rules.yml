@@ -3,3 +3,60 @@ rules:
   steps:
   - intent: greet
   - action: utter_greet
+- rule: Unirse a un grupo
+    steps:
+      - intent: join_group
+      - action: action_join_group_with_preferences
+      
+- rule: Mostrar grupos disponibles
+  steps:
+    - intent: get_available_groups
+    - action: action_get_available_groups
+
+- rule: Mostrar grupos basados en preferencia cultural
+    steps:
+      - intent: preference_cultural
+      - action: action_set_preference_cultural
+      - action: action_get_groups_by_preference
+
+- rule: Mostrar grupos basados en preferencia playa
+  steps:
+    - intent: preference_playa
+    - action: action_set_preference_playa
+    - action: action_get_groups_by_preference
+
+- rule: Mostrar grupos basados en preferencia romántica
+  steps:
+    - intent: preference_romantica
+    - action: action_set_preference_romantica
+    - action: action_get_groups_by_preference
+
+- rule: Mostrar grupos basados en preferencia relax
+  steps:
+    - intent: preference_relax
+    - action: action_set_preference_relax
+    - action: action_get_groups_by_preference
+
+- rule: Mostrar grupos basados en preferencia aventura
+  steps:
+    - intent: preference_aventura
+    - action: action_set_preference_aventura
+    - action: action_get_groups_by_preference
+
+- rule: Mostrar grupos basados en preferencia gastronómica
+  steps:
+    - intent: preference_gastronomica
+    - action: action_set_preference_gastronomica
+    - action: action_get_groups_by_preference
+
+- rule: Mostrar grupos basados en preferencia bienestar
+  steps:
+    - intent: preference_bienestar
+    - action: action_set_preference_bienestar
+    - action: action_get_groups_by_preference
+
+- rule: Mostrar grupos basados en preferencia montaña
+  steps:
+    - intent: preference_montana
+    - action: action_set_preference_montana
+    - action: action_get_groups_by_preference
