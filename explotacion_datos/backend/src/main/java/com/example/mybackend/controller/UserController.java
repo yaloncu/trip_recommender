@@ -10,8 +10,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
 
 @RestController
 @RequestMapping("/api")
@@ -25,13 +29,43 @@ public class UserController {
     @PostMapping("/signup")
     public ResponseEntity<String> createUser(@RequestBody User user) {
         try {
-            userService.createUser(user.getName(), user.getEmail(), user.getPassword());
+            if (user.getName() == null || user.getEmail() == null) {
+                return ResponseEntity.badRequest().body("Name and Email are required.");
+            }
+
+            if (user.getPassword() == null || user.getPassword().isEmpty()) {
+                // Registro desde Google (sin contraseña)
+                userService.createUser(user.getName(), user.getEmail(), null);
+            } else {
+                // Registro manual (con contraseña)
+                userService.createUser(user.getName(), user.getEmail(), user.getPassword());
+            }
+
             return ResponseEntity.ok("User created successfully: " + user.getName());
         } catch (Exception e) {
-            e.printStackTrace(); 
+            e.printStackTrace();
             return ResponseEntity.badRequest().body("Error creating user: " + e.getMessage());
         }
     }
+
+    @PostMapping("/signup/google")
+    public ResponseEntity<String> createUserFromGoogle(@RequestBody Map<String, String> payload) {
+        try {
+            String name = payload.get("name");
+            String email = payload.get("email");
+
+            if (name == null || email == null) {
+                throw new IllegalArgumentException("Name or email is missing");
+            }
+
+            userService.createUser(name, email);
+            return ResponseEntity.ok("Google user created successfully: " + name);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error creating Google user: " + e.getMessage());
+        }
+    }
+
 
     @RequestMapping(value = "/api/**", method = RequestMethod.OPTIONS)
     public ResponseEntity<?> handleOptionsRequest() {
@@ -56,6 +90,18 @@ public class UserController {
         }
     }
 
+    @PostMapping("/login/google")
+    public ResponseEntity<String> loginWithGoogle(@RequestBody User googleLoginRequest) {
+        String email = googleLoginRequest.getEmail();
+        if (userService.checkUserExistsByEmail(email)) {
+            return ResponseEntity.ok("Google login successful");
+        } else {
+            return ResponseEntity.status(404).body("Google user not found");
+        }
+    }
+
+    
+
     @GetMapping("/users/{email}/groups")
     public ResponseEntity<List<Group>> getUserGroups(@PathVariable String email) {
         List<Group> groups = userService.getUserGroups(email);
@@ -65,4 +111,20 @@ public class UserController {
             return ResponseEntity.noContent().build();
         }
     }
+
+    @GetMapping("/oauth2/callback")
+    public ResponseEntity<String> callback(@AuthenticationPrincipal OAuth2User principal) {
+        String email = principal.getAttribute("email");
+        String name = principal.getAttribute("name");
+        User existingUser = userService.getUserByEmail(email);
+        if (existingUser == null) {
+            // sign in
+            userService.createUser(name, email, null); // null para password porque es login con Google
+            return ResponseEntity.ok("Usuario registrado exitosamente con Google: " + email);
+        } else {
+            // log in
+            return ResponseEntity.ok("Inicio de sesión exitoso para: " + email);
+        }
+    }
+
 }

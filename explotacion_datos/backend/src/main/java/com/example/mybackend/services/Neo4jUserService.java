@@ -39,6 +39,18 @@ public class Neo4jUserService {
         }
     }
 
+    public void createUser(String name, String email) {
+        try (Session session = driver.session()) {
+            session.executeWrite(tx -> {
+                tx.run("CREATE (u:User {name: $name, email: $email}) RETURN u",
+                        Map.of("name", name, "email", email));
+                return null;
+            });
+        } catch (Neo4jException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void addUserToGroup(String email, String groupName) {
         try (Session session = driver.session()) {
             session.executeWrite(tx -> {
@@ -66,6 +78,20 @@ public class Neo4jUserService {
         }
     }
     
+    public boolean checkUserExistsByEmail(String email) {
+        try (Session session = driver.session()){
+            return session.executeRead(tx ->{
+                Result result = tx.run("MATCH (u:User {email: $email}) RETURN COUNT(u) > 0 AS userExists",
+                Map.of("email", email));
+                return result.single().get("userExists").asBoolean();
+            });
+        } catch (Neo4jException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+
     public User getUserByEmail(String email) {
         try (Session session = driver.session()) {
             return session.executeRead(tx -> {

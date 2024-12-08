@@ -29,12 +29,14 @@
         />
         <button type="submit" class="signup-button">{{ $t('signup') }}</button>
       </form>
+      <button class="google-signup-button" @click="signupWithGoogle">Registrarse con Google</button>
     </div>
   </div>
 </template>
 
 <script>
-import axios from 'axios'; 
+import axios from 'axios';
+import { signInWithGoogle } from '@/services/authService';
 axios.defaults.baseURL = 'http://localhost:8081';
 axios.defaults.headers.common['Accept'] = 'application/json';
 axios.defaults.headers.post['Content-Type'] = 'application/json';
@@ -61,6 +63,22 @@ export default {
         this.$router.push('/groups');
       } catch (error) {
         console.error('Error during signup:', error.response.data.message);
+      }
+    },
+    async signupWithGoogle() {
+      try {
+        const user = await signInWithGoogle(); 
+        const name = user.displayName;
+        const email = user.email;
+
+        console.log("Google signup successful for:", email);
+
+        const response = await axios.post('/api/signup/google', { name, email });
+        console.log(response.data);
+
+        this.$router.push('/groups');
+      } catch (error) {
+        console.error("Error during Google signup:", error.message);
       }
     }
   }

@@ -21,6 +21,11 @@
         />
         <button type="submit" class="login-button">{{ $t('login') }}</button>
       </form>
+      <div class="google-login">
+        <button class="google-button" @click="loginWithGoogle">
+          {{ $t('login_with_google') }}
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -52,8 +57,23 @@ export default {
       } catch (error) {
         console.error('Error during login:', error.response.data.message);
       }
+    },
+    async loginWithGoogle() {
+      try {
+        const googleUser = await this.$gAuth.signIn();
+        const email = googleUser.getBasicProfile().getEmail();
+
+        const response = await axios.post('/api/login/google', {
+          email: email,
+        });
+
+        console.log('Google login successful:', response.data);
+        this.$router.push('/groups');
+      } catch (error) {
+        console.error('Error during Google login:', error.response?.data?.message || error.message);
+      }
     }
-  }
+  },
 };
 </script>
 
