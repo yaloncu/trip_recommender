@@ -31,7 +31,9 @@
 </template>
 
 <script>
-import axios from 'axios'; 
+import axios from 'axios';
+import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { signInWithGoogle } from '@/services/authService';
 axios.defaults.baseURL = 'http://localhost:8081';
 axios.defaults.headers.common['Accept'] = 'application/json';
 axios.defaults.headers.post['Content-Type'] = 'application/json';
@@ -59,9 +61,10 @@ export default {
       }
     },
     async loginWithGoogle() {
+      console.log('signInWithGoogle:');
       try {
-        const googleUser = await this.$gAuth.signIn();
-        const email = googleUser.getBasicProfile().getEmail();
+        const googleUser = await signInWithGoogle();
+        const email = googleUser.email;
 
         const response = await axios.post('/api/login/google', {
           email: email,

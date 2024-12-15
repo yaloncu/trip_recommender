@@ -91,8 +91,8 @@ public class UserController {
     }
 
     @PostMapping("/login/google")
-    public ResponseEntity<String> loginWithGoogle(@RequestBody User googleLoginRequest) {
-        String email = googleLoginRequest.getEmail();
+    public ResponseEntity<String> loginWithGoogle(@RequestBody Map<String, String> googleLoginRequest) {
+        String email = googleLoginRequest.get("email");
         if (userService.checkUserExistsByEmail(email)) {
             return ResponseEntity.ok("Google login successful");
         } else {
