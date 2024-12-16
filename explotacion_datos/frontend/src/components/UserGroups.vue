@@ -5,9 +5,6 @@
 
     <h1 class="main-title">Your groups</h1>
     <div class="card">
-      <input v-model="userEmail" type="email" :placeholder="$t('enterYourEmail')" class="input email-input" />
-      <button @click="fetchUserGroups" class="create-group-button">{{ $t('fetchGroups') }}</button>
-
       <div v-if="groups.length">
         <ul>
           <li v-for="group in groups" :key="group.groupId" class="group-item">
@@ -69,16 +66,15 @@ export default {
       return groupEmail.trim().toLowerCase() === this.userEmail.trim().toLowerCase();
     },
     async fetchUserGroups() {
-      if (!this.userEmail) {
-        return;
-      }
-
       try {
-        const response = await axios.post(`/api/groups/user`, {
-          email: this.userEmail 
-        });
-        console.log('Fetched groups:', response.data); // Log para depuración
+        const email = localStorage.getItem('email'); // Obtén el correo directamente desde la sesión
+        if (!email) {
+          throw new Error('No email found in session.');
+        }
+
+        const response = await axios.post('/api/groups/user', { email });
         this.groups = response.data;
+        console.log('Fetched groups:', this.groups);
       } catch (error) {
         console.error('Error fetching groups:', error);
         alert('Error loading your groups.');
@@ -156,23 +152,32 @@ export default {
       }
     },
     async leaveGroup(groupName) {
-      if (!confirm(`Are you sure you want to leave the group ${groupName}?`)) {
-        return;
-      }
       try {
-        const response = await axios.delete(`/api/groups/leave`, {
-          data: { email: this.userEmail, groupName: groupName }
+        const email = localStorage.getItem('email');
+        if (!email) {
+          throw new Error('No email found in session.');
+        }
+
+        const response = await axios.delete('/api/groups/leave', {
+          data: { email, groupName },
         });
         alert(response.data.message);
         this.fetchUserGroups();
       } catch (error) {
         console.error('Error leaving group:', error);
-        alert('Error al salir del grupo.');
+        alert('Error leaving the group.');
       }
     }
   },
   mounted() {
-    this.fetchUserGroups();
+    const storedEmail = localStorage.getItem('email'); 
+    if (storedEmail) {
+      this.userEmail = storedEmail;
+      this.fetchUserGroups(); 
+    } else {
+      alert('No user email found. Please log in again.');
+      this.$router.push('/login'); 
+    }
   }
 };
 </script>

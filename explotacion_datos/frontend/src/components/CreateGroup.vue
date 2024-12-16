@@ -14,7 +14,6 @@
 
     <div class="card">
       <input v-model="groupName" type="text" :placeholder= "$t('enterGroupName')"  class="input name-group" />
-      <input v-model="userEmail" type="email" :placeholder= "$t('enterYourEmail')"  class="input name-group" />
 
       <div>
         <h3>{{ $t('selectAudience') }}</h3>
@@ -43,7 +42,7 @@
           <input class="customCheckBoxInput" id="3age" type="radio" value="TerceraEdad" v-model="audience">
           <label class="customCheckBoxWrapper" for="3age">
             <div class="customCheckBox">
-              <div class="inner">{{ $t('thirdAge') }}</div>
+              <div class="inner">{{ $t('3age') }}</div>
             </div>
           </label>
         </div>
@@ -121,7 +120,6 @@ export default {
       groupName: '', 
       audience: '', 
       privated: '', 
-      userEmail: '',
       vacationTypes: [
         'Cultural', 'Playa', 'Romántica', 'Relax', 
         'Aventura', 'Gastronómica', 'Bienestar', 'Montaña'
@@ -146,16 +144,21 @@ export default {
       this.$router.push('/groups/user');
     },
     async createGroup() {
-      if (!this.groupName || !this.userEmail || !this.audience || !this.privated) {
+      if (!this.groupName || !this.audience || !this.privated) {
         alert('All fields are required!');
         return;
       }
       try {
+        const email = localStorage.getItem('email'); 
+        
+        if (!email) {
+            throw new Error('Token is missing. Please log in again.');
+        }
         const requestData = {
           name: this.groupName,
           audience: this.audience,
           privated: this.privated,
-          email: this.userEmail,
+          email: email,
           type: this.selectedType,
           departureDate: this.privated === 'public' ? this.departureDate : null,
           returnDate: this.privated === 'public' ? this.returnDate : null,

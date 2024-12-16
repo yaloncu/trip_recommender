@@ -11,6 +11,7 @@ import org.neo4j.driver.TransactionWork;
 import org.neo4j.driver.Result;
 import org.neo4j.driver.exceptions.Neo4jException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.mybackend.model.User;
@@ -21,13 +22,16 @@ import com.example.mybackend.model.Group;
 public class Neo4jUserService {
 
     private final Driver driver;
-
+    private final PasswordEncoder passwordEncoder;
+    
     @Autowired
-    public Neo4jUserService(Driver driver) {
+    public Neo4jUserService(Driver driver, PasswordEncoder passwordEncoder) {
         this.driver = driver;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public void createUser(String name, String email, String password) {
+        String hashedPassword = passwordEncoder.encode(password);
         try (Session session = driver.session()) {
             session.executeWrite(tx -> {
                 tx.run("CREATE (u:User {name: $name, email: $email, password: $password}) RETURN u",

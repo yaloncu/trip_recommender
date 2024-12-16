@@ -39,7 +39,7 @@
   "back": "Atrás",
   "enterGroupName": "Nombre del grupo:",
   "group": "Grupo:",
-  "audience": "Audiencia:",
+  "audience": "Audiencia",
   "description": "Descripción:",
   "alreadyMember": "Ya eres miembro de este grupo.",
   "Playa": "Playa",
@@ -55,10 +55,13 @@
   "returnDate": "Fecha de regreso",
   "arrivalDate": "Fecha de regreso",
   "selectAvailabilityDates": "Selecciona las fechas disponibles",
-  "delete": "eliminar",
+  "delete": "Eliminar",
   "addDateRange": "Añadir rango de fechas",
   "availabilityStartDate": "Posible fecha de salida",
   "availabilityEndDate": "Posible fecha de llegada",
   "leaveGroup": "Abandonar grupo",
-  "closeVoting": "Cerrar grupo"
+  "closeVoting": "Cerrar grupo",
+  "type": "Tipo",
+  "joinGroup": "Unirse al grupo",
+  "login_with_google": "Iniciar sesión con Google"
 }

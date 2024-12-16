@@ -24,7 +24,7 @@
   "adults": "adults",
   "youth": "youth",
   "families": "families",
-  "3age": "Third age",
+  "3age": "third age",
   "private": "private",
   "public": "public",
   "selectPrivacity": "Select the privacity:",
@@ -39,7 +39,7 @@
   "back": "Back",
   "enterGroupName": "Group name:",
   "group": "Group:",
-  "audience": "Audience:",
+  "audience": "Audience",
   "description": "Description:",
   "alreadyMember": "You are already a member of this group.",
   "Playa": "Beach",
@@ -60,5 +60,8 @@
   "availabilityStartDate": "Possible departure date",
   "availabilityEndDate": "Possible arrival date",
   "leaveGroup": "Leave group",
-  "closeVoting": "Close voting"
+  "closeVoting": "Close voting",
+  "type": "Type",
+  "joinGroup": "Join group",
+  "login_with_google": "Login with Google"
 }

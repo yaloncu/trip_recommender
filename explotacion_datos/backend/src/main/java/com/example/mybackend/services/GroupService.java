@@ -186,6 +186,7 @@ public class GroupService {
     
                     Group group = new Group();
                     group.setName(groupNode.get("name").asString());
+                    group.setType(groupNode.get("tripType").asString());
                     group.setAudience(groupNode.get("audience").asString());
                     group.setPrivated(groupNode.get("privated").asString());
                     LocalDate departureDate = groupNode.get("departureDate").asLocalDate();
@@ -217,6 +218,7 @@ public class GroupService {
                     Group group = new Group();
                     group.setName(groupNode.get("name").asString());
                     group.setAudience(groupNode.get("audience").asString());
+                    group.setType(groupNode.get("tripType").asString());
                     group.setPrivated(groupNode.get("privated").asString());
                     if (groupNode.containsKey("departureDate")) {
                         group.setDepartureDate(groupNode.get("departureDate").asLocalDate());

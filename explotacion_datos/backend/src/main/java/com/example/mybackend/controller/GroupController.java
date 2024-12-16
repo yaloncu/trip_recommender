@@ -5,7 +5,8 @@ import com.example.mybackend.model.JoinGroupWithPreferencesRequest;
 import com.example.mybackend.model.User;
 import com.example.mybackend.services.GroupService;
 import com.example.mybackend.services.Neo4jUserService;
-import com.example.mybackend.services.UserService;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 import java.time.LocalDate;
 import java.util.ArrayList;

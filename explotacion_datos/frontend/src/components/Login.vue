@@ -54,8 +54,14 @@ export default {
         }, {
           withCredentials: true
         });
-        console.log('User logged in successfully:', response.data);
-        this.$router.push('/groups'); 
+        const {email, token} = response.data;
+        if (email) {
+            localStorage.setItem('email', email); 
+            console.log('User logged in successfully:', response.data);
+            this.$router.push('/groups'); 
+        } else {
+            throw new Error('Token missing in login response');
+        }       
       } catch (error) {
         console.error('Error during login:', error.response.data.message);
       }
@@ -69,9 +75,14 @@ export default {
         const response = await axios.post('/api/login/google', {
           email: email,
         });
-
-        console.log('Google login successful:', response.data);
-        this.$router.push('/groups');
+        const {email2, token} = response.data;
+        if (email2) {
+            localStorage.setItem('email', email2); 
+            console.log('User logged in successfully:', response.data);
+            this.$router.push('/groups'); 
+        } else {
+            throw new Error('Token missing in login response');
+        }     
       } catch (error) {
         console.error('Error during Google login:', error.response?.data?.message || error.message);
       }

@@ -15,7 +15,7 @@ import com.example.mybackend.repository.UserRepository;
 public class CustomUserDetailsService implements UserDetailsService {
 
     @Autowired
-    private UserRepository userRepository; // Tu repositorio que interactúa con la base de datos.
+    private UserRepository userRepository; 
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {

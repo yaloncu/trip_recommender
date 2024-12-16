@@ -2,40 +2,52 @@ package com.example.mybackend.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import jakarta.annotation.PostConstruct;
+import com.example.mybackend.services.CustomUserDetailsService;
 
 import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.util.Arrays;
-import java.util.Locale;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
-    @PostConstruct
-    public void init() {
-        System.out.println("SecurityConfig initialized");
+    private final CustomUserDetailsService customUserDetailsService;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+
+    public SecurityConfig(CustomUserDetailsService customUserDetailsService, JwtAuthenticationFilter jwtAuthenticationFilter) {
+        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+        this.customUserDetailsService = customUserDetailsService;
     }
-    
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.disable()) 
+            .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/login", "/api/signup","/api/groups/create", "api/groups/joinWithPreferences", "/api/recommendations/**", "api/groups/close", "api/groups/closeVoting", "/api/vote", "api/groups/{groupId}/finalDestination", "api/groups/triptype/{triptype}", "api/groups/audience/{audience}").permitAll()
-                .anyRequest().permitAll() 
+                .requestMatchers(
+                    "/api/login", 
+                    "/api/signup", "/api/groups/public"
+                ).permitAll() // Rutas públicas
+                //.requestMatchers("/api/groups/create").authenticated()
+                .anyRequest().permitAll()
             )
-            .httpBasic(httpBasic -> httpBasic.disable()) 
-            .formLogin(formLogin -> formLogin.disable()) 
-            .cors(cors -> cors.configurationSource(corsConfigurationSource())); 
+            .httpBasic(httpBasic -> httpBasic.disable())
+            .formLogin(formLogin -> formLogin.disable())
+            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+
         return http.build();
     }
 
@@ -51,5 +63,13 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", configuration); // Aplicar configuración a todas las rutas
         return source;
     }
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
 
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 }

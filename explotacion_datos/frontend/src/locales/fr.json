@@ -39,7 +39,7 @@
   "back": "Retour",
   "enterGroupName": "Nom du groupe :",
   "group": "Groupe :",
-  "audience": "Public :",
+  "audience": "Public",
   "description": "Description :",
   "alreadyMember": "Vous êtes déjà membre de ce groupe.",
   "Playa": "Plage",
@@ -60,5 +60,8 @@
   "availabilityStartDate": "Date de départ possible",
   "availabilityEndDate": "Date d'arrivée possible",
   "leaveGroup": "Quitter le groupe",
-  "closeVoting": "Clôture du vote"
+  "closeVoting": "Clôture du vote",
+  "type": "Type",
+  "joinGroup": "Rejoindre le groupe",
+  "login_with_google": "Se connecter avec Google"
 }
