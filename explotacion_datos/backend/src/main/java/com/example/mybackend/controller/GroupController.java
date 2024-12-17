@@ -115,6 +115,55 @@ public class GroupController {
         }
     }
 
+    @PostMapping("/invite")
+    public ResponseEntity<Map<String, String>> inviteUserToGroup(@RequestBody Map<String, String> body) {
+        String email = body.get("email");
+        String groupName = body.get("groupName");
+        if (email == null || groupName == null) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Email y nombre del grupo son obligatorios"));
+        }
+        try {
+            groupService.inviteUserToGroup(email, groupName);
+            return ResponseEntity.ok(Map.of("message", "Usuario invitado exitosamente"));
+        } catch (Exception e) {
+            logger.error("Error al invitar al usuario al grupo:", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "Error al invitar al usuario", "message", e.getMessage()));
+        }
+    }
+
+    @GetMapping("/invitations/{email}")
+    public ResponseEntity<List<Map<String, Object>>> getInvitedGroups(@PathVariable String email) {
+        try {
+            List<Map<String, Object>> invitedGroups = groupService.getInvitedGroups(email);
+            return ResponseEntity.ok(invitedGroups);
+        } catch (Exception e) {
+            logger.error("Error retrieving invited groups:", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(null);
+        }
+    }
+
+    @PostMapping("/accept-invite")
+    public ResponseEntity<Map<String, String>> acceptInvitation(@RequestBody Map<String, String> body) {
+        String email = body.get("email");
+        String groupName = body.get("groupName");
+
+        if (email == null || groupName == null) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Email y nombre del grupo son obligatorios"));
+        }
+
+        try {
+            groupService.acceptInvitation(email, groupName);
+            return ResponseEntity.ok(Map.of("message", "Invitación aceptada correctamente"));
+        } catch (Exception e) {
+            logger.error("Error al aceptar la invitación:", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "Error al aceptar la invitación", "message", e.getMessage()));
+        }
+    }
+
+
     @GetMapping("/public")
     public ResponseEntity<List<Group>> getPublicGroups() {
         try {

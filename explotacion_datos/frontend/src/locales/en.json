@@ -64,5 +64,9 @@
   "type": "Type",
   "joinGroup": "Join group",
   "login_with_google": "Login with Google",
-  "signupWithGoogle": "Sign up with Google"
+  "signupWithGoogle": "Sign up with Google",
+  "noPendingInvites": "No pending invites",
+  "invite": "Invite",
+  "acceptInvite": "Accept invite",
+  "enterEmailToInvite": "Enter email to invite"
 }

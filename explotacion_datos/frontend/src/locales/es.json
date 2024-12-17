@@ -64,5 +64,9 @@
   "type": "Tipo",
   "joinGroup": "Unirse al grupo",
   "login_with_google": "Iniciar sesión con Google",
-  "signupWithGoogle": "Regístrate con Google"
+  "signupWithGoogle": "Regístrate con Google",
+  "noPendingInvites": "No hay invitaciones pendientes",
+  "invite": "Invitar",
+  "acceptInvite": "Aceptar la invitacion",
+  "enterEmailToInvite": "Inserte el email a invitar"
 }

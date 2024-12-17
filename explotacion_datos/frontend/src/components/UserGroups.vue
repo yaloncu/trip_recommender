@@ -9,6 +9,12 @@
         <ul>
           <li v-for="group in groups" :key="group.groupId" class="group-item">
             {{ group.groupName }} - {{ $t('preference') }}: {{ group.preference || 'No preference' }}
+            
+            <div v-if="isAdmin(group.email) && group.privated === 'private'">
+              <input v-model="inviteEmail" type="email" :placeholder="$t('enterEmailToInvite')" class="input invite-input" />
+              <button @click="inviteUser(group.groupName)" class="invite-button">{{ $t('invite') }}</button>
+            </div>
+
             <button v-if="group.isClosed && !group.isClosedVoting" @click="viewRecommendation(group.groupId)" class="recommend-button">{{ $t('recomendation') }}</button>
             <p>{{ $t('departureDate') }}: {{ group.departureDate ? new Date(group.departureDate).toLocaleDateString() : 'No departure date available' }}</p>
             <p>{{ $t('arrivalDate') }}: {{ group.returnDate ? new Date(group.returnDate).toLocaleDateString() : 'No return date available' }}</p>
@@ -24,6 +30,22 @@
         <p>{{ $t('notBelongGroup') }}</p>
       </div>
     </div>
+    <h1 class="main-title">Pending Invitations</h1>
+    <div class="card">
+      <div v-if="invitedGroups.length">
+        <ul>
+          <li v-for="group in invitedGroups" :key="group.groupId" class="group-item">
+            {{ group.groupName }} - {{ group.privated }}
+            <button @click="acceptInvitation(group.groupName)" class="accept-button">
+              {{ $t('acceptInvite') }}
+            </button>
+          </li>
+        </ul>
+      </div>
+      <div v-else>
+        <p>{{ $t('noPendingInvites') }}</p>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -33,8 +55,9 @@ import axios from 'axios';
 export default {
   data() {
     return {
-      userEmail: '', 
-      groups: [] 
+      groups: [] ,
+      inviteEmail: '',
+      invitedGroups: []
     };
   },
   methods: {
@@ -52,6 +75,15 @@ export default {
       } catch (error) {
         console.error('Error fetching groups:', error);
         alert('Error loading your groups.');
+      }
+    },
+    async fetchInvitedGroups() {
+      try {
+        const response = await axios.get(`/api/groups/invitations/${this.userEmail}`);
+        this.invitedGroups = response.data;
+      } catch (error) {
+        console.error('Error fetching invited groups:', error);
+        alert('Error al obtener las invitaciones pendientes.');
       }
     },
     joinGroup() {
@@ -167,13 +199,47 @@ export default {
         console.error('Error leaving group:', error);
         alert('Error leaving the group.');
       }
+    },
+    async inviteUser(groupName) {
+      if (!this.inviteEmail) {
+        alert('Por favor, introduce un correo válido.');
+        return;
+      }
+
+      try {
+        const response = await axios.post('/api/groups/invite', {
+          groupName: groupName,
+          email: this.inviteEmail
+        });
+        alert(`Usuario ${this.inviteEmail} invitado exitosamente al grupo ${groupName}`);
+        this.inviteEmail = ''; 
+      } catch (error) {
+        console.error('Error al invitar al usuario:', error);
+        alert('Error al invitar al usuario. Por favor, inténtalo de nuevo.');
+      }
+    },
+    async acceptInvitation(groupName) {
+      try {
+        const response = await axios.post('/api/groups/accept-invite', {
+          email: this.userEmail,
+          groupName: groupName
+        });
+        alert(response.data.message);
+        this.fetchInvitedGroups(); // Actualiza la lista
+        this.fetchUserGroups();    // Actualiza los grupos del usuario
+      } catch (error) {
+        console.error('Error accepting invitation:', error);
+        alert('Error al aceptar la invitación.');
+      }
     }
+
   },
   mounted() {
     const storedEmail = localStorage.getItem('email'); 
     if (storedEmail) {
       this.userEmail = storedEmail;
       this.fetchUserGroups(); 
+      this.fetchInvitedGroups();
     } else {
       alert('No user email found. Please log in again.');
       this.$router.push('/login'); 

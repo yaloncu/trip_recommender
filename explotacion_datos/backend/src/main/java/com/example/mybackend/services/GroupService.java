@@ -271,6 +271,27 @@ public class GroupService {
         }
     }
 
+    public void inviteUserToGroup(String email, String groupName) {
+        try (Session session = driver.session()) {
+            session.executeWrite(tx -> {
+                Result userCheck = tx.run("MATCH (u:User {email: $email}) RETURN u", Map.of("email", email));
+                if (!userCheck.hasNext()) {
+                    throw new RuntimeException("El usuario con el correo " + email + " no existe.");
+                }
+    
+                tx.run(
+                    "MATCH (u:User {email: $email}), (g:Group {name: $groupName}) " +
+                    "MERGE (u)-[:INVITADO_A]->(g)",
+                    Map.of("email", email, "groupName", groupName)
+                );
+                return null;
+            });
+        } catch (Neo4jException e) {
+            throw new RuntimeException("Error al invitar al usuario al grupo: " + e.getMessage(), e);
+        }
+    }
+    
+
     public List<Group> getGroupsByTheme(String triptype) {
         try (Session session = driver.session()) {
             return session.executeRead(tx -> {
@@ -338,6 +359,48 @@ public class GroupService {
             throw new RuntimeException("Error retrieving groups by audience", e);
         }
     }
+    
+    public List<Map<String, Object>> getInvitedGroups(String email) {
+        try (Session session = driver.session()) {
+            return session.executeRead(tx -> {
+                var result = tx.run(
+                    "MATCH (u:User {email: $email})-[r:INVITADO_A]->(g:Group) " +
+                    "RETURN g.name AS groupName, g.privated AS privated, id(g) AS groupId",
+                    Map.of("email", email)
+                );
+    
+                List<Map<String, Object>> invitedGroups = new ArrayList<>();
+                while (result.hasNext()) {
+                    var record = result.next();
+                    Map<String, Object> groupData = new HashMap<>();
+                    groupData.put("groupName", record.get("groupName").asString());
+                    groupData.put("privated", record.get("privated").asString());
+                    groupData.put("groupId", record.get("groupId").asLong());
+                    invitedGroups.add(groupData);
+                }
+                return invitedGroups;
+            });
+        } catch (Neo4jException e) {
+            throw new RuntimeException("Error retrieving invited groups", e);
+        }
+    }
+
+    public void acceptInvitation(String email, String groupName) {
+        try (Session session = driver.session()) {
+            session.executeWrite(tx -> {
+                tx.run(
+                    "MATCH (u:User {email: $email})-[r:INVITADO_A]->(g:Group {name: $groupName}) " +
+                    "DELETE r " +
+                    "CREATE (u)-[:PERTENECE_A]->(g)",
+                    Map.of("email", email, "groupName", groupName)
+                );
+                return null;
+            });
+        } catch (Neo4jException e) {
+            throw new RuntimeException("Error while accepting invitation", e);
+        }
+    }
+    
     
     
     public void leaveGroup(String email, String groupName) {
