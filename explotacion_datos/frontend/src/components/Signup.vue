@@ -29,7 +29,7 @@
         />
         <button type="submit" class="signup-button">{{ $t('signup') }}</button>
       </form>
-      <button class="google-signup-button" @click="signupWithGoogle">Registrarse con Google</button>
+      <button class="google-signup-button" @click="signupWithGoogle">{{ $t('signupWithGoogle') }}</button>
     </div>
   </div>
 </template>

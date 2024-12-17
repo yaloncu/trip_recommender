@@ -102,7 +102,7 @@ public class GroupController {
     @PostMapping("/joinWithPreferences")
     public ResponseEntity<Map<String, String>> joinGroupWithPreferences(@RequestBody JoinGroupWithPreferencesRequest request) {
         try {
-            groupService.joinGroupWithPreferences(request.getGroupName(), request.getEmail(), request.getpreference(), request.getAvailabilityStartDates(), request.getAvailabilityEndDates());
+            groupService.joinPublicGroupWithPreferences(request.getGroupName(), request.getEmail(), request.getpreference());
             Map<String, String> response = new HashMap<>();
             response.put("message", "User successfully joined the group with preference");
             return ResponseEntity.ok(response);

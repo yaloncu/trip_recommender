@@ -63,5 +63,6 @@
   "closeVoting": "Enge Abstimmung",
   "type": "Typ",
   "joinGroup": "Gruppe beitreten",
-  "login_with_google": "Mit Google anmelden"
+  "login_with_google": "Mit Google anmelden",
+  "signupWithGoogle": "Mit Google anmelden"
 }

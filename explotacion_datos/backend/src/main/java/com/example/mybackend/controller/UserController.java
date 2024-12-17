@@ -111,7 +111,7 @@ public class UserController {
 
             if (userService.checkUserExistsByEmail(email)) {
                 String token = tokenService.generateToken(email);
-                return ResponseEntity.ok(Map.of("message", "Google login successful", "token", token));
+                return ResponseEntity.ok(Map.of("message", "Google login successful", "token", token, "email", email));
             } else {
                 return ResponseEntity.status(404).body(Map.of("message", "Google user not found"));
             }

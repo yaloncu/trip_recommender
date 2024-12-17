@@ -83,9 +83,8 @@ public class GroupService {
         try (Session session = driver.session()) {
             session.executeWrite(tx -> {
                 tx.run(
-                    "MATCH (g:Group {name: $groupName}) SET g.isVotingClosed = true", 
-                    Map.of("groupName", groupName)
-                );
+                    "MATCH (g:Group {name: $groupName}) SET g.isClosedVoting = true", 
+                    Map.of("groupName", groupName));
                 return null;
             });
         } catch (Neo4jException e) {
@@ -119,6 +118,43 @@ public class GroupService {
                     "MERGE (u)-[r:PERTENECE_A]->(g) "+
                     "SET r.preference = $preference, r.availabilityStartDates = $availabilityStartDates, r.availabilityEndDates = $availabilityEndDates",
                     Map.of("email", userEmail, "name", groupName, "preference", preference, "availabilityStartDates", availabilityStartDates, "availabilityEndDates", availabilityEndDates ));
+                return null;
+            });
+        } catch (Neo4jException e) {
+            System.err.println("Neo4jException: " + e.getMessage());
+            throw new RuntimeException("Neo4jException occurred while joining group with preferences: " + e.getMessage(), e);
+        } catch (RuntimeException e) {
+            System.err.println("RuntimeException: " + e.getMessage());
+            throw new RuntimeException("RuntimeException occurred while joining group with preferences: " + e.getMessage(), e);
+        }
+    }
+
+    public void joinPublicGroupWithPreferences(String groupName, String userEmail, String preference) {
+        if (groupName == null || userEmail == null || preference == null) {
+            throw new IllegalArgumentException("Group ID and email must not be null");
+        }
+        try (Session session = driver.session()) {
+            session.executeWrite(tx -> {
+                Result userResult = tx.run("MATCH (u:User {email: $email}) RETURN u",
+                    Map.of("email", userEmail));
+
+                if (!userResult.hasNext()) {
+                    throw new RuntimeException("User with email " + userEmail + " not found.");
+                }
+
+                Result groupResult = tx.run("MATCH (g:Group {name: $name}) RETURN g",
+                        Map.of("name", groupName));
+
+                if (!groupResult.hasNext() && groupResult.next().get("closed").asBoolean()) {
+                    throw new RuntimeException("Group with name " + groupName + " not found.");
+                }
+
+
+                tx.run("MATCH (u:User {email: $email}) "+
+                    "MATCH (g:Group {name: $name}) "+
+                    "MERGE (u)-[r:PERTENECE_A]->(g) "+
+                    "SET r.preference = $preference",
+                    Map.of("email", userEmail, "name", groupName, "preference", preference));
                 return null;
             });
         } catch (Neo4jException e) {

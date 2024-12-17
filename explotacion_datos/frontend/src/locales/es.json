@@ -63,5 +63,6 @@
   "closeVoting": "Cerrar grupo",
   "type": "Tipo",
   "joinGroup": "Unirse al grupo",
-  "login_with_google": "Iniciar sesión con Google"
+  "login_with_google": "Iniciar sesión con Google",
+  "signupWithGoogle": "Regístrate con Google"
 }

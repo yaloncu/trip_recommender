@@ -7,7 +7,6 @@
     <div v-if="!isMember">
       <p><strong>{{ $t('departureDate') }}</strong> {{ formattedDepartureDate }}</p>
       <p><strong>{{ $t('returnDate') }}</strong> {{ formattedReturnDate }}</p>
-
       <div>
         <h3>{{ $t('selectType') }}</h3>
         <div class="customCheckBoxHolder2">
@@ -21,23 +20,7 @@
           </label>
         </div>
       </div>
-
-      <div v-for="(range, index) in dateRanges" :key="index" class="date-range">
-        <label>{{ $t('availabilityStartDate') }}</label>
-        <input type="date" v-model="range.start" class="input" />
-
-        <label>{{ $t('availabilityEndDate') }}</label>
-        <input type="date" v-model="range.end" class="input" />
-
-        <button @click="removeDateRange(index)" class="delete-button">
-          {{ $t('delete') }}
-        </button>
-      </div>
-      <button @click="addDateRange" class="add-date-button">
-        {{ $t('addDateRange') }}
-      </button>
-
-      <button class="join-button" @click="joinGroup">{{ $t('joinAGroup') }}</button>
+      <button class="join-button" @click="joinGroup">{{ $t('joinGroup') }}</button>
     </div>
     <div v-else>
       <p>{{ $t('alreadyMember') }}</p>
@@ -96,14 +79,12 @@ export default {
         return;
       }
       try {
-        const availabilityStartDates = this.dateRanges.map((range) => range.start);
-        const availabilityEndDates = this.dateRanges.map((range) => range.end);
         const requestData = {
           groupName: this.group.name,
           email: email,
           preference: this.selectedType,
-          availabilityStartDates: availabilityStartDates,
-          availabilityEndDates: availabilityEndDates,
+          availabilityStartDates: null,
+          availabilityEndDates: null,
         };
         console.log("Sending data to backend:", requestData);
         const response = await axios.post("/api/groups/joinWithPreferences", requestData);

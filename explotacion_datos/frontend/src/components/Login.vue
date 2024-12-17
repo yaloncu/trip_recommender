@@ -75,7 +75,7 @@ export default {
         const response = await axios.post('/api/login/google', {
           email: email,
         });
-        const {email2, token} = response.data;
+        const {email: email2, token} = response.data;
         if (email2) {
             localStorage.setItem('email', email2); 
             console.log('User logged in successfully:', response.data);
