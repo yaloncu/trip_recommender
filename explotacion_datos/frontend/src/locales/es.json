@@ -68,5 +68,8 @@
   "noPendingInvites": "No hay invitaciones pendientes",
   "invite": "Invitar",
   "acceptInvite": "Aceptar la invitacion",
-  "enterEmailToInvite": "Inserte el email a invitar"
+  "enterEmailToInvite": "Inserte el email a invitar",
+  "yourGroups": "Tus grupos",
+  "pendingInvitations": "Invitaciones pendientes"
+
 }

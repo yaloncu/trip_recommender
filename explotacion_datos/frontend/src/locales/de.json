@@ -68,5 +68,6 @@
   "noPendingInvites": "Keine ausstehenden Einladungen",
   "invite": "Einladen",
   "acceptInvite": "Einladung annehmen",
-  "enterEmailToInvite": "Geben Sie die E-Mail-Adresse ein, um einzuladen"
+  "enterEmailToInvite": "Geben Sie die E-Mail-Adresse ein, um einzuladen",
+  "pendingInvitations": "Ausstehende Einladungen"
 }

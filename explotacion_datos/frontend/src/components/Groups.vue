@@ -20,7 +20,7 @@
         <ul>
           <li v-for="group in groups" :key="group.name" class="group-item">
             <span class="group-name">{{ group.name }} - {{ $t('audience') }}: {{ group.audience }}</span>
-            <p class="group-name"><strong>{{ $t('type') }}: </strong> {{ group.tripType }}</p>
+            <p class="group-name"><strong>{{ $t('type') }}: </strong> {{ group.type }}</p>
             <p class="group-name"><strong>{{ $t('departureDate') }}: </strong> {{ group.departureDate ? new Date(group.departureDate).toLocaleDateString() : 'No departure date available' }}</p>
             <p class="group-name"><strong>{{ $t('returnDate') }}: </strong> {{ group.returnDate ? new Date(group.returnDate).toLocaleDateString() : 'No return date available' }}</p>
             <button class="join-button" @click="viewGroupDetails(group.name)">{{ $t('viewGroup') }}</button>

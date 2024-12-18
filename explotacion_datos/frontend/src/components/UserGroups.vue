@@ -3,49 +3,86 @@
     <button class="join-button" @click="joinGroup">{{ $t('join') }}</button>
     <button class="create-button" @click="createGroup">{{ $t('create') }}</button>
 
-    <h1 class="main-title">Your groups</h1>
-    <div class="card">
-      <div v-if="groups.length">
-        <ul>
-          <li v-for="group in groups" :key="group.groupId" class="group-item">
-            {{ group.groupName }} - {{ $t('preference') }}: {{ group.preference || 'No preference' }}
-            
-            <div v-if="isAdmin(group.email) && group.privated === 'private'">
-              <input v-model="inviteEmail" type="email" :placeholder="$t('enterEmailToInvite')" class="input invite-input" />
-              <button @click="inviteUser(group.groupName)" class="invite-button">{{ $t('invite') }}</button>
-            </div>
+    <div class="cards-container">
 
+      <div class="card">
+      <h1 class="main-title">{{ $t('yourGroups') }}</h1>
+      <div v-if="groups.length" class="groups-grid">
+        <div v-for="group in groups" :key="group.groupId" class="group-card">
+          <h3 class="group-name">{{ group.groupName }}</h3>
+          <p><strong>{{ $t('preference') }}:</strong> {{ group.preference || 'No preference' }}</p>
+          <p><strong>{{ $t('departureDate') }}:</strong> {{ group.departureDate ? new Date(group.departureDate).toLocaleDateString() : 'No departure date available' }}</p>
+          <p><strong>{{ $t('arrivalDate') }}:</strong> {{ group.returnDate ? new Date(group.returnDate).toLocaleDateString() : 'No return date available' }}</p>
+
+          <div v-if="isAdmin(group.email) && group.privated === 'private'" class="admin-actions">
+            <input v-model="inviteEmail" type="email" :placeholder="$t('enterEmailToInvite')" class="input invite-input" />
+            <button @click="inviteUser(group.groupName)" class="invite-button">{{ $t('invite') }}</button>
+          </div>
+
+          <div class="group-actions">
             <button v-if="group.isClosed && !group.isClosedVoting" @click="viewRecommendation(group.groupId)" class="recommend-button">{{ $t('recomendation') }}</button>
-            <p>{{ $t('departureDate') }}: {{ group.departureDate ? new Date(group.departureDate).toLocaleDateString() : 'No departure date available' }}</p>
-            <p>{{ $t('arrivalDate') }}: {{ group.returnDate ? new Date(group.returnDate).toLocaleDateString() : 'No return date available' }}</p>
-            <button v-if="isAdmin(group.email) && !group.isClosed && group.privated==='public'"  @click="closeGroup(group.groupName)" class="close-button">{{ $t('closeGroup') }} </button>
-            <button v-if="isAdmin(group.email) && !group.isClosed && group.privated==='private'"  @click="closeGroupPrivate(group.groupName)" class="close-button">{{ $t('closeGroup') }}</button>
+            <button v-if="isAdmin(group.email) && !group.isClosed && group.privated === 'public'" @click="closeGroup(group.groupName)" class="close-button">{{ $t('closeGroup') }}</button>
+            <button v-if="isAdmin(group.email) && !group.isClosed && group.privated === 'private'" @click="closeGroupPrivate(group.groupName)" class="close-button">{{ $t('closeGroup') }}</button>
             <button v-if="isAdmin(group.email) && group.isClosed && !group.isClosedVoting" @click="closeVoting(group.groupName)" class="close-button">{{ $t('closeVoting') }}</button>
             <button @click="leaveGroup(group.groupName)" class="leave-button">{{ $t('leaveGroup') }}</button>
             <button v-if="group.isVotingClosed" @click="viewFinalDestination(group.groupId)" class="final-destination-button">{{ $t('viewFinalDestination') }}</button>
-          </li>
-        </ul>
+          </div>
+        </div>
       </div>
       <div v-else>
         <p>{{ $t('notBelongGroup') }}</p>
       </div>
     </div>
-    <h1 class="main-title">Pending Invitations</h1>
-    <div class="card">
-      <div v-if="invitedGroups.length">
-        <ul>
-          <li v-for="group in invitedGroups" :key="group.groupId" class="group-item">
-            {{ group.groupName }} - {{ group.privated }}
-            <button @click="acceptInvitation(group.groupName)" class="accept-button">
-              {{ $t('acceptInvite') }}
+
+    <div class="card invitations-card">
+      <h1 class="main-title">{{ $t('pendingInvitations') }}</h1>
+      <div v-if="invitedGroups.length" class="invited-groups-container">
+        <div v-for="group in invitedGroups" :key="group.groupId" class="group-card">
+          <h2 class="group-name">{{ group.groupName }}</h2>
+
+          <div>
+            <h3>{{ $t('selectType') }}</h3>
+            <div class="customCheckBoxHolder2">
+              <label v-for="(type, index) in vacationTypes" :key="index">
+                <input 
+                  type="radio" 
+                  :value="type" 
+                  v-model="group.selectedType" 
+                />
+                {{ $t(type) }} 
+              </label>
+            </div>
+          </div>
+
+          <div>
+            <h3>{{ $t('selectAvailabilityDates') }}</h3>
+            <div v-for="(range, index) in group.dateRanges" :key="index" class="date-range">
+              <label>{{ $t('availabilityStartDate') }}</label>
+              <input type="date" v-model="range.start" class="input date-group" />
+
+              <label>{{ $t('availabilityEndDate') }}</label>
+              <input type="date" v-model="range.end" class="input date-group" />
+
+              <button @click="removeDateRange(group, index)" class="delete-range-button">
+                {{ $t('delete') }}
+              </button>
+            </div>
+            <button @click="addDateRange(group)" class="add-range-button">
+              {{ $t('addDateRange') }}
             </button>
-          </li>
-        </ul>
+          </div>
+
+          <button @click="acceptInvitation(group)" class="accept-button">
+            {{ $t('acceptInvite') }}
+          </button>
+        </div>
       </div>
       <div v-else>
         <p>{{ $t('noPendingInvites') }}</p>
       </div>
     </div>
+
+  </div>
   </div>
 </template>
 
@@ -57,7 +94,12 @@ export default {
     return {
       groups: [] ,
       inviteEmail: '',
-      invitedGroups: []
+      invitedGroups: [],
+      vacationTypes: [
+        'Cultural', 'Playa', 'Romántica', 'Relax', 
+        'Aventura', 'Gastronómica', 'Bienestar', 'Montaña'
+      ],
+      selectedType: '' ,
     };
   },
   methods: {
@@ -80,11 +122,21 @@ export default {
     async fetchInvitedGroups() {
       try {
         const response = await axios.get(`/api/groups/invitations/${this.userEmail}`);
-        this.invitedGroups = response.data;
+        this.invitedGroups = response.data.map(group => ({
+          ...group,
+          selectedPreference: '', 
+          dateRanges: [{ start: '', end: '' }] 
+        }));
       } catch (error) {
         console.error('Error fetching invited groups:', error);
         alert('Error al obtener las invitaciones pendientes.');
       }
+    },
+    addDateRange(group) {
+      group.dateRanges.push({ start: '', end: '' });
+    },
+    removeDateRange(group, index) {
+      group.dateRanges.splice(index, 1);
     },
     joinGroup() {
       this.$router.push('/groups');
@@ -218,21 +270,31 @@ export default {
         alert('Error al invitar al usuario. Por favor, inténtalo de nuevo.');
       }
     },
-    async acceptInvitation(groupName) {
+    async acceptInvitation(group) {
+      const startDates = group.dateRanges.map(range => range.start).filter(date => date);
+      const endDates = group.dateRanges.map(range => range.end).filter(date => date);
+
+      if (startDates.length !== endDates.length || startDates.length === 0) {
+        alert('Por favor, asegúrate de que todos los rangos de fechas estén completos.');
+        return;
+      }
+
       try {
-        const response = await axios.post('/api/groups/accept-invite', {
+        const response = await axios.post('/api/groups/accept-invite-details', {
           email: this.userEmail,
-          groupName: groupName
+          groupName: group.groupName,
+          preference: this.selectedType,
+          startDates: startDates,
+          endDates: endDates
         });
         alert(response.data.message);
-        this.fetchInvitedGroups(); // Actualiza la lista
-        this.fetchUserGroups();    // Actualiza los grupos del usuario
+        this.fetchInvitedGroups(); 
+        this.fetchUserGroups();    
       } catch (error) {
-        console.error('Error accepting invitation:', error);
-        alert('Error al aceptar la invitación.');
+        console.error('Error accepting invitation with details:', error);
+        alert('Error al aceptar la invitación con detalles.');
       }
     }
-
   },
   mounted() {
     const storedEmail = localStorage.getItem('email'); 
@@ -250,16 +312,26 @@ export default {
 
 <style scoped>
 .user-container {
-  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   height: 100vh;
-  background-color: #2c3e50; 
+  background-color: #2c3e50;
   color: white;
-  text-align: center;
+  padding: 20px;
 }
+
+.cards-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px; /* Espaciado entre las tarjetas */
+  width: 100%;
+  max-width: 900px; /* Ancho máximo para las tarjetas */
+}
+
 
 .join-button {
   position: absolute;
@@ -328,12 +400,41 @@ export default {
 }
 
 .card {
-  max-width: 400px;
-  width: 100%;
   background: #34495e;
   border-radius: 20px;
-  padding: 30px 40px;
-  box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 20px;
+  padding: 30px;
+  flex: 1; /* Las tarjetas se expanden proporcionalmente */
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 30px 30px -20px;
+}
+.groups-card {
+  margin-right: 10px;
+}
+
+.invitations-card {
+  margin-left: 10px;
+}
+
+.group-item {
+  margin-bottom: 10px;
+  padding: 10px;
+  background-color: #3c556c;
+  border-radius: 10px;
+}
+
+.accept-button,
+.leave-button {
+  margin-top: 10px;
+  padding: 5px 15px;
+  background-color: #38a169;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+.accept-button:hover,
+.leave-button:hover {
+  background-color: #2f855a;
 }
 
 .input {
@@ -362,7 +463,7 @@ ul {
 .group-item {
   margin-bottom: 10px;
   padding: 10px;
-  background-color: #34495e;
+  background-color: white;
   border-radius: 20px;
 }
 
@@ -408,4 +509,124 @@ ul {
   background-color: #c0392b;
 }
 
+.customCheckBoxHolder2 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.customCheckBoxHolder2 label {
+  margin: 5px 0;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.date-range {
+  display: block;
+  margin: 5px 0;
+  color: #ecf0f1;
+}
+
+.delete-range-button {
+  margin-top: 5px;
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.add-range-button {
+  margin-top: 10px;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.accept-button {
+  margin-top: 15px;
+  padding: 10px 20px;
+  background-color: #38a169;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+.groups-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.group-card {
+  background-color: #2c3e50;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  color: #ecf0f1;
+  text-align: left;
+}
+
+.invited-groups-container {
+  display: flex;
+  flex-wrap: wrap; /* Permite que las tarjetas se ajusten en filas */
+  gap: 20px; /* Espacio entre las tarjetas */
+  justify-content: center; /* Centra las tarjetas */
+}
+
+.group-name {
+  color: #1abc9c;
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+
+.group-actions {
+  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.admin-actions {
+  margin-top: 15px;
+}
+
+.invite-input {
+  width: calc(100% - 10px);
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #1abc9c;
+  margin-right: 5px;
+}
+
+.invite-button,
+.recommend-button,
+.close-button,
+.leave-button,
+.final-destination-button {
+  background-color: #1abc9c;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 15px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.invite-button:hover,
+.recommend-button:hover,
+.close-button:hover,
+.leave-button:hover,
+.final-destination-button:hover {
+  background-color: #16a085;
+}
+
+.date-group {
+  width: 100%;
+  margin-bottom: 10px;
+}
 </style>

@@ -144,25 +144,31 @@ public class GroupController {
         }
     }
 
-    @PostMapping("/accept-invite")
-    public ResponseEntity<Map<String, String>> acceptInvitation(@RequestBody Map<String, String> body) {
-        String email = body.get("email");
-        String groupName = body.get("groupName");
-
-        if (email == null || groupName == null) {
-            return ResponseEntity.badRequest().body(Map.of("error", "Email y nombre del grupo son obligatorios"));
-        }
+    @PostMapping("/accept-invite-details")
+    public ResponseEntity<Map<String, String>> acceptInvitationWithDetails(@RequestBody Map<String, Object> body) {
+        String email = (String) body.get("email");
+        String groupName = (String) body.get("groupName");
+        String preference = (String) body.get("preference");
+        List<String> startDates = (List<String>) body.get("startDates");
+        List<String> endDates = (List<String>) body.get("endDates");
 
         try {
-            groupService.acceptInvitation(email, groupName);
-            return ResponseEntity.ok(Map.of("message", "Invitación aceptada correctamente"));
+            List<LocalDate> parsedStartDates = startDates.stream()
+                .map(LocalDate::parse)
+                .toList();
+
+            List<LocalDate> parsedEndDates = endDates.stream()
+                .map(LocalDate::parse)
+                .toList();
+
+            groupService.acceptInvitationWithDetails(email, groupName, preference, parsedStartDates, parsedEndDates);
+            return ResponseEntity.ok(Map.of("message", "Invitación aceptada con detalles correctamente"));
         } catch (Exception e) {
-            logger.error("Error al aceptar la invitación:", e);
+            logger.error("Error al aceptar la invitación con detalles:", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("error", "Error al aceptar la invitación", "message", e.getMessage()));
         }
     }
-
 
     @GetMapping("/public")
     public ResponseEntity<List<Group>> getPublicGroups() {

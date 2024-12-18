@@ -68,5 +68,7 @@
   "noPendingInvites": "No pending invites",
   "invite": "Invite",
   "acceptInvite": "Accept invite",
-  "enterEmailToInvite": "Enter email to invite"
+  "enterEmailToInvite": "Enter email to invite",
+  "yourGroups": "Your groups",
+  "pendingInvitations": "Pending invitations"
 }

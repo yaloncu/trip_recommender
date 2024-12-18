@@ -385,22 +385,39 @@ public class GroupService {
         }
     }
 
-    public void acceptInvitation(String email, String groupName) {
+    public void acceptInvitationWithDetails(String email, String groupName, String preference, List<LocalDate> startDates, List<LocalDate> endDates) {
+        if (email == null || groupName == null || preference == null || startDates == null || endDates == null) {
+            throw new IllegalArgumentException("Todos los parámetros son obligatorios.");
+        }
+        if (startDates.size() != endDates.size()) {
+            throw new IllegalArgumentException("El número de fechas de inicio y fin debe coincidir.");
+        }
         try (Session session = driver.session()) {
             session.executeWrite(tx -> {
                 tx.run(
                     "MATCH (u:User {email: $email})-[r:INVITADO_A]->(g:Group {name: $groupName}) " +
-                    "DELETE r " +
-                    "CREATE (u)-[:PERTENECE_A]->(g)",
+                    "DELETE r",
                     Map.of("email", email, "groupName", groupName)
+                );
+    
+                tx.run(
+                    "MATCH (u:User {email: $email}), (g:Group {name: $groupName}) " +
+                    "MERGE (u)-[r:PERTENECE_A]->(g) " +
+                    "SET r.preference = $preference, r.availabilityStartDates = $startDates, r.availabilityEndDates = $endDates",
+                    Map.of(
+                        "email", email,
+                        "groupName", groupName,
+                        "preference", preference,
+                        "startDates", startDates,
+                        "endDates", endDates
+                    )
                 );
                 return null;
             });
         } catch (Neo4jException e) {
-            throw new RuntimeException("Error while accepting invitation", e);
+            throw new RuntimeException("Error al aceptar la invitación con detalles: " + e.getMessage(), e);
         }
     }
-    
     
     
     public void leaveGroup(String email, String groupName) {
