@@ -28,6 +28,9 @@ import com.example.mybackend.repository.GroupRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * GroupService is a service that provides operations for managing groups in the application.
+ */
 @Service
 public class GroupService {
 
@@ -39,6 +42,20 @@ public class GroupService {
         this.driver = driver;
     }
 
+    /**
+     * Creates a new group in the Neo4j database.
+     * 
+     * @param groupName The name of the group.
+     * @param email The email of the user creating the group.
+     * @param audience The audience of the group.
+     * @param privated The privacy setting of the group.
+     * @param isClosed Whether the group is closed or not.
+     * @param tripType The type of trip for the group.
+     * @param departureDate The departure date for the group.
+     * @param returnDate The return date for the group.
+     * @param availabilityStartDates The availability start dates for the group.
+     * @param availabilityEndDates The availability end dates for the group.
+     */
     public void createGroup(String groupName, String email, String audience, String privated, boolean isClosed, String tripType, LocalDate departureDate, LocalDate returnDate, List<LocalDate> availabilityStartDates, List<LocalDate> availabilityEndDates) {
         try (Session session = driver.session()) {
             session.executeWrite(tx -> {
@@ -67,6 +84,11 @@ public class GroupService {
         }
     }
     
+    /**
+     * Closes a group in the Neo4j database.
+     *
+     * @param groupName The name of the group to close.
+     */
     public void closeGroup(String groupName) {
         try (Session session = driver.session()) {
             session.executeWrite(tx -> {
@@ -79,6 +101,11 @@ public class GroupService {
         }
     }
 
+    /**
+     * Closes the voting for a group in the Neo4j database.
+     *
+     * @param groupName The name of the group to close the voting for.
+     */
     public void closeVoting(String groupName) {
         try (Session session = driver.session()) {
             session.executeWrite(tx -> {
@@ -92,6 +119,15 @@ public class GroupService {
         }
     }
 
+    /**
+     * Joins a group with preferences in the Neo4j database.
+     *
+     * @param groupName The name of the group to join.
+     * @param userEmail The email of the user joining the group.
+     * @param preference The preference of the user joining the group.
+     * @param availabilityStartDates The availability start dates of the user joining the group.
+     * @param availabilityEndDates The availability end dates of the user joining the group.
+     */
     public void joinGroupWithPreferences(String groupName, String userEmail, String preference, List<LocalDate> availabilityStartDates, List<LocalDate> availabilityEndDates) {
         if (groupName == null || userEmail == null || preference == null) {
             throw new IllegalArgumentException("Group ID and email must not be null");
@@ -129,6 +165,13 @@ public class GroupService {
         }
     }
 
+    /**
+     * Joins a public group with preferences in the Neo4j database.
+     *
+     * @param groupName The name of the group to join.
+     * @param userEmail The email of the user joining the group.
+     * @param preference The preference of the user joining the group.
+     */
     public void joinPublicGroupWithPreferences(String groupName, String userEmail, String preference) {
         if (groupName == null || userEmail == null || preference == null) {
             throw new IllegalArgumentException("Group ID and email must not be null");
@@ -166,6 +209,12 @@ public class GroupService {
         }
     }
     
+    /**
+     * Gets the groups that a user belongs to.
+     *
+     * @param email The email of the user.
+     * @return A list of maps containing the group data.
+     */
     public List<Map<String, Object>> getUserGroups(String email) {
         try (Session session = driver.session()) {
             return session.executeRead(tx -> {
@@ -207,6 +256,12 @@ public class GroupService {
         }
     }
     
+    /**
+     * Gets the groups that a user belongs to.
+     *
+     * @param email The email of the user.
+     * @return A list of maps containing the group data.
+     */
     public Group getGroupByName(String name) {
         try (Session session = driver.session()) {
             return session.executeRead(tx -> {
@@ -242,6 +297,11 @@ public class GroupService {
         }
     }
 
+    /**
+     * Gets the public groups.
+     *
+     * @return A list of public groups.
+     */
     public List<Group> getPublicGroups() {
         try (Session session = driver.session()) {
             return session.executeRead(tx -> {
@@ -271,6 +331,12 @@ public class GroupService {
         }
     }
 
+    /**
+     * Invites a user to a private group.
+     *
+     * @param email The email of the user to invite.
+     * @param groupName The name of the group to invite the user to.
+     */
     public void inviteUserToGroup(String email, String groupName) {
         try (Session session = driver.session()) {
             session.executeWrite(tx -> {
@@ -291,7 +357,11 @@ public class GroupService {
         }
     }
     
-
+    /**
+     * Gets the groups by theme.
+     * @param triptype The type of trip.
+     * @return A list of groups with the specified theme.
+     */
     public List<Group> getGroupsByTheme(String triptype) {
         try (Session session = driver.session()) {
             return session.executeRead(tx -> {
@@ -326,6 +396,11 @@ public class GroupService {
         }
     }
     
+    /**
+     * Gets the groups by audience.
+     * @param audience The audience of the groups.
+     * @return A list of groups with the specified audience.
+     */
     public List<Group> getGroupsByAudience(String audience) {
         try (Session session = driver.session()) {
             return session.executeRead(tx -> {
@@ -360,6 +435,11 @@ public class GroupService {
         }
     }
     
+    /**
+     * Gets the groups that a user has been invited to.
+     * @param email The email of the user.
+     * @return A list of maps containing the group data.
+     */
     public List<Map<String, Object>> getInvitedGroups(String email) {
         try (Session session = driver.session()) {
             return session.executeRead(tx -> {
@@ -385,6 +465,14 @@ public class GroupService {
         }
     }
 
+    /**
+     * Accepts an invitation to a group.
+     * @param email The email of the user accepting the invitation.
+     * @param groupName The name of the group to accept the invitation to.
+     * @param preference The preference of the user accepting the invitation.
+     * @param startDates The availability start dates of the user accepting the invitation.
+     * @param endDates The availability end dates of the user accepting the invitation.
+     */
     public void acceptInvitationWithDetails(String email, String groupName, String preference, List<LocalDate> startDates, List<LocalDate> endDates) {
         if (email == null || groupName == null || preference == null || startDates == null || endDates == null) {
             throw new IllegalArgumentException("Todos los parámetros son obligatorios.");
@@ -419,7 +507,11 @@ public class GroupService {
         }
     }
     
-    
+    /**
+     * Leaves a group.
+     * @param email The email of the user leaving the group.
+     * @param groupName The name of the group to leave.
+     */
     public void leaveGroup(String email, String groupName) {
         try (Session session = driver.session()) {
             session.executeWrite(tx -> {
@@ -433,6 +525,10 @@ public class GroupService {
         }
     }
     
+    /**
+     * Recommends a date for a group using a sliding window algorithm.
+     * @param groupName The name of the group to recommend a date for.
+     */
     public void recommendDateUsingSlidingWindow(String groupName) {
         try (Session session = driver.session()) {
             // Obtener las disponibilidades de los usuarios
@@ -487,8 +583,6 @@ public class GroupService {
                 }
                 userAvailabilityArrays.add(availabilityArray);
             }
-
-
     
             // Aplicar Sliding Window 
             int maxCount = 0;

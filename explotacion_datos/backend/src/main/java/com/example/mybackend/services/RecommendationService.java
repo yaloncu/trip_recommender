@@ -11,6 +11,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+/**
+ * RecommendationService is a service that provides recommendation-related operations using Neo4j.
+ * It allows creating recommendations between groups and destinations, retrieving recommendations,
+ * voting for a city, and getting the final destination for a group.
+ */
 @Service
 public class RecommendationService {
 
@@ -20,6 +25,10 @@ public class RecommendationService {
         this.driver = driver;
     }
 
+    /**
+     * Create recommendations between a group and destinations based on the group's trip type and audience.
+     * @param groupId The ID of the group.
+     */
     public void createGroupDestinationRecommendations(Long groupId) {
         try (Session session = driver.session()) {
             session.executeWrite(tx -> {
@@ -38,6 +47,11 @@ public class RecommendationService {
         }
     }
 
+    /**
+     * Retrieve recommendations for a group.
+     * @param groupId The ID of the group.
+     * @return A list of destination names recommended for the group.
+     */
     public List<String> getRecommendations(Long groupId) {
         try (Session session = driver.session()) {
             return session.executeRead(tx -> {
@@ -58,6 +72,12 @@ public class RecommendationService {
         }
     }
 
+    /**
+     * Vote for a city in a group.
+     * @param userId The email of the user voting.
+     * @param city The name of the city being voted for.
+     * @param groupId The ID of the group.
+     */
     public void voteForCity(String userId, String city, Long groupId) {
         Objects.requireNonNull(city, "La ciudad no puede ser nula");
         Objects.requireNonNull(userId, "El userId no puede ser nulo");
@@ -81,6 +101,11 @@ public class RecommendationService {
         }
     }
 
+    /**
+     * Get the final destination for a group.
+     * @param groupId The ID of the group.
+     * @return The name of the final destination for the group.
+     */
     public String getFinalDestination(Long groupId) {
         try (Session session = driver.session()) {
             return session.executeRead(tx -> {

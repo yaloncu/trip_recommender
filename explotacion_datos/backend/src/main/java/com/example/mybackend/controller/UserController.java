@@ -14,6 +14,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * UserController is a REST controller that handles HTTP requests related to users.
+ * It provides endpoints to create users, login, and get user groups.
+ */
 @RestController
 @RequestMapping("/api")
 public class UserController {
@@ -22,11 +26,14 @@ public class UserController {
     private Neo4jUserService userService;
 
     @Autowired
-    private GroupService groupService;
-
-    @Autowired
     private TokenService tokenService;
 
+    /**
+     * Access a protected route.
+     *
+     * @param token the authorization token
+     * @return a response indicating the access status
+     */
     @GetMapping("/protected-route")
     public ResponseEntity<String> protectedRoute(@RequestHeader("Authorization") String token) {
         try {
@@ -47,6 +54,12 @@ public class UserController {
         }
     }
     
+    /**
+     * Create a new user.
+     *
+     * @param user the user to create
+     * @return a response indicating the creation status
+     */
     @PostMapping("/signup")
     public ResponseEntity<String> createUser(@RequestBody User user) {
         try {
@@ -67,6 +80,12 @@ public class UserController {
         }
     }
 
+    /**
+     * Create a new user from Google.
+     *
+     * @param payload the user data from Google
+     * @return a response indicating the creation status
+     */
     @PostMapping("/signup/google")
     public ResponseEntity<String> createUserFromGoogle(@RequestBody Map<String, String> payload) {
         try {
@@ -85,6 +104,12 @@ public class UserController {
         }
     }
 
+    /**
+     * Login a user.
+     *
+     * @param loginRequest the login request containing email and password
+     * @return a response indicating the login status
+     */
     @PostMapping("/login")
     public ResponseEntity<Map<String, String>> login(@RequestBody User loginRequest) {
         try {
@@ -104,6 +129,12 @@ public class UserController {
         }
     }
 
+    /**
+     * Login a user with Google.
+     *
+     * @param googleLoginRequest the login request containing email
+     * @return a response indicating the login status
+     */
     @PostMapping("/login/google")
     public ResponseEntity<Map<String, String>> loginWithGoogle(@RequestBody Map<String, String> googleLoginRequest) {
         try {

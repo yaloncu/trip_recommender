@@ -15,6 +15,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * RecommendationController is a REST controller that handles HTTP requests related to recommendations.
+ * It provides endpoints to get recommendations for groups.
+ */
 @RestController
 @RequestMapping("/api")
 public class RecommendationController {
@@ -25,6 +29,12 @@ public class RecommendationController {
         this.recommendationService = recommendationService;
     }
 
+    /**
+     * Get recommendations for a specific group.
+     *
+     * @param groupId the ID of the group
+     * @return a list of recommendations for the group
+     */
     @GetMapping("/recommendations/{groupId}")
     public ResponseEntity<List<String>> getRecommendations(@PathVariable Long groupId) {
         try {
@@ -37,6 +47,12 @@ public class RecommendationController {
         }
     }
 
+    /**
+     * Get the final destination for a group.
+     *
+     * @param groupId the ID of the group
+     * @return the final destination for the group
+     */
     @GetMapping("/groups/{groupId}/finalDestination")
     public ResponseEntity<Map<String, String>> getFinalDestination(@PathVariable Long groupId) {
         try {
@@ -53,6 +69,12 @@ public class RecommendationController {
         }
     }
 
+    /**
+     * Vote for a city in a group.
+     *
+     * @param voteRequest the vote request
+     * @return a response entity with the result of the vote
+     */
     @PostMapping("/vote")
     public ResponseEntity<String> voteForCity(@RequestBody VoteRequest voteRequest) {
         try {
@@ -64,6 +86,9 @@ public class RecommendationController {
         }
     }
 
+    /**
+     * VoteRequest is a class that represents a vote request.
+     */
     public static class VoteRequest {
         private Long groupId; 
         private String userId;

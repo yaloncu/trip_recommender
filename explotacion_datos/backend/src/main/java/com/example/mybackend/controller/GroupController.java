@@ -23,6 +23,10 @@ import org.springframework.web.bind.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * GroupController is a REST controller that handles HTTP requests related to groups.
+ * It provides endpoints to manage groups in the application.
+ */
 @RestController
 @RequestMapping("/api/groups")
 public class GroupController {
@@ -36,6 +40,12 @@ public class GroupController {
         this.groupService = groupService;
     }
 
+    /**
+     * Create a new group.
+     *
+     * @param group the group to create
+     * @return the created group
+     */
     @PostMapping("/create")
     public ResponseEntity<Map<String, String>> createGroup(@RequestBody Group group) {
         try {
@@ -52,6 +62,11 @@ public class GroupController {
         }
     }
 
+    /**
+     * Get all groups.
+     *
+     * @return the list of groups
+     */
     @PutMapping("/close/{name}")
     public ResponseEntity<Map<String, String>> closeGroup(@PathVariable String name) {
         try {
@@ -68,6 +83,12 @@ public class GroupController {
         }
     }
 
+    /**
+     * Get a group by ID.
+     *
+     * @param id the ID of the group
+     * @return the group
+     */
     @PostMapping("/closePrivate/{name}")
     public ResponseEntity<Map<String, String>> closeGroupPrivate(@PathVariable String name) {
         try {
@@ -88,7 +109,13 @@ public class GroupController {
         }
     }
 
-
+    /**
+     * Update a group by ID.
+     *
+     * @param id the ID of the group
+     * @param group the group details to update
+     * @return the updated group
+     */
     @PutMapping("/closeVoting/{name}")
     public ResponseEntity<String> closeVoting(@PathVariable String groupName) {
         try {
@@ -99,6 +126,12 @@ public class GroupController {
         }
     }
     
+     /**
+     * Delete a group by ID.
+     *
+     * @param id the ID of the group
+     * @return the response status
+     */
     @PostMapping("/joinWithPreferences")
     public ResponseEntity<Map<String, String>> joinGroupWithPreferences(@RequestBody JoinGroupWithPreferencesRequest request) {
         try {
@@ -115,6 +148,12 @@ public class GroupController {
         }
     }
 
+     /**
+     * Invite a user to a group.
+     *
+     * @param body the request body containing email and group name
+     * @return the response status and message
+     */
     @PostMapping("/invite")
     public ResponseEntity<Map<String, String>> inviteUserToGroup(@RequestBody Map<String, String> body) {
         String email = body.get("email");
@@ -132,6 +171,12 @@ public class GroupController {
         }
     }
 
+    /**
+     * Remove a user from a group.
+     *
+     * @param body the request body containing email and group name
+     * @return the response status and message
+     */
     @GetMapping("/invitations/{email}")
     public ResponseEntity<List<Map<String, Object>>> getInvitedGroups(@PathVariable String email) {
         try {
@@ -144,6 +189,12 @@ public class GroupController {
         }
     }
 
+    /**
+     * Accept an invitation to a private group with additional details.
+     *
+     * @param body the request body containing email, group name, preference, start dates, and end dates
+     * @return the response status and message
+     */
     @PostMapping("/accept-invite-details")
     public ResponseEntity<Map<String, String>> acceptInvitationWithDetails(@RequestBody Map<String, Object> body) {
         String email = (String) body.get("email");
@@ -170,6 +221,11 @@ public class GroupController {
         }
     }
 
+    /**
+     * Get all public groups.
+     *
+     * @return the list of public groups
+     */
     @GetMapping("/public")
     public ResponseEntity<List<Group>> getPublicGroups() {
         try {
@@ -180,7 +236,12 @@ public class GroupController {
         }
     }
 
-
+    /**
+     * Get groups for a specific user.
+     *
+     * @param body the request body containing the user's email
+     * @return the list of groups the user belongs to
+     */
     @PostMapping("/user")
     public ResponseEntity<List<Map<String, Object>>> getUserGroups(@RequestBody Map<String, String> body) {
         String email = body.get("email");
@@ -191,15 +252,24 @@ public class GroupController {
         return ResponseEntity.ok(groups);
     }
 
-
-
-   
+    /**
+     * Get a group by name.
+     *
+     * @param name the name of the group
+     * @return the group
+     */
     @GetMapping("/{name}")
     public ResponseEntity<Group> getGroupByName(@PathVariable String name) {
         Group group = groupService.getGroupByName(name);
         return group != null ? ResponseEntity.ok(group) : ResponseEntity.notFound().build();
     }
 
+    /**
+     * Leave a group.
+     *
+     * @param body the request body containing the user's email and group name
+     * @return the response status and message
+     */
     @DeleteMapping("/leave")
     public ResponseEntity<Map<String, String>> leaveGroup(@RequestBody Map<String, String> body) {
         String email = body.get("email");
@@ -218,6 +288,12 @@ public class GroupController {
         }
     }
 
+    /**
+     * Get groups by theme.
+     *
+     * @param triptype the theme of the groups
+     * @return the list of groups with the specified theme
+     */
     @GetMapping("/triptype/{triptype}")
     public ResponseEntity<List<Group>> getGroupsByTheme(@PathVariable String triptype) {
         try {
@@ -232,6 +308,12 @@ public class GroupController {
         }
     }
 
+    /**
+     * Get groups by audience.
+     *
+     * @param audience the audience of the groups
+     * @return the list of groups with the specified audience
+     */
     @GetMapping("/audience/{audience}")
     public ResponseEntity<List<Group>> getGroupsByAudience(@PathVariable String audience) {
         try {

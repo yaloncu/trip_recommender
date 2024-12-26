@@ -17,7 +17,10 @@ import org.springframework.stereotype.Service;
 import com.example.mybackend.model.User;
 import com.example.mybackend.model.Group;
 
-
+/**
+ * Neo4jUserService is a service that provides user-related operations using Neo4j.
+ * It allows creating users, adding users to groups, and validating user credentials.
+ */
 @Service
 public class Neo4jUserService {
 
@@ -30,6 +33,13 @@ public class Neo4jUserService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    /**
+     * Create a new user with the given name, email, and password.
+     *
+     * @param name the name of the user
+     * @param email the email of the user
+     * @param password the password of the user
+     */
     public void createUser(String name, String email, String password) {
         String hashedPassword = passwordEncoder.encode(password);
         try (Session session = driver.session()) {
@@ -43,6 +53,12 @@ public class Neo4jUserService {
         }
     }
 
+    /**
+     * Add a user with the given email to the group with the given name.
+     *
+     * @param email the email of the user
+     * @param groupName the name of the group
+     */
     public void createUser(String name, String email) {
         try (Session session = driver.session()) {
             session.executeWrite(tx -> {
@@ -55,6 +71,12 @@ public class Neo4jUserService {
         }
     }
 
+    /**
+     * Add a user with the given email to the group with the given name.
+     *
+     * @param email the email of the user
+     * @param groupName the name of the group
+     */
     public void addUserToGroup(String email, String groupName) {
         try (Session session = driver.session()) {
             session.executeWrite(tx -> {
@@ -69,6 +91,13 @@ public class Neo4jUserService {
         }
     }
 
+    /**
+     * Validate the user with the given email and password.
+     *
+     * @param email the email of the user
+     * @param password the password of the user
+     * @return true if the user is valid, false otherwise
+     */
     public boolean validateUser(String email, String password){
         try (Session session = driver.session()){
             return session.executeRead(tx ->{
@@ -82,6 +111,12 @@ public class Neo4jUserService {
         }
     }
     
+    /**
+     * Check if a user with the given email exists.
+     *
+     * @param email the email of the user
+     * @return true if the user exists, false otherwise
+     */
     public boolean checkUserExistsByEmail(String email) {
         try (Session session = driver.session()){
             return session.executeRead(tx ->{
@@ -95,7 +130,12 @@ public class Neo4jUserService {
         }
     }
     
-
+    /**
+     * Get the user with the given email.
+     *
+     * @param email the email of the user
+     * @return the user with the given email, or null if the user does not exist
+     */
     public User getUserByEmail(String email) {
         try (Session session = driver.session()) {
             return session.executeRead(tx -> {
@@ -119,6 +159,12 @@ public class Neo4jUserService {
         }
     }
 
+    /**
+     * Get the groups that the user with the given email belongs to.
+     *
+     * @param email the email of the user
+     * @return a list of groups that the user belongs to
+     */
     public List<Group> getUserGroups(String email) {
         try (Session session = driver.session()) {
             return session.executeRead(tx -> {
@@ -132,7 +178,7 @@ public class Neo4jUserService {
                     var record = result.next();
                     var node = record.get("g").asNode();
                     Group group = new Group(
-                        node.get("name").asString() // Asegúrate de que el nodo `Group` tenga la propiedad `name`
+                        node.get("name").asString()
                     );
                     groups.add(group);
                 }
