@@ -152,6 +152,12 @@ public class UserController {
         }
     }
 
+    /**
+     * Get groups for a specific user.
+     *
+     * @param email the email of the user
+     * @return a list of groups the user belongs to
+     */
     @GetMapping("/users/{email}/groups")
     public ResponseEntity<List<Group>> getUserGroups(@PathVariable String email) {
         try {
