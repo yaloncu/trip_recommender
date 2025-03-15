@@ -5,7 +5,7 @@ services:
     image: neo4j:5.22.0
     container_name: neo4j
     environment:
-      NEO4J_AUTH: neo4j/12345678  
+      NEO4J_AUTH: neo4j/1234  
     ports:
       - "7687:7687"  # Bolt
       - "7474:7474"  # HTTP
