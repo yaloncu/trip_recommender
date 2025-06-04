@@ -5,11 +5,14 @@ import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.GeneratedValue;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import groovyjarjarantlr4.v4.parse.v4ParserException;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+
 
 /**
  * Group represents a group entity in the application.
@@ -28,9 +31,13 @@ public class Group {
     private boolean isClosed;
     private boolean isClosedVoting;
     private String type;
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate departureDate;
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate returnDate;
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private List<LocalDate> availabilityStartDates;
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private List<LocalDate> availabilityEndDates;
 
     @Relationship(type = "PERTENECE_A", direction = Relationship.Direction.INCOMING)
