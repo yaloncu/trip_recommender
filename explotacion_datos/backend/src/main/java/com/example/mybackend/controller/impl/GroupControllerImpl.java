@@ -42,18 +42,12 @@ public class GroupControllerImpl implements GroupController {
      * @return the created group
      */
     @PostMapping("/create")
-    public ResponseEntity<Map<String, String>> createGroup(@RequestBody Group group) {
+    public Group createGroup(@RequestBody Group group) {
         try {
-            groupService.createGroup(group.getName(), group.getEmail(), group.getAudience(), group.getPrivated(), group.isClosed(), group.getType(), group.getDepartureDate(), group.getReturnDate(), group.getAvailabilityStartDate(), group.getAvailabilityEndDate(), "");
-            Map<String, String> response = new HashMap<>();
-            response.put("message", "Group created successfully");
-            return ResponseEntity.ok(response);
+             return groupService.createGroup(group.getName(), group.getEmail(), group.getAudience(), group.getPrivated(), group.isClosed(), group.getType(), group.getDepartureDate(), group.getReturnDate(), group.getAvailabilityStartDates(), group.getAvailabilityEndDates(), "");
         } catch (Exception e) {
             e.printStackTrace();
-            Map<String, String> errorResponse = new HashMap<>();
-            errorResponse.put("error", "Failed to create group");
-            errorResponse.put("message", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+            return null;
         }
     }
 
@@ -63,18 +57,12 @@ public class GroupControllerImpl implements GroupController {
      * @return the list of groups
      */
     @PutMapping("/close/{name}")
-    public ResponseEntity<Map<String, String>> closeGroup(@PathVariable String name) {
+    public Group closeGroup(@PathVariable String name) {
         try {
-            groupService.closeGroup(name);
-            Map<String, String> response = new HashMap<>();
-            response.put("message", "Group closed successfully");
-            return ResponseEntity.ok(response);
+            return groupService.closeGroup(name);
         } catch (Exception e) {
             e.printStackTrace();
-            Map<String, String> errorResponse = new HashMap<>();
-            errorResponse.put("error", "Failed to close group");
-            errorResponse.put("message", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+            return null;
         }
     }
 
@@ -85,22 +73,17 @@ public class GroupControllerImpl implements GroupController {
      * @return the group
      */
     @PostMapping("/closePrivate/{name}")
-    public ResponseEntity<Map<String, String>> closeGroupPrivate(@PathVariable String name) {
+    public Group closeGroupPrivate(@PathVariable String name) {
         try {
             logger.info("Closing group: {}", name);
-            groupService.closeGroup(name);
+            Group group = groupService.closeGroup(name);
             logger.info("Group closed successfully: {}", name);
             groupService.recommendDateUsingSlidingWindow(name);
             logger.info("Recommended dates calculated for group: {}", name);
-            Map<String, String> response = new HashMap<>();
-            response.put("message", "Group closed successfully and dates recommended");
-            return ResponseEntity.ok(response);
+            return group;
         } catch (Exception e) {
             e.printStackTrace();
-            Map<String, String> errorResponse = new HashMap<>();
-            errorResponse.put("error", "Failed to close group and recommend dates");
-            errorResponse.put("message", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+            return null;
         }
     }
 
@@ -112,12 +95,12 @@ public class GroupControllerImpl implements GroupController {
      * @return the updated group
      */
     @PutMapping("/closeVoting/{name}")
-    public ResponseEntity<String> closeVoting(@PathVariable String groupName) {
+    public Group closeVoting(@PathVariable String groupName) {
         try {
-            groupService.closeVoting(groupName); 
-            return ResponseEntity.ok("Votación cerrada con éxito.");
+            return groupService.closeVoting(groupName); 
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al cerrar la votación.");
+            e.printStackTrace();
+            return null;
         }
     }
     
@@ -128,18 +111,12 @@ public class GroupControllerImpl implements GroupController {
      * @return the response status
      */
     @PostMapping("/joinWithPreferences")
-    public ResponseEntity<Map<String, String>> joinGroupWithPreferences(@RequestBody JoinGroupWithPreferencesRequest request) {
+    public String joinGroupWithPreferences(@RequestBody JoinGroupWithPreferencesRequest request) {
         try {
-            groupService.joinPublicGroupWithPreferences(request.getGroupName(), request.getEmail(), request.getpreference());
-            Map<String, String> response = new HashMap<>();
-            response.put("message", "User successfully joined the group with preference");
-            return ResponseEntity.ok(response);
+            return groupService.joinPublicGroupWithPreferences(request.getGroupName(), request.getEmail(), request.getpreference());
         } catch (Exception e) {
             e.printStackTrace();
-            Map<String, String> errorResponse = new HashMap<>();
-            errorResponse.put("error", "Failed to join group with preference");
-            errorResponse.put("message", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+            return "Error al unirse al grupo: " + e.getMessage();
         }
     }
 
@@ -150,19 +127,17 @@ public class GroupControllerImpl implements GroupController {
      * @return the response status and message
      */
     @PostMapping("/invite")
-    public ResponseEntity<Map<String, String>> inviteUserToGroup(@RequestBody Map<String, String> body) {
+    public String inviteUserToGroup(@RequestBody Map<String, String> body) {
         String email = body.get("email");
         String groupName = body.get("groupName");
         if (email == null || groupName == null) {
-            return ResponseEntity.badRequest().body(Map.of("error", "Email y nombre del grupo son obligatorios"));
+            return "not valid";
         }
         try {
-            groupService.inviteUserToGroup(email, groupName);
-            return ResponseEntity.ok(Map.of("message", "Usuario invitado exitosamente"));
+            return groupService.inviteUserToGroup(email, groupName);
         } catch (Exception e) {
             logger.error("Error al invitar al usuario al grupo:", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("error", "Error al invitar al usuario", "message", e.getMessage()));
+            return "error";
         }
     }
 
@@ -173,14 +148,13 @@ public class GroupControllerImpl implements GroupController {
      * @return the response status and message
      */
     @GetMapping("/invitations/{email}")
-    public ResponseEntity<List<Group>> getInvitedGroups(@PathVariable String email) {
+    public List<Group> getInvitedGroups(@PathVariable String email) {
         try {
             List<Group> invitedGroups = groupService.getInvitedGroups(email);
-            return ResponseEntity.ok(invitedGroups);
+            return invitedGroups;
         } catch (Exception e) {
             logger.error("Error retrieving invited groups:", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(null);
+            return null;
         }
     }
 
@@ -191,7 +165,7 @@ public class GroupControllerImpl implements GroupController {
      * @return the response status and message
      */
     @PostMapping("/accept-invite-details")
-    public ResponseEntity<Map<String, String>> acceptInvitationWithDetails(@RequestBody Map<String, Object> body) {
+    public String acceptInvitationWithDetails(@RequestBody Map<String, Object> body) {
         String email = (String) body.get("email");
         String groupName = (String) body.get("groupName");
         String preference = (String) body.get("preference");
@@ -207,12 +181,10 @@ public class GroupControllerImpl implements GroupController {
                 .map(LocalDate::parse)
                 .toList();
 
-            groupService.acceptInvitationWithDetails(email, groupName, preference, parsedStartDates, parsedEndDates);
-            return ResponseEntity.ok(Map.of("message", "Invitación aceptada con detalles correctamente"));
+            return groupService.acceptInvitationWithDetails(email, groupName, preference, parsedStartDates, parsedEndDates);
         } catch (Exception e) {
             logger.error("Error al aceptar la invitación con detalles:", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("error", "Error al aceptar la invitación", "message", e.getMessage()));
+            return "";
         }
     }
 
@@ -222,12 +194,12 @@ public class GroupControllerImpl implements GroupController {
      * @return the list of public groups
      */
     @GetMapping("/public")
-    public ResponseEntity<List<Group>> getPublicGroups() {
+    public List<Group> getPublicGroups() {
         try {
             List<Group> publicGroups = groupService.getPublicGroups();
-            return ResponseEntity.ok(publicGroups);
+            return publicGroups;
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            return null;
         }
     }
 
@@ -238,13 +210,11 @@ public class GroupControllerImpl implements GroupController {
      * @return the list of groups the user belongs to
      */
     @PostMapping("/user")
-    public ResponseEntity<List<Map<String, Object>>> getUserGroups(@RequestBody Map<String, String> body) {
-        String email = body.get("email");
+    public List<Group> getUserGroups(String email) {
         if (email == null || email.isEmpty()) {
             throw new IllegalArgumentException("Email is required");
         }
-        List<Map<String, Object>> groups = groupService.getUserGroups(email);
-        return ResponseEntity.ok(groups);
+        return groupService.getUserGroups(email);
     }
 
     /**
@@ -254,9 +224,9 @@ public class GroupControllerImpl implements GroupController {
      * @return the group
      */
     @GetMapping("/{name}")
-    public ResponseEntity<Group> getGroupByName(@PathVariable String name) {
+    public Group getGroupByName(@PathVariable String name) {
         Group group = groupService.getGroupByName(name);
-        return group != null ? ResponseEntity.ok(group) : ResponseEntity.notFound().build();
+        return group != null ? group : null;
     }
 
     /**
@@ -266,20 +236,14 @@ public class GroupControllerImpl implements GroupController {
      * @return the response status and message
      */
     @DeleteMapping("/leave")
-    public ResponseEntity<Map<String, String>> leaveGroup(@RequestBody Map<String, String> body) {
+    public Group leaveGroup(@RequestBody Map<String, String> body) {
         String email = body.get("email");
         String groupName = body.get("groupName");
         try {
-            groupService.leaveGroup(email, groupName);
-            Map<String, String> response = new HashMap<>();
-            response.put("message", "Successfully left the group");
-            return ResponseEntity.ok(response);
+            return groupService.leaveGroup(email, groupName);
         } catch (Exception e) {
             e.printStackTrace();
-            Map<String, String> errorResponse = new HashMap<>();
-            errorResponse.put("error", "Failed to leave the group");
-            errorResponse.put("message", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+            return null;
         }
     }
 
@@ -290,16 +254,16 @@ public class GroupControllerImpl implements GroupController {
      * @return the list of groups with the specified theme
      */
     @GetMapping("/triptype/{triptype}")
-    public ResponseEntity<List<Group>> getGroupsByTheme(@PathVariable String triptype) {
+    public List<Group> getGroupsByTheme(@PathVariable String triptype) {
         try {
             List<Group> groups = groupService.getGroupsByTheme(triptype);
             if (groups.isEmpty()) {
-                return ResponseEntity.noContent().build();
+                return null;
             }
-            return ResponseEntity.ok(groups);
+            return groups;
         } catch (Exception e) {
             logger.error("Error retrieving groups by theme: {}", triptype, e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            return null;
         }
     }
 
@@ -310,16 +274,16 @@ public class GroupControllerImpl implements GroupController {
      * @return the list of groups with the specified audience
      */
     @GetMapping("/audience/{audience}")
-    public ResponseEntity<List<Group>> getGroupsByAudience(@PathVariable String audience) {
+    public List<Group> getGroupsByAudience(@PathVariable String audience) {
         try {
             List<Group> groups = groupService.getGroupsByAudience(audience);
             if (groups.isEmpty()) {
-                return ResponseEntity.noContent().build();
+                return null;
             }
-            return ResponseEntity.ok(groups);
+            return groups;
         } catch (Exception e) {
             logger.error("Error retrieving groups by audience: {}", audience, e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            return null;
         }
     }
 }

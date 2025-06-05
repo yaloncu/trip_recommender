@@ -47,23 +47,23 @@ public interface GroupService {
      * @param availabilityStartDates The availability start dates for the group.
      * @param availabilityEndDates The availability end dates for the group.
      */
-    void createGroup(String groupName, String email, String audience, String privated, boolean isClosed,
-                        String tripType, LocalDate departureDate, LocalDate returnDate,
-                        List<LocalDate> availabilityStartDates, List<LocalDate> availabilityEndDates,
-                        String preference);   
+    Group createGroup(String groupName, String email, String audience, String privated, boolean isClosed,
+                    String tripType, LocalDate departureDate, LocalDate returnDate,
+                    List<LocalDate> availabilityStartDates, List<LocalDate> availabilityEndDates,
+                    String preference);   
     /**
      * Closes a group in the Neo4j database.
      *
      * @param groupName The name of the group to close.
      */
-    void closeGroup(String groupName);
+    Group closeGroup(String groupName);
 
     /**
      * Closes the voting for a group in the Neo4j database.
      *
      * @param groupName The name of the group to close the voting for.
      */
-    void closeVoting(String groupName);
+    Group closeVoting(String groupName);
 
     /**
      * Joins a group with preferences in the Neo4j database.
@@ -74,7 +74,7 @@ public interface GroupService {
      * @param availabilityStartDates The availability start dates of the user joining the group.
      * @param availabilityEndDates The availability end dates of the user joining the group.
      */
-    void joinGroupWithPreferences(String groupName, String userEmail, String preference, List<LocalDate> availabilityStartDates, List<LocalDate> availabilityEndDates);
+    String joinGroupWithPreferences(String groupName, String userEmail, String preference, List<LocalDate> availabilityStartDates, List<LocalDate> availabilityEndDates);
     
     /**
      * Joins a public group with preferences in the Neo4j database.
@@ -83,7 +83,7 @@ public interface GroupService {
      * @param userEmail The email of the user joining the group.
      * @param preference The preference of the user joining the group.
      */
-    void joinPublicGroupWithPreferences(String groupName, String userEmail, String preference);
+    String joinPublicGroupWithPreferences(String groupName, String userEmail, String preference);
     
     /**
      * Gets the groups that a user belongs to.
@@ -91,7 +91,7 @@ public interface GroupService {
      * @param email The email of the user.
      * @return A list of maps containing the group data.
      */
-    List<Map<String, Object>> getUserGroups(String email);
+    List<Group> getUserGroups(String email);
     
     /**
      * Gets the groups that a user belongs to.
@@ -114,7 +114,7 @@ public interface GroupService {
      * @param email The email of the user to invite.
      * @param groupName The name of the group to invite the user to.
      */
-    void inviteUserToGroup(String email, String groupName);
+    String inviteUserToGroup(String email, String groupName);
     
     /**
      * Gets the groups by theme.
@@ -145,14 +145,14 @@ public interface GroupService {
      * @param startDates The availability start dates of the user accepting the invitation.
      * @param endDates The availability end dates of the user accepting the invitation.
      */
-    void acceptInvitationWithDetails(String email, String groupName, String preference, List<LocalDate> startDates, List<LocalDate> endDates);
+    String acceptInvitationWithDetails(String email, String groupName, String preference, List<LocalDate> startDates, List<LocalDate> endDates);
     
     /**
      * Leaves a group.
      * @param email The email of the user leaving the group.
      * @param groupName The name of the group to leave.
      */
-    void leaveGroup(String email, String groupName);
+    Group leaveGroup(String email, String groupName);
     
     /**
      * Recommends a date for a group using a sliding window algorithm.

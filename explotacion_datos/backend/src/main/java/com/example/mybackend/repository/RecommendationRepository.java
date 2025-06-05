@@ -29,8 +29,9 @@ public interface RecommendationRepository extends Neo4jRepository<Group, Long> {
             "CREATE (v:Vote {email: $userId, groupId: $groupId}) " +
             "MERGE (u)-[:VOTO]->(v) " +
             "MERGE (g)-[:EN_VOTO]->(v) " +
-            "MERGE (d)-[:VOTADO_EN]->(v)")
-    void voteForCity(@Param("userId") String userId, @Param("city") String city, @Param("groupId") Long groupId);
+            "MERGE (d)-[:VOTADO_EN]->(v)" +
+            "RETURN d.nombre_destino")
+    String voteForCity(@Param("userId") String userId, @Param("city") String city, @Param("groupId") Long groupId);
     
     @Query("MATCH (g:Group)-[:EN_VOTO]->(v:Vote)<-[:VOTADO_EN]-(d:Destino) " +
             "WHERE id(g)=$groupId " +

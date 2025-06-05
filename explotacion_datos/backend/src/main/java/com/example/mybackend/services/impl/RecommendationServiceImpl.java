@@ -46,8 +46,8 @@ public class RecommendationServiceImpl implements RecommendationService {
      * @param city The name of the city being voted for.
      * @param groupId The ID of the group.
      */
-    public void voteForCity(String userId, String city, Long groupId) {
-        recommendationRepository.voteForCity(userId, city, groupId);
+    public String voteForCity(String userId, String city, Long groupId) {
+        return recommendationRepository.voteForCity(userId, city, groupId);
     }
 
     /**

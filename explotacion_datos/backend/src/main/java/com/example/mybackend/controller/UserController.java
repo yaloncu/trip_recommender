@@ -37,7 +37,7 @@ public interface UserController {
      * @return a response indicating the creation status
      */
     @PostMapping("/signup")
-    public ResponseEntity<String> createUser(@RequestBody User user);
+    public User createUser(@RequestBody User user);
 
     /**
      * Create a new user from Google.
@@ -46,7 +46,7 @@ public interface UserController {
      * @return a response indicating the creation status
      */
     @PostMapping("/signup/google")
-    public ResponseEntity<String> createUserFromGoogle(@RequestBody Map<String, String> payload);
+    public User createUserFromGoogle(@RequestBody Map<String, String> payload);
 
     /**
      * Login a user.
@@ -55,7 +55,7 @@ public interface UserController {
      * @return a response indicating the login status
      */
     @PostMapping("/login")
-    public ResponseEntity<Map<String, String>> login(@RequestBody User loginRequest);
+    public boolean login(@RequestBody User loginRequest);
 
     /**
      * Login a user with Google.
@@ -64,7 +64,7 @@ public interface UserController {
      * @return a response indicating the login status
      */
     @PostMapping("/login/google")
-    public ResponseEntity<Map<String, String>> loginWithGoogle(@RequestBody Map<String, String> googleLoginRequest);
+    ResponseEntity<?> loginWithGoogle(Map<String, String> googleLoginRequest);
 
     /**
      * Get groups for a specific user.
@@ -73,5 +73,5 @@ public interface UserController {
      * @return a list of groups the user belongs to
      */
     @GetMapping("/users/{email}/groups")
-    public ResponseEntity<List<Group>> getUserGroups(@PathVariable String email);
+    public List<Group> getUserGroups(@PathVariable String email);
 }

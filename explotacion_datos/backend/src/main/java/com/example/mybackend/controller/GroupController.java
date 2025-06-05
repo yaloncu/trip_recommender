@@ -31,44 +31,44 @@ import org.slf4j.LoggerFactory;
 public interface GroupController {
 
     @PostMapping("/create")
-    ResponseEntity<Map<String, String>> createGroup(@RequestBody Group group);
+    Group createGroup(@RequestBody Group group);
     
     @PutMapping("/close/{name}")
-    ResponseEntity<Map<String, String>> closeGroup(@PathVariable String name);
+    Group closeGroup(@PathVariable String name);
 
     @PostMapping("/closePrivate/{name}")
-    ResponseEntity<Map<String, String>> closeGroupPrivate(@PathVariable String name);
+    Group closeGroupPrivate(@PathVariable String name);
 
     @PutMapping("/closeVoting/{name}")
-    ResponseEntity<String> closeVoting(@PathVariable String groupName);
+    Group closeVoting(@PathVariable String groupName);
 
     @PostMapping("/joinWithPreferences")
-    ResponseEntity<Map<String, String>> joinGroupWithPreferences(@RequestBody JoinGroupWithPreferencesRequest request);
+    String joinGroupWithPreferences(@RequestBody JoinGroupWithPreferencesRequest request);
 
     @PostMapping("/invite")
-    ResponseEntity<Map<String, String>> inviteUserToGroup(@RequestBody Map<String, String> body);
+    String inviteUserToGroup(@RequestBody Map<String, String> body);
 
     @GetMapping("/invitations/{email}")
-    ResponseEntity<List<Group>> getInvitedGroups(@PathVariable String email);
+    List<Group> getInvitedGroups(@PathVariable String email);
 
     @PostMapping("/accept-invite-details")
-    ResponseEntity<Map<String, String>> acceptInvitationWithDetails(@RequestBody Map<String, Object> body);
+    String acceptInvitationWithDetails(@RequestBody Map<String, Object> body);
 
     @GetMapping("/public")
-    ResponseEntity<List<Group>> getPublicGroups();
+    List<Group> getPublicGroups();
 
     @PostMapping("/user")
-    ResponseEntity<List<Map<String, Object>>> getUserGroups(@RequestBody Map<String, String> body);
+    List<Group> getUserGroups(String email);
 
     @GetMapping("/{name}")
-    ResponseEntity<Group> getGroupByName(@PathVariable String name);
+    Group getGroupByName(@PathVariable String name);
 
     @DeleteMapping("/leave")
-    ResponseEntity<Map<String, String>> leaveGroup(@RequestBody Map<String, String> body);
+    Group leaveGroup(@RequestBody Map<String, String> body);
 
     @GetMapping("/triptype/{triptype}")
-    ResponseEntity<List<Group>> getGroupsByTheme(@PathVariable String triptype);
+    List<Group> getGroupsByTheme(@PathVariable String triptype);
 
     @GetMapping("/audience/{audience}")
-    ResponseEntity<List<Group>> getGroupsByAudience(@PathVariable String audience);
+    List<Group> getGroupsByAudience(@PathVariable String audience);
 }

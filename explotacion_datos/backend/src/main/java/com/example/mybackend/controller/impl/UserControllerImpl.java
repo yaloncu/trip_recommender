@@ -63,22 +63,20 @@ public class UserControllerImpl implements UserController {
      * @return a response indicating the creation status
      */
     @PostMapping("/signup")
-    public ResponseEntity<String> createUser(@RequestBody User user) {
+    public User createUser(@RequestBody User user) {
         try {
             if (user.getName() == null || user.getEmail() == null) {
-                return ResponseEntity.badRequest().body("Name and Email are required.");
+                return null;
             }
 
             if (user.getPassword() == null || user.getPassword().isEmpty()) {
-                userService.createUser(user.getName(), user.getEmail(), null); // Registro desde Google
+                return userService.createUser(user.getName(), user.getEmail(), null); // Registro desde Google
             } else {
-                userService.createUser(user.getName(), user.getEmail(), user.getPassword()); // Registro manual
+                return userService.createUser(user.getName(), user.getEmail(), user.getPassword()); // Registro manual
             }
-
-            return ResponseEntity.ok("User created successfully: " + user.getName());
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(500).body("Error creating user: " + e.getMessage());
+            return null;
         }
     }
 
@@ -89,22 +87,25 @@ public class UserControllerImpl implements UserController {
      * @return a response indicating the creation status
      */
     @PostMapping("/signup/google")
-    public ResponseEntity<String> createUserFromGoogle(@RequestBody Map<String, String> payload) {
+    public User createUserFromGoogle(@RequestBody Map<String, String> payload) {
         try {
             String name = payload.get("name");
             String email = payload.get("email");
 
             if (name == null || email == null) {
-                return ResponseEntity.badRequest().body("Name and Email are required.");
+                return null;
             }
-
-            userService.createUser(name, email);
-            return ResponseEntity.ok("Google user created successfully: " + name);
+            if (userService.checkUserExistsByEmail(email)) {
+                return userService.getUserByEmail(email);
+            } else {
+                return userService.createUser(name, email, null); 
+            }
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(500).body("Error creating Google user: " + e.getMessage());
+            return null;
         }
     }
+
 
     /**
      * Login a user.
@@ -113,21 +114,14 @@ public class UserControllerImpl implements UserController {
      * @return a response indicating the login status
      */
     @PostMapping("/login")
-    public ResponseEntity<Map<String, String>> login(@RequestBody User loginRequest) {
+    public boolean login(@RequestBody User loginRequest) {
         try {
             String email = loginRequest.getEmail();
             String password = loginRequest.getPassword();
-            boolean isValid = userService.validateUser(email, password);
-
-            if (isValid) {
-                String token = tokenService.generateToken(email);
-                return ResponseEntity.ok(Map.of("message", "Login successful", "token", token, "email", email));
-            } else {
-                return ResponseEntity.status(401).body(Map.of("message", "Invalid credentials"));
-            }
+            return userService.validateUser(email, password);
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(500).body(Map.of("message", "Error during login"));
+            return false;
         }
     }
 
@@ -138,19 +132,18 @@ public class UserControllerImpl implements UserController {
      * @return a response indicating the login status
      */
     @PostMapping("/login/google")
-    public ResponseEntity<Map<String, String>> loginWithGoogle(@RequestBody Map<String, String> googleLoginRequest) {
+    public ResponseEntity<?> loginWithGoogle(@RequestBody Map<String, String> googleLoginRequest) {
         try {
             String email = googleLoginRequest.get("email");
+            boolean exists = userService.checkUserExistsByEmail(email);
 
-            if (userService.checkUserExistsByEmail(email)) {
-                String token = tokenService.generateToken(email);
-                return ResponseEntity.ok(Map.of("message", "Google login successful", "token", token, "email", email));
+            if (exists) {
+                return ResponseEntity.ok().body("User exists");
             } else {
-                return ResponseEntity.status(404).body(Map.of("message", "Google user not found"));
+                return ResponseEntity.status(404).body("User not found");
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(500).body(Map.of("message", "Error during Google login"));
+            return ResponseEntity.status(500).body("Internal Server Error");
         }
     }
 
@@ -161,18 +154,12 @@ public class UserControllerImpl implements UserController {
      * @return a list of groups the user belongs to
      */
     @GetMapping("/users/{email}/groups")
-    public ResponseEntity<List<Group>> getUserGroups(@PathVariable String email) {
+    public List<Group> getUserGroups(@PathVariable String email) {
         try {
-            List<Group> groups = userService.getUserGroups(email);
-
-            if (groups != null && !groups.isEmpty()) {
-                return ResponseEntity.ok(groups);
-            } else {
-                return ResponseEntity.noContent().build();
-            }
+            return userService.getUserGroups(email);
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(500).build();
+            return null;
         }
     }
 }

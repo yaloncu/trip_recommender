@@ -1,6 +1,10 @@
 package com.example.mybackend.repository;
 
+import com.example.mybackend.model.Group;
 import com.example.mybackend.model.User;
+
+import java.util.List;
+
 import org.springframework.data.neo4j.repository.Neo4jRepository;
 import org.springframework.data.neo4j.repository.query.Query;
 import org.springframework.data.repository.query.Param;
@@ -13,11 +17,13 @@ import org.springframework.stereotype.Repository;
 public interface UserRepository extends Neo4jRepository<User, Long> {
     User findByEmailAndPassword(String email, String password);
 
-    @Query("CREATE (u:User {name: $name, email: $email, password: $password})")
-    void createUser(@Param("name") String name, @Param("email") String email, @Param("password") String password);
+    @Query("CREATE (u:User {name: $name, email: $email, password: $password})" +
+            "RETURN u")
+    User createUser(@Param("name") String name, @Param("email") String email, @Param("password") String password);
 
-    @Query("CREATE (u:User {name: $name, email: $email})")
-    void createUser(@Param("name") String name, @Param("email") String email);
+    @Query("CREATE (u:User {name: $name, email: $email})" +
+            "RETURN u")
+    User createUser(@Param("name") String name, @Param("email") String email);
 
     @Query("MATCH (u:User {email: $email}) " +
                        "MATCH (g:Group {name: $groupName}) " +
@@ -34,6 +40,6 @@ public interface UserRepository extends Neo4jRepository<User, Long> {
     User findByEmail(@Param("email") String email);
 
     @Query("MATCH (u:User {email: $email})-[:PERTENECE_A]->(g:Group) RETURN g")
-    User findUserGroups(@Param("email") String email);
+    List<Group> findUserGroups(@Param("email") String email);
     
 }

@@ -38,7 +38,7 @@ public interface RecommendationService {
      * @param city The name of the city being voted for.
      * @param groupId The ID of the group.
      */
-    void voteForCity(String userId, String city, Long groupId);
+    String voteForCity(String userId, String city, Long groupId);
     /**
      * Get the final destination for a group.
      * @param groupId The ID of the group.

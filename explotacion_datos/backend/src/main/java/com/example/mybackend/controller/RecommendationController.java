@@ -30,7 +30,7 @@ public interface RecommendationController {
      * @return a list of recommendations for the group
      */
     @GetMapping("/recommendations/{groupId}")
-    ResponseEntity<List<String>> getRecommendations(@PathVariable Long groupId);
+    List<String> getRecommendations(@PathVariable Long groupId);
 
     /**
      * Get the final destination for a group.
@@ -39,7 +39,7 @@ public interface RecommendationController {
      * @return the final destination for the group
      */
     @GetMapping("/groups/{groupId}/finalDestination")
-    ResponseEntity<Map<String, String>> getFinalDestination(@PathVariable Long groupId);
+    String getFinalDestination(@PathVariable Long groupId);
 
     /**
      * Vote for a city in a group.
@@ -48,5 +48,5 @@ public interface RecommendationController {
      * @return a response entity with the result of the vote
      */
     @PostMapping("/vote")
-    ResponseEntity<String> voteForCity(@RequestBody VoteRequest voteRequest);  
+    String voteForCity(@RequestBody VoteRequest voteRequest);  
 }

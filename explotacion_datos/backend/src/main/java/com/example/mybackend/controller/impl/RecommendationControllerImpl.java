@@ -32,14 +32,13 @@ public class RecommendationControllerImpl implements RecommendationController {
      * @return a list of recommendations for the group
      */
     @GetMapping("/recommendations/{groupId}")
-    public ResponseEntity<List<String>> getRecommendations(@PathVariable Long groupId) {
+    public List<String> getRecommendations(@PathVariable Long groupId) {
         try {
             recommendationService.createGroupDestinationRecommendations(groupId);
-            List<String> recommendations = recommendationService.getRecommendations(groupId);
-            return ResponseEntity.ok(recommendations);
+            return recommendationService.getRecommendations(groupId);
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            return null;
         }
     }
 
@@ -50,18 +49,11 @@ public class RecommendationControllerImpl implements RecommendationController {
      * @return the final destination for the group
      */
     @GetMapping("/groups/{groupId}/finalDestination")
-    public ResponseEntity<Map<String, String>> getFinalDestination(@PathVariable Long groupId) {
+    public String getFinalDestination(@PathVariable Long groupId) {
         try {
-            String finalDestination = recommendationService.getFinalDestination(groupId);
-            if (finalDestination != null) {
-                Map<String, String> response = new HashMap<>();
-                response.put("destination", finalDestination);
-                return ResponseEntity.ok(response);
-            } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-            }
+            return recommendationService.getFinalDestination(groupId);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            return "";
         }
     }
 
@@ -72,13 +64,12 @@ public class RecommendationControllerImpl implements RecommendationController {
      * @return a response entity with the result of the vote
      */
     @PostMapping("/vote")
-    public ResponseEntity<String> voteForCity(@RequestBody VoteRequest voteRequest) {
+    public String voteForCity(@RequestBody VoteRequest voteRequest) {
         try {
-            recommendationService.voteForCity(voteRequest.getUserId(), voteRequest.getCity(), voteRequest.getGroupId());
-            return ResponseEntity.ok("Voto registrado con éxito.");
+            return recommendationService.voteForCity(voteRequest.getUserId(), voteRequest.getCity(), voteRequest.getGroupId());
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al registrar el voto." + voteRequest.getUserId()+ voteRequest.getCity()+ voteRequest.getGroupId().toString());
+            return "";
         }
     }
 
@@ -89,6 +80,14 @@ public class RecommendationControllerImpl implements RecommendationController {
         private Long groupId; 
         private String userId;
         private String city;
+
+        public VoteRequest() {
+        }
+        public VoteRequest(Long groupId, String userId, String city) {
+            this.groupId = groupId;
+            this.userId = userId;
+            this.city = city;
+        }
 
         // Getters y Setters
         public String getUserId() { return userId; }

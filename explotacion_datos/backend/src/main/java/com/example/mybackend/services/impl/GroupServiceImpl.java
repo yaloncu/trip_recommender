@@ -52,16 +52,16 @@ public class GroupServiceImpl implements GroupService {
      * @param availabilityStartDates The availability start dates for the group.
      * @param availabilityEndDates The availability end dates for the group.
      */
-    public void createGroup(String groupName, String email, String audience, String privated, boolean isClosed,
+    public Group createGroup(String groupName, String email, String audience, String privated, boolean isClosed,
                         String tripType, LocalDate departureDate, LocalDate returnDate,
                         List<LocalDate> availabilityStartDates, List<LocalDate> availabilityEndDates,
                         String preference) {
     if ("private".equals(privated)) {
-        groupRepository.createPrivateGroup(groupName, email, audience, privated, isClosed, tripType,
-                                           departureDate, returnDate, availabilityStartDates, availabilityEndDates);
+        return groupRepository.createPrivateGroup(groupName, email, audience, privated, isClosed, tripType,
+            departureDate, returnDate, availabilityStartDates, availabilityEndDates);
     } else {
-        groupRepository.createPublicGroup(groupName, email, audience, privated, isClosed, tripType,
-                                          departureDate, returnDate, availabilityStartDates, availabilityEndDates, preference);
+        return groupRepository.createPublicGroup(groupName, email, audience, privated, isClosed, tripType,
+            departureDate, returnDate, availabilityStartDates, availabilityEndDates, preference);
     }
 }
 
@@ -71,8 +71,8 @@ public class GroupServiceImpl implements GroupService {
      *
      * @param groupName The name of the group to close.
      */
-    public void closeGroup(String groupName) {
-        groupRepository.closeGroup(groupName);
+    public Group closeGroup(String groupName) {
+        return groupRepository.closeGroup(groupName);
     }
 
     /**
@@ -80,8 +80,8 @@ public class GroupServiceImpl implements GroupService {
      *
      * @param groupName The name of the group to close the voting for.
      */
-    public void closeVoting(String groupName) {
-        groupRepository.closeVoting(groupName);
+    public Group closeVoting(String groupName) {
+        return groupRepository.closeVoting(groupName);
     }
 
     /**
@@ -93,11 +93,11 @@ public class GroupServiceImpl implements GroupService {
      * @param availabilityStartDates The availability start dates of the user joining the group.
      * @param availabilityEndDates The availability end dates of the user joining the group.
      */
-    public void joinGroupWithPreferences(String groupName, String userEmail, String preference, List<LocalDate> availabilityStartDates, List<LocalDate> availabilityEndDates) {
+    public String joinGroupWithPreferences(String groupName, String userEmail, String preference, List<LocalDate> availabilityStartDates, List<LocalDate> availabilityEndDates) {
         if (groupName == null || userEmail == null || preference == null) {
-            throw new IllegalArgumentException("Group ID and email must not be null");
+            return "";
         }
-        groupRepository.joinGroupWithPreferences(groupName, userEmail, preference, availabilityStartDates, availabilityEndDates);
+        return groupRepository.joinGroupWithPreferences(groupName, userEmail, preference, availabilityStartDates, availabilityEndDates);
     }
 
     /**
@@ -107,7 +107,7 @@ public class GroupServiceImpl implements GroupService {
      * @param userEmail The email of the user joining the group.
      * @param preference The preference of the user joining the group.
      */
-    public void joinPublicGroupWithPreferences(String groupName, String userEmail, String preference) {
+    public String joinPublicGroupWithPreferences(String groupName, String userEmail, String preference) {
         if (groupName == null || userEmail == null || preference == null) {
             throw new IllegalArgumentException("Group ID and email must not be null");
         }
@@ -119,7 +119,7 @@ public class GroupServiceImpl implements GroupService {
         if (group == null || group.isClosed()) {
             throw new RuntimeException("Group with name " + groupName + " not found or is closed.");
         }
-        groupRepository.joinPublicGroupWithPreferences(groupName, userEmail, preference);
+        return groupRepository.joinPublicGroupWithPreferences(groupName, userEmail, preference);
     }
     
     /**
@@ -128,21 +128,8 @@ public class GroupServiceImpl implements GroupService {
      * @param email The email of the user.
      * @return A list of maps containing the group data.
      */
-    public List<Map<String, Object>> getUserGroups(String email) {
-        List<Group> groups = groupRepository.findUserGroups(email);
-        List<Map<String, Object>> groupsList = new ArrayList<>();
-        for(Group group: groups){
-            Map<String, Object> groupData = new HashMap<>();
-            groupData.put("groupName", group.getName());
-            groupData.put("groupId", group.getId());
-            groupData.put("email", group.getEmail());
-            groupData.put("isClosed", group.isClosed());
-            groupData.put("privated", group.getPrivated());
-            groupData.put("departureDate", group.getDepartureDate());
-            groupData.put("returnDate", group.getReturnDate());
-            groupsList.add(groupData);
-        }
-        return groupsList;
+    public List<Group> getUserGroups(String email) {
+        return groupRepository.findUserGroups(email);
     }
     
     /**
@@ -170,8 +157,8 @@ public class GroupServiceImpl implements GroupService {
      * @param email The email of the user to invite.
      * @param groupName The name of the group to invite the user to.
      */
-    public void inviteUserToGroup(String email, String groupName) {
-        groupRepository.inviteUserToGroup(groupName, email);
+    public String inviteUserToGroup(String email, String groupName) {
+        return groupRepository.inviteUserToGroup(groupName, email);
     }
     
     /**
@@ -209,14 +196,14 @@ public class GroupServiceImpl implements GroupService {
      * @param startDates The availability start dates of the user accepting the invitation.
      * @param endDates The availability end dates of the user accepting the invitation.
      */
-    public void acceptInvitationWithDetails(String email, String groupName, String preference, List<LocalDate> startDates, List<LocalDate> endDates) {
+    public String acceptInvitationWithDetails(String email, String groupName, String preference, List<LocalDate> startDates, List<LocalDate> endDates) {
         if (email == null || groupName == null || preference == null || startDates == null || endDates == null) {
             throw new IllegalArgumentException("Todos los parámetros son obligatorios.");
         }
         if (startDates.size() != endDates.size()) {
             throw new IllegalArgumentException("El número de fechas de inicio y fin debe coincidir.");
         }
-        groupRepository.acceptInvitation(groupName, email, preference, startDates, endDates);
+        return groupRepository.acceptInvitation(groupName, email, preference, startDates, endDates);
     }
     
     /**
@@ -224,8 +211,8 @@ public class GroupServiceImpl implements GroupService {
      * @param email The email of the user leaving the group.
      * @param groupName The name of the group to leave.
      */
-    public void leaveGroup(String email, String groupName) {
-        groupRepository.leaveGroup(groupName, email);
+    public Group leaveGroup(String email, String groupName) {
+        return groupRepository.leaveGroup(groupName, email);
     }
     
     /**

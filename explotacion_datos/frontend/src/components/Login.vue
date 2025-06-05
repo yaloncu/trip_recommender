@@ -78,6 +78,7 @@ export default {
         const {email: email2, token} = response.data;
         if (email2) {
             localStorage.setItem('email', email2); 
+            localStorage.setItem('token', token);
             console.log('User logged in successfully:', response.data);
             this.$router.push('/groups'); 
         } else {

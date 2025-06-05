@@ -32,7 +32,7 @@ public interface Neo4jUserService {
      * @param email the email of the user
      * @param password the password of the user
      */
-    void createUser(String name, String email, String password);
+    User createUser(String name, String email, String password);
 
     /**
      * Add a user with the given email to the group with the given name.
@@ -40,7 +40,7 @@ public interface Neo4jUserService {
      * @param email the email of the user
      * @param groupName the name of the group
      */
-    void createUser(String name, String email);
+    User createUser(String name, String email);
 
     /**
      * Add a user with the given email to the group with the given name.
@@ -59,6 +59,8 @@ public interface Neo4jUserService {
      */
     boolean validateUser(String email, String password);
     
+    public Map<String, Object> loginWithGoogle(String email);
+
     /**
      * Check if a user with the given email exists.
      *

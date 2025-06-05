@@ -16,18 +16,20 @@ import com.example.mybackend.model.Group;
 import com.example.mybackend.model.User;
 import com.example.mybackend.repository.UserRepository;
 import com.example.mybackend.services.Neo4jUserService;
+import com.example.mybackend.services.TokenService;
 @Service
 public class Neo4jUserServiceImpl implements Neo4jUserService {
 
     private final Driver driver;
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
+    private final TokenService tokenService; 
     
-    @Autowired
-    public Neo4jUserServiceImpl(Driver driver, PasswordEncoder passwordEncoder) {
+    public Neo4jUserServiceImpl(Driver driver, PasswordEncoder passwordEncoder, UserRepository userRepository, TokenService tokenService) {
         this.driver = driver;
         this.passwordEncoder = passwordEncoder;
-        this.userRepository = null; 
+        this.userRepository = userRepository; 
+        this.tokenService = tokenService; 
     }
 
     /**
@@ -37,9 +39,12 @@ public class Neo4jUserServiceImpl implements Neo4jUserService {
      * @param email the email of the user
      * @param password the password of the user
      */
-    public void createUser(String name, String email, String password) {
+    public User createUser(String name, String email, String password) {
+        if (password == null) {
+            return userRepository.createUser(name, email); // llama a la versión de dos parámetros
+        }
         String hashedPassword = passwordEncoder.encode(password);
-        userRepository.createUser(name, email, hashedPassword);
+        return userRepository.createUser(name, email, hashedPassword);
     }
 
     /**
@@ -48,9 +53,20 @@ public class Neo4jUserServiceImpl implements Neo4jUserService {
      * @param email the email of the user
      * @param groupName the name of the group
      */
-    public void createUser(String name, String email) {
-        userRepository.createUser(name, email);
+    public User createUser(String name, String email) {
+        return userRepository.createUser(name, email);
     }
+
+    public Map<String, Object> loginWithGoogle(String email) {
+        User user = userRepository.findByEmail(email);
+        if (user == null) {
+            throw new RuntimeException("User not found with email: " + email);
+        }
+
+        String token = tokenService.generateToken(user.getEmail()); 
+        return Map.of("user", user, "token", token);
+    }
+
 
     /**
      * Add a user with the given email to the group with the given name.
@@ -100,7 +116,7 @@ public class Neo4jUserServiceImpl implements Neo4jUserService {
      * @return a list of groups that the user belongs to
      */
     public List<Group> getUserGroups(String email) {
-        return userRepository.findUserGroups(email).getGroups();
+        return userRepository.findUserGroups(email);
     }
     
 }
