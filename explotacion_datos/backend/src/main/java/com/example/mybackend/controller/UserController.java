@@ -46,7 +46,7 @@ public interface UserController {
      * @return a response indicating the creation status
      */
     @PostMapping("/signup/google")
-    public User createUserFromGoogle(@RequestBody Map<String, String> payload);
+    public ResponseEntity<?> createUserFromGoogle(@RequestBody Map<String, String> payload);
 
     /**
      * Login a user.

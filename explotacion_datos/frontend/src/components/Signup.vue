@@ -67,16 +67,20 @@ export default {
     },
     async signupWithGoogle() {
       try {
-        const user = await signInWithGoogle(); 
-        const name = user.displayName;
-        const email = user.email;
+        const { user, idToken } = await signInWithGoogle(); 
+        const response = await axios.post('/api/signup/google', {
+          token: idToken
+        });
 
-        console.log("Google signup successful for:", email);
+        const { email, token } = response.data;
 
-        const response = await axios.post('/api/signup/google', { name, email });
-        console.log(response.data);
-
-        this.$router.push('/groups');
+        if (token) {
+          localStorage.setItem('email', email);
+          localStorage.setItem('token', token);
+          this.$router.push('/groups');
+        } else {
+          throw new Error('Token missing in response');
+        }
       } catch (error) {
         console.error("Error during Google signup:", error.message);
       }

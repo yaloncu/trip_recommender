@@ -69,21 +69,22 @@ export default {
     async loginWithGoogle() {
       console.log('signInWithGoogle:');
       try {
-        const googleUser = await signInWithGoogle();
-        const email = googleUser.email;
+        const { user, idToken } = await signInWithGoogle();
 
-        const response = await axios.post('/api/login/google', {
-          email: email,
+
+        const response = await axios.post('/api/signup/google', {
+          token: idToken, 
         });
-        const {email: email2, token} = response.data;
-        if (email2) {
-            localStorage.setItem('email', email2); 
-            localStorage.setItem('token', token);
-            console.log('User logged in successfully:', response.data);
-            this.$router.push('/groups'); 
+
+        const { email, token } = response.data;
+        if (token) {
+          localStorage.setItem('email', email);
+          localStorage.setItem('token', token);
+          console.log('User logged in successfully:', response.data);
+          this.$router.push('/groups');
         } else {
-            throw new Error('Token missing in login response');
-        }     
+          throw new Error('Token missing in login response');
+        }
       } catch (error) {
         console.error('Error during Google login:', error.response?.data?.message || error.message);
       }

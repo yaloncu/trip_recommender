@@ -59,7 +59,8 @@ public interface Neo4jUserService {
      */
     boolean validateUser(String email, String password);
     
-    public Map<String, Object> loginWithGoogle(String email);
+    Map<String, Object> loginWithGoogle(String email);
+    Map<String, Object> handleGoogleLogin(String email);
 
     /**
      * Check if a user with the given email exists.

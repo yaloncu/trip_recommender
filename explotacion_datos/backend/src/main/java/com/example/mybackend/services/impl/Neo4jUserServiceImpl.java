@@ -1,6 +1,7 @@
 package com.example.mybackend.services.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -67,6 +68,18 @@ public class Neo4jUserServiceImpl implements Neo4jUserService {
         return Map.of("user", user, "token", token);
     }
 
+    public Map<String, Object> handleGoogleLogin(String email) {
+        User user = userRepository.findByEmail(email);
+        if (user == null) {
+            throw new RuntimeException("User does not exist");
+        }
+
+        String token = tokenService.generateToken(user.getEmail());
+        Map<String, Object> response = new HashMap<>();
+        response.put("token", token);
+        response.put("user", user);
+        return response;
+    }
 
     /**
      * Add a user with the given email to the group with the given name.

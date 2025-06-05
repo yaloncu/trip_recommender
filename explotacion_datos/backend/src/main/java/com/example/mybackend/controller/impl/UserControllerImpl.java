@@ -1,5 +1,7 @@
 package com.example.mybackend.controller.impl;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -19,6 +21,8 @@ import com.example.mybackend.model.Group;
 import com.example.mybackend.model.User;
 import com.example.mybackend.services.Neo4jUserService;
 import com.example.mybackend.services.TokenService;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseToken;
 
 @RestController
 @RequestMapping("/api")
@@ -87,22 +91,31 @@ public class UserControllerImpl implements UserController {
      * @return a response indicating the creation status
      */
     @PostMapping("/signup/google")
-    public User createUserFromGoogle(@RequestBody Map<String, String> payload) {
+    public ResponseEntity<?> createUserFromGoogle(@RequestBody Map<String, String> payload) {
         try {
-            String name = payload.get("name");
-            String email = payload.get("email");
+            String firebaseToken = payload.get("token");
+            FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(firebaseToken);
+            String email = decodedToken.getEmail();
+            String name = decodedToken.getName();
 
-            if (name == null || email == null) {
-                return null;
-            }
-            if (userService.checkUserExistsByEmail(email)) {
-                return userService.getUserByEmail(email);
+            User user;
+            if (!userService.checkUserExistsByEmail(email)) {
+                user = userService.createUser(name, email);
             } else {
-                return userService.createUser(name, email, null); 
+                user = userService.getUserByEmail(email);
             }
+
+            String jwt = tokenService.generateToken(user.getEmail());
+            Map<String, String> response = new HashMap<>();
+            response.put("email", user.getEmail());
+            response.put("token", jwt);
+
+            return ResponseEntity.ok(response);
+
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Collections.singletonMap("message", "Google login/signup failed: " + e.getMessage()));
         }
     }
 
@@ -135,15 +148,11 @@ public class UserControllerImpl implements UserController {
     public ResponseEntity<?> loginWithGoogle(@RequestBody Map<String, String> googleLoginRequest) {
         try {
             String email = googleLoginRequest.get("email");
-            boolean exists = userService.checkUserExistsByEmail(email);
-
-            if (exists) {
-                return ResponseEntity.ok().body("User exists");
-            } else {
-                return ResponseEntity.status(404).body("User not found");
-            }
+            Map<String, Object> response = userService.handleGoogleLogin(email);
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
-            return ResponseEntity.status(500).body("Internal Server Error");
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error during Google login");
         }
     }
 
