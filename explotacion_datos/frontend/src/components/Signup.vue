@@ -12,7 +12,7 @@
           required
         />
         <input
-          placeholder="E-mail"
+          :placeholder="$t('email')"
           id="email"
           v-model="email"
           type="email"
@@ -29,7 +29,9 @@
         />
         <button type="submit" class="signup-button">{{ $t('signup') }}</button>
       </form>
-      <button class="google-signup-button" @click="signupWithGoogle">{{ $t('signupWithGoogle') }}</button>
+      <button class="google-signup-button" @click="signupWithGoogle">
+        {{ $t('signupWithGoogle') }}
+      </button>
     </div>
   </div>
 </template>
@@ -37,6 +39,7 @@
 <script>
 import axios from 'axios';
 import { signInWithGoogle } from '@/services/authService';
+
 axios.defaults.baseURL = 'http://localhost:8081';
 axios.defaults.headers.common['Accept'] = 'application/json';
 axios.defaults.headers.post['Content-Type'] = 'application/json';
@@ -56,18 +59,17 @@ export default {
           name: this.name,
           email: this.email,
           password: this.password
-        }, {
-          withCredentials: true
         });
         console.log('User signed up successfully:', response.data);
+        localStorage.setItem('email', this.email);
         this.$router.push('/groups');
       } catch (error) {
-        console.error('Error during signup:', error.response.data.message);
+        console.error('Error during signup:', error.response?.data?.message || error.message);
       }
     },
     async signupWithGoogle() {
       try {
-        const { user, idToken } = await signInWithGoogle(); 
+        const { user, idToken } = await signInWithGoogle();
         const response = await axios.post('/api/signup/google', {
           token: idToken
         });
@@ -96,9 +98,14 @@ export default {
   align-items: center;
   justify-content: center;
   height: 100vh;
-  background-color: #2c3e50;
+  background-image: url('../assets/mapamundi.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   text-align: center;
+  font-family: 'Poppins', sans-serif;
 }
+
 
 .container {
   max-width: 400px;
@@ -114,6 +121,7 @@ export default {
   font-weight: 900;
   font-size: 30px;
   color: #1abc9c; 
+  font-family: 'Poppins', sans-serif;
 }
 
 .form {
@@ -121,7 +129,8 @@ export default {
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 15px
+  gap: 15px;
+  font-family: 'Poppins', sans-serif;
 }
 
 .input {
@@ -134,6 +143,7 @@ export default {
   box-shadow: #cff0ff 0px 10px 10px -5px;
   border-inline: 2px solid transparent;
   box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
 }
 
 .input::placeholder {
@@ -149,7 +159,7 @@ export default {
   display: block;
   width: 100%;
   font-weight: bold;
-  background: linear-gradient(45deg, #16a085 0%, #1abc9c 100%); /* Verde lima */
+  background: linear-gradient(45deg, #16a085 0%, #1abc9c 100%);
   color: white;
   padding-block: 15px;
   margin: 20px auto;
@@ -159,11 +169,35 @@ export default {
 }
 
 .signup-button:hover {
-  background: #1abc9c; 
+  background: #1abc9c;
   transform: scale(1.03);
 }
 
 .signup-button:active {
   transform: scale(0.95);
 }
+
+.google-signup-button {
+  display: block;
+  width: 100%;
+  font-weight: bold;
+  background: #4285F4; 
+  color: white;
+  padding-block: 15px;
+  margin: 20px auto;
+  border-radius: 20px;
+  border: none;
+  transition: all 0.2s ease-in-out;
+  font-family: 'Poppins', sans-serif;
+}
+
+.google-signup-button:hover {
+  background: #3367D6;
+  transform: scale(1.03);
+}
+
+.google-signup-button:active {
+  transform: scale(0.95);
+}
+
 </style>

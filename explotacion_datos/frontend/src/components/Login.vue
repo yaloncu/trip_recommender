@@ -4,7 +4,7 @@
       <div class="heading">{{ $t('login') }}</div>
       <form class="form" @submit.prevent="login">
         <input
-          placeholder="E-mail"
+          :placeholder="$t('email')"
           id="email"
           v-model="email"
           type="email"
@@ -21,19 +21,17 @@
         />
         <button type="submit" class="login-button">{{ $t('login') }}</button>
       </form>
-      <div class="google-login">
-        <button class="google-button" @click="loginWithGoogle">
-          {{ $t('login_with_google') }}
-        </button>
-      </div>
+      <button class="google-button" @click="loginWithGoogle">
+        {{ $t('login_with_google') }}
+      </button>
     </div>
   </div>
 </template>
 
 <script>
 import axios from 'axios';
-import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { signInWithGoogle } from '@/services/authService';
+
 axios.defaults.baseURL = 'http://localhost:8081';
 axios.defaults.headers.common['Accept'] = 'application/json';
 axios.defaults.headers.post['Content-Type'] = 'application/json';
@@ -51,36 +49,31 @@ export default {
         const response = await axios.post('/api/login', {
           email: this.email,
           password: this.password
-        }, {
-          withCredentials: true
-        });
-        const {email, token} = response.data;
-        if (email) {
-            localStorage.setItem('email', email); 
-            console.log('User logged in successfully:', response.data);
-            this.$router.push('/groups'); 
-        } else {
-            throw new Error('Token missing in login response');
-        }       
-      } catch (error) {
-        console.error('Error during login:', error.response.data.message);
-      }
-    },
-    async loginWithGoogle() {
-      console.log('signInWithGoogle:');
-      try {
-        const { user, idToken } = await signInWithGoogle();
-
-
-        const response = await axios.post('/api/signup/google', {
-          token: idToken, 
         });
 
         const { email, token } = response.data;
         if (token) {
           localStorage.setItem('email', email);
           localStorage.setItem('token', token);
-          console.log('User logged in successfully:', response.data);
+          this.$router.push('/groups');
+        } else {
+          throw new Error('Token missing in login response');
+        }
+      } catch (error) {
+        console.error('Error during login:', error.response?.data?.message || error.message);
+      }
+    },
+    async loginWithGoogle() {
+      try {
+        const { user, idToken } = await signInWithGoogle();
+        const response = await axios.post('/api/signup/google', {
+          token: idToken
+        });
+
+        const { email, token } = response.data;
+        if (token) {
+          localStorage.setItem('email', email);
+          localStorage.setItem('token', token);
           this.$router.push('/groups');
         } else {
           throw new Error('Token missing in login response');
@@ -89,7 +82,7 @@ export default {
         console.error('Error during Google login:', error.response?.data?.message || error.message);
       }
     }
-  },
+  }
 };
 </script>
 
@@ -100,14 +93,18 @@ export default {
   align-items: center;
   justify-content: center;
   height: 100vh;
-  background-color: #2c3e50;
+  background-image: url('../assets/mapamundi.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   text-align: center;
+  font-family: 'Poppins', sans-serif;
 }
 
 .container {
   max-width: 400px;
   width: 100%;
-  background: #34495e; 
+  background: #34495e;
   border-radius: 40px;
   padding: 30px 40px;
   box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 20px;
@@ -117,15 +114,17 @@ export default {
   text-align: center;
   font-weight: 900;
   font-size: 30px;
-  color: #1abc9c; 
+  color: #1abc9c;
+  font-family: 'Poppins', sans-serif;
 }
 
 .form {
   margin-top: 20px;
   width: 100%;
   display: flex;
-  flex-direction: column; 
+  flex-direction: column;
   gap: 15px;
+  font-family: 'Poppins', sans-serif;
 }
 
 .input {
@@ -146,14 +145,14 @@ export default {
 
 .input:focus {
   outline: none;
-  border-inline: 2px solid #1abc9c; 
+  border-inline: 2px solid #1abc9c;
 }
 
 .login-button {
   display: block;
   width: 100%;
   font-weight: bold;
-  background: linear-gradient(45deg, #16a085 0%, #1abc9c 100%); /* Verde lima */
+  background: linear-gradient(45deg, #16a085 0%, #1abc9c 100%);
   color: white;
   padding-block: 15px;
   margin: 20px auto;
@@ -163,11 +162,35 @@ export default {
 }
 
 .login-button:hover {
-  background: #1abc9c; 
+  background: #1abc9c;
   transform: scale(1.03);
 }
 
 .login-button:active {
   transform: scale(0.95);
 }
+
+.google-button {
+  display: block;
+  width: 100%;
+  font-weight: bold;
+  background: #4285F4; /* Azul oficial de Google */
+  color: white;
+  padding-block: 15px;
+  margin: 20px auto;
+  border-radius: 20px;
+  border: none;
+  transition: all 0.2s ease-in-out;
+  font-family: 'Poppins', sans-serif;
+}
+
+.google-button:hover {
+  background: #3367D6; /* Azul más oscuro al hacer hover */
+  transform: scale(1.03);
+}
+
+.google-button:active {
+  transform: scale(0.95);
+}
+
 </style>

@@ -1,112 +1,94 @@
 <template>
-  <div class="user-container">
-    <button class="join-button" @click="joinGroup">{{ $t('join') }}</button>
+  <div class="create-group-container">
+    <button class="join-button-header" @click="joinGroup">{{ $t('join') }}</button>
     <div class="profile-button-wrapper">
       <div class="profile-button-container">
         <a title="Go to profile page" @click="viewMyGroups" class="profile-button">
           <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 profile-icon" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
           </svg>
         </a>
       </div>
     </div>
+
     <h1 class="main-title">{{ $t('createGroup') }}</h1>
 
-    <div class="card">
-      <input v-model="groupName" type="text" :placeholder= "$t('enterGroupName')"  class="input name-group" />
+    <div class="form-card">
+      <input v-model="groupName" type="text" :placeholder="$t('enterGroupName')" class="input" />
 
-      <div>
-        <h3>{{ $t('selectAudience') }}</h3>
-        <div class="customCheckBoxHolder">
-          <input class="customCheckBoxInput" id="adults" type="radio" value="Adultos" v-model="audience">
-          <label class="customCheckBoxWrapper" for="adults">
-            <div class="customCheckBox">
-              <div class="inner">{{ $t('adults') }}</div>
-            </div>
-          </label>
-
-          <input class="customCheckBoxInput" id="youth" type="radio" value="Jóvenes" v-model="audience">
-          <label class="customCheckBoxWrapper" for="youth">
-            <div class="customCheckBox">
-              <div class="inner">{{ $t('youth') }}</div>
-            </div>
-          </label>
-
-          <input class="customCheckBoxInput" id="families" type="radio" value="Familias" v-model="audience">
-          <label class="customCheckBoxWrapper" for="families">
-            <div class="customCheckBox">
-              <div class="inner">{{ $t('families') }}</div>
-            </div>
-          </label>
-
-          <input class="customCheckBoxInput" id="3age" type="radio" value="TerceraEdad" v-model="audience">
-          <label class="customCheckBoxWrapper" for="3age">
-            <div class="customCheckBox">
-              <div class="inner">{{ $t('3age') }}</div>
-            </div>
-          </label>
-        </div>
+      <h3 class="title">{{ $t('selectAudience') }}</h3>
+      <div class="checkbox-row">
+        <label v-for="aud in ['Adultos','Jóvenes','Familias','TerceraEdad']" :key="aud" class="radio-box">
+          <input type="radio" :value="aud" v-model="audience" />
+          {{ $t(aud.toLowerCase()) }}
+        </label>
       </div>
 
-      
-      <div>
-        <h3>{{ $t('selectPrivacity') }}</h3>
-        <div class="customCheckBoxHolder">
-          <input class="customCheckBoxInput" id="private" type="radio" value="private" v-model="privated">
-          <label class="customCheckBoxWrapper" for="private">
-            <div class="customCheckBox">
-              <div class="inner">{{ $t('private') }}</div>
-            </div>
-          </label>
-
-          <input class="customCheckBoxInput" id="public" type="radio" value="public" v-model="privated">
-          <label class="customCheckBoxWrapper" for="public">
-            <div class="customCheckBox">
-              <div class="inner">{{ $t('public') }}</div>
-            </div>
-          </label>
-        </div>
+      <h3 class="title">{{ $t('selectPrivacity') }}</h3>
+      <div class="checkbox-row">
+        <label class="radio-box">
+          <input type="radio" value="private" v-model="privated" />
+          {{ $t('private') }}
+        </label>
+        <label class="radio-box">
+          <input type="radio" value="public" v-model="privated" />
+          {{ $t('public') }}
+        </label>
       </div>
 
-      <div>
-        <h3>{{ $t('selectType') }}</h3>
-        <div class="customCheckBoxHolder2">
-          <label v-for="(type, index) in vacationTypes" :key="index">
-            <input 
-              type="radio" 
-              :value="type" 
-              v-model="selectedType" 
-            />
-            {{ $t(type) }} 
-          </label>
-        </div>
+      <h3 class="title">{{ $t('selectType') }}</h3>
+      <div class="checkbox-column">
+        <label v-for="type in vacationTypes" :key="type" class="radio-box">
+          <input type="radio" :value="type" v-model="selectedType" />
+          {{ $t(type) }}
+        </label>
       </div>
 
       <div v-if="privated === 'private'">
-        <h3>{{ $t('selectAvailabilityDates') }}</h3>
-        <div v-for="(range, index) in dateRanges" :key="index" class="date-range">
-          <label>{{ $t('availabilityStartDate') }}</label>
-          <input type="date" v-model="range.start" class="input date-group" />
-
-          <label>{{ $t('availabilityEndDate') }}</label>
-          <input type="date" v-model="range.end" class="input date-group" />
-          
-          <button @click="removeDateRange(index)">{{ $t('delete') }}</button>
+        <h3 class="title">{{ $t('selectAvailabilityDates') }}</h3>
+        <div v-for="(range, index) in dateRanges" :key="index" class="compact-date-row">
+          <div class="icon-date-group">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon-small" viewBox="0 0 24 24" fill="#16a085" title="Departure">
+              <path d="M2.5 19h19v2h-19zM21.4 9.5l-9-3.5-3-7h-2l2.3 6-5.7-2.2-.8 2 7.6 3-2.2 5.8 1.9.7 2.2-5.8 8.1 3.1z"/>
+            </svg>
+            <input type="date" v-model="range.start" class="input compact-date" />
+          </div>
+          <div class="icon-date-group">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon-small" viewBox="0 0 24 24" fill="#16a085" title="Return">
+              <path d="M2.5 19h19v2h-19zM21.4 9.5l-9 3.5-3 7h-2l2.3-6-5.7 2.2-.8-2 7.6-3-2.2-5.8 1.9-.7 2.2 5.8 8.1-3.1z"/>
+            </svg>
+            <input type="date" v-model="range.end" class="input compact-date" />
+          </div>
         </div>
-        <button @click="addDateRange">{{ $t('addDateRange') }}</button>
+        <div class="range-actions">
+          <button class="range-btn delete" @click="removeDateRange(dateRanges.length - 1)">
+            {{ $t('delete') }}
+          </button>
+          <button class="range-btn add" @click="addDateRange">
+            {{ $t('addDateRange') }}
+          </button>
+        </div>
       </div>
 
       <div v-if="privated === 'public'">
-        <label>{{ $t('departureDate') }}</label>
-        <input type="date" v-model="departureDate" class="input date-group" />
-
-        <label>{{ $t('returnDate') }}</label>
-        <input type="date" v-model="returnDate" class="input date-group" />
+        <h3 class="title">{{ $t('selectAvailabilityDates') }}</h3>
+        <div class="compact-date-row">
+          <div class="icon-date-group">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon-small" viewBox="0 0 24 24" fill="#16a085" title="Departure">
+              <path d="M2.5 19h19v2h-19zM21.4 9.5l-9-3.5-3-7h-2l2.3 6-5.7-2.2-.8 2 7.6 3-2.2 5.8 1.9.7 2.2-5.8 8.1 3.1z"/>
+            </svg>
+            <input type="date" v-model="departureDate" class="input compact-date" />
+          </div>
+          <div class="icon-date-group">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon-small" viewBox="0 0 24 24" fill="#16a085" title="Return">
+              <path d="M2.5 19h19v2h-19zM21.4 9.5l-9 3.5-3 7h-2l2.3-6-5.7 2.2-.8-2 7.6-3-2.2-5.8 1.9-.7 2.2 5.8 8.1-3.1z"/>
+            </svg>
+            <input type="date" v-model="returnDate" class="input compact-date" />
+          </div>
+        </div>
       </div>
 
       <button @click="createGroup" class="create-group-button">{{ $t('createTheGroup') }}</button>
-
-
     </div>
   </div>
 </template>
@@ -117,17 +99,14 @@ import axios from 'axios';
 export default {
   data() {
     return {
-      groupName: '', 
-      audience: '', 
-      privated: '', 
-      vacationTypes: [
-        'Cultural', 'Playa', 'Romántica', 'Relax', 
-        'Aventura', 'Gastronómica', 'Bienestar', 'Montaña'
-      ],
-      selectedType: '' ,
-      departureDate: '', 
-      returnDate: '', 
-      dateRanges: [{ start: '', end: '' }] 
+      groupName: '',
+      audience: '',
+      privated: '',
+      selectedType: '',
+      departureDate: '',
+      returnDate: '',
+      dateRanges: [{ start: '', end: '' }],
+      vacationTypes: ['Cultural', 'Playa', 'Romántica', 'Relax', 'Aventura', 'Gastronómica', 'Bienestar', 'Montaña']
     };
   },
   methods: {
@@ -148,61 +127,56 @@ export default {
         alert('All fields are required!');
         return;
       }
+
       try {
-        const email = localStorage.getItem('email'); 
-        
-        if (!email) {
-            throw new Error('Token is missing. Please log in again.');
-        }
+        const email = localStorage.getItem('email');
+        if (!email) throw new Error('Missing email');
+
         const requestData = {
           name: this.groupName,
           audience: this.audience,
           privated: this.privated,
-          email: email,
+          email,
           type: this.selectedType,
           departureDate: this.privated === 'public' ? this.departureDate : null,
           returnDate: this.privated === 'public' ? this.returnDate : null,
-          availabilityStartDate: this.privated === 'private' ? this.dateRanges.map(range => range.start) : [],
-          availabilityEndDate: this.privated === 'private' ? this.dateRanges.map(range => range.end) : []
+          availabilityStartDate: this.privated === 'private' ? this.dateRanges.map(d => d.start) : [],
+          availabilityEndDate: this.privated === 'private' ? this.dateRanges.map(d => d.end) : []
         };
-        console.log("Data being sent to backend:", requestData);
-        const response = await axios.post('/api/groups/create', requestData);
 
+        await axios.post('/api/groups/create', requestData);
         this.$router.push('/groups');
       } catch (error) {
-        console.error('Error during group creation:', error);
-        if (error.response) {
-          console.error('Error response data:', error.response.data);
-        } else if (error.request) {
-          console.error('Error request:', error.request);
-        } else {
-          console.error('Error message:', error.message);
-        }
-        alert('Failed to create group. Please try again.');
+        console.error('Error creating group:', error);
+        alert('Failed to create group.');
       }
     }
-  },
-  mounted() {
   }
 };
 </script>
 
 <style scoped>
-.user-container {
+.create-group-container {
   position: relative;
+  min-height: 100vh;
+  padding-top: 100px;
+  padding-bottom: 100px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  height: 100vh;
-  background-color: #2c3e50; 
+  background-image: url('@/assets/aviones.png');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-color: #2c3e50;
   color: white;
-  text-align: center;
+  font-family: 'Poppins', sans-serif;
 }
 
-.join-button, .create-button {
+.join-button-header {
   position: absolute;
   top: 20px;
+  left: 20px;
   background: linear-gradient(45deg, #16a085 0%, #1abc9c 100%);
   color: white;
   font-size: 1.5rem;
@@ -212,10 +186,116 @@ export default {
   cursor: pointer;
   transition: all 0.2s ease-in-out;
   box-shadow: rgba(0, 0, 0, 0.1) 0px 20px 10px -15px;
+  font-family: 'Poppins', sans-serif;
+  z-index: 1000;
 }
 
-.join-button {
-  left: 20px;
+.join-button-header:hover {
+  transform: scale(1.03);
+}
+
+.join-button-header:active {
+  transform: scale(0.95);
+}
+
+
+.main-title {
+  color: #1abc9c;
+  font-size: 2.2rem;
+  margin-bottom: 20px;
+}
+
+.form-card {
+  background: #34495e;
+  padding: 30px;
+  border-radius: 30px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  width: 90%;
+  max-width: 600px;
+}
+
+.input {
+  width: 100%;
+  max-width: 100%;
+  background: white;
+  border: none;
+  padding: 15px 20px;
+  border-radius: 15px;
+  margin-top: 10px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  font-family: 'Poppins', sans-serif;
+  box-sizing: border-box;
+}
+
+.group-dates {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.input-date-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+
+.date-icon .icon {
+  width: 14px;
+  height: 14px;
+  fill: #16a085;
+  margin-right: 4px;
+}
+
+.icon-date {
+  flex: 1;
+  min-width: 150px;
+}
+
+.checkbox-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.checkbox-column {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.radio-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.create-button, .create-group-button {
+  background: linear-gradient(45deg, #16a085 0%, #1abc9c 100%);
+  color: white;
+  font-size: 1.2rem;
+  padding: 15px 30px;
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
+  margin-top: 20px;
+  font-family: 'Poppins', sans-serif;
+  transition: 0.2s ease-in-out;
+}
+
+.create-button:hover, .create-group-button:hover {
+  transform: scale(1.03);
 }
 
 .profile-button-wrapper {
@@ -225,194 +305,78 @@ export default {
 }
 
 .profile-button-container {
-  background-color: #16a085; 
-  padding: 20px; 
-  border-radius: 50%; 
-  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 8px;
-  transition: all 0.2s ease-in-out;
+  background-color: #16a085;
+  padding: 20px;
+  border-radius: 50%;
+  transition: 0.2s ease-in-out;
 }
 
 .profile-button {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: transparent;
+  background: transparent;
   border: none;
   cursor: pointer;
-  border-radius: 50%; 
-  width: 100%;
-  height: 100%;
-  transition: background-color 0.2s ease-in-out; 
-}
-
-.w-5, .h-5 {
-  width: 2rem; 
-  height: 2rem;
-  fill: white; 
 }
 
 .profile-icon {
-  fill: white; 
+  width: 2rem;
+  height: 2rem;
+  fill: white;
 }
 
-.profile-button-container:hover {
-  background-color: #1abc9c; 
+.range-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
 }
 
-.profile-button-container:active {
-  background-color: #148f77; 
-  transform: scale(0.95); 
-  box-shadow: inset 0px 6px 8px rgba(0, 0, 0, 0.15); 
-}
-
-.main-title {
-  color: #1abc9c;
-  font-size: 2rem;
-  margin-bottom: 20px;
-}
-
-.card {
-  max-width: 400px;
-  width: 100%;
-  background: #34495e;
-  border-radius: 20px;
-  padding: 30px 40px;
-  box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 20px;
-}
-
-.input {
-  width: 100%;
-  background: white;
-  border: none;
-  padding: 15px 20px;
-  border-radius: 20px;
-  margin-top: 15px;
-  box-shadow: #cff0ff 0px 10px 10px -5px;
-  border-inline: 2px solid transparent;
-  box-sizing: border-box;
-}
-
-.input:focus {
-  outline: none;
-  border-inline: 2px solid #1abc9c;
-}
-
-.create-group-button {
-  display: block;
-  width: 100%;
+.range-btn {
+  padding: 10px 20px;
+  border-radius: 10px;
   font-weight: bold;
-  background: linear-gradient(45deg, #16a085 0%, #1abc9c 100%);
-  color: white;
-  padding-block: 15px;
-  margin-top: 20px;
-  border-radius: 20px;
   border: none;
-  transition: all 0.2s ease-in-out;
-}
-
-.create-group-button:hover {
-  background: #1abc9c;
-  transform: scale(1.03);
-}
-
-.create-group-button:active {
-  transform: scale(0.95);
-}
-
-ul {
-  list-style-type: none;
-  padding: 0;
-  margin-top: 20px;
-}
-
-.group-item {
-  margin-bottom: 10px;
-  padding: 10px;
-  background-color: #34495e;
-  border-radius: 20px;
-}
-
-.recommend-button {
-  margin-left: 10px;
-  padding: 5px 10px;
-  background-color: #38a169;
-  color: white;
-  border: none;
-  border-radius: 20px;
   cursor: pointer;
 }
 
-.recommend-button:hover {
-  background-color: #2f855a;
-}
-
-.customCheckBoxHolder {
-  margin: 5px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.customCheckBoxHolder2 {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.customCheckBox {
-  width: fit-content;
-  position: relative;
-  overflow: hidden;
-  cursor: pointer;
-  user-select: none;
-  padding: 2px 8px;
-  background-color: rgba(0, 0, 0, 0.16);
-  border-radius: 0px;
-  color: rgba(255, 255, 255, 0.7);
-  transition-timing-function: cubic-bezier(0.25, 0.8, 0.25, 1);
-  transition-duration: 300ms;
-  transition-property: color, background-color, box-shadow;
-  display: flex;
-  height: 32px;
-  align-items: center;
-  box-shadow: rgba(0, 0, 0, 0.15) 0px 2px 1px 0px inset, rgba(255, 255, 255, 0.17) 0px 1px 1px 0px;
-  outline: none;
-  justify-content: center;
-  min-width: 55px;
-}
-
-.customCheckBox:hover {
-  background-color: #2c2c2c;
+.range-btn.add {
+  background-color: #2980b9;
   color: white;
-  box-shadow: rgba(0, 0, 0, 0.23) 0px -4px 1px 0px inset, rgba(255, 255, 255, 0.17) 0px -1px 1px 0px, rgba(0, 0, 0, 0.17) 0px 2px 4px 1px;
 }
 
-.customCheckBox .inner {
-  font-size: 18px;
-  font-weight: 900;
-  pointer-events: none;
-  transition-timing-function: cubic-bezier(0.25, 0.8, 0.25, 1);
-  transition-duration: 300ms;
-  transition-property: transform;
-  transform: translateY(0px);
-}
-
-.customCheckBox:hover .inner {
-  transform: translateY(-2px);
-}
-
-.customCheckBoxInput {
-  display: none;
-}
-
-.customCheckBoxInput:checked + .customCheckBoxWrapper .customCheckBox {
-  background-color: #2d6737;
+.range-btn.delete {
+  background-color: #e74c3c;
   color: white;
-  box-shadow: rgba(0, 0, 0, 0.23) 0px -4px 1px 0px inset, rgba(255, 255, 255, 0.17) 0px -1px 1px 0px, rgba(0, 0, 0, 0.17) 0px 2px 4px 1px;
 }
 
-.customCheckBoxInput:checked + .customCheckBoxWrapper .customCheckBox:hover {
-  background-color: #34723f;
+.compact-date-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 15px;
+  flex-wrap: wrap;
+}
+
+.icon-date-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 150px;
+}
+
+.icon-small {
+  width: 18px;
+  height: 18px;
+  min-width: 18px;
+}
+
+.compact-date {
+  flex: 1;
+  padding: 10px 15px;
+  border-radius: 12px;
 }
 
 </style>
