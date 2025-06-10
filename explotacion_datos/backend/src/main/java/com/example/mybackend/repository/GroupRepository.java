@@ -16,21 +16,21 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface GroupRepository extends Neo4jRepository<Group, Long> {
 
-    @Query("CREATE (g:Group {name: $groupName, email: $email, audience: $audience, privated: $privated, isClosed: false, isClosedVoting: false, tripType: $tripType})" +
+    @Query("CREATE (g:Group {name: $name, email: $email, audience: $audience, privated: $privated, isClosed: false, isClosedVoting: false, tripType: $tripType}) " +
             "WITH g " +
-            "MATCH (u:User {email: $email}), (g:Group {name: $groupName}) " +
+            "MATCH (u:User {email: $email}), (g:Group {name: $name}) " +
             "CREATE (u)-[r:PERTENECE_A]->(g) " +
-            "SET r.preference = $preference, r.availabilityStartDates = $availabilityStartDates, r.availabilityEndDates = $availabilityEndDates" +
+            "SET r.preference = $preference, r.availabilityStartDates = $availabilityStartDates, r.availabilityEndDates = $availabilityEndDates " +
             "RETURN g")
-    Group createPrivateGroup(@Param("groupName") String groupName, @Param("email") String email, @Param("audience") String audience, @Param("privated") String privated, @Param("isClosed") boolean isClosed, @Param("tripType") String tripType, @Param("departureDate") LocalDate departureDate, @Param("returnDate") LocalDate returnDate, @Param("availabilityStartDates") List<LocalDate> availabilityStartDates, @Param("availabilityEndDates") List<LocalDate> availabilityEndDates);
+    Group createPrivateGroup(@Param("name") String groupName, @Param("email") String email, @Param("audience") String audience, @Param("privated") String privated, @Param("isClosed") boolean isClosed, @Param("tripType") String tripType, @Param("departureDate") LocalDate departureDate, @Param("returnDate") LocalDate returnDate, @Param("availabilityStartDates") List<LocalDate> availabilityStartDates, @Param("availabilityEndDates") List<LocalDate> availabilityEndDates);
 
-        @Query("CREATE (g:Group {name: $groupName, email: $email, audience: $audience, privated: $privated, isClosed: false, isClosedVoting: false, tripType: $tripType, departureDate: $departureDate, returnDate: $returnDate}) " +
+        @Query("CREATE (g:Group {name: $name, email: $email, audience: $audience, privated: $privated, isClosed: false, isClosedVoting: false, tripType: $tripType, departureDate: $departureDate, returnDate: $returnDate}) " +
         "WITH g " +
         "MATCH (u:User {email: $email}) " +
         "CREATE (u)-[r:PERTENECE_A]->(g) " +
-        "SET r.preference = $preference" +
+        "SET r.preference = $preference " +
         "RETURN g")
-        Group createPublicGroup(@Param("groupName") String groupName,
+        Group createPublicGroup(@Param("name") String groupName,
                         @Param("email") String email,
                         @Param("audience") String audience,
                         @Param("privated") String privated,
@@ -42,13 +42,13 @@ public interface GroupRepository extends Neo4jRepository<Group, Long> {
                         @Param("availabilityEndDates") List<LocalDate> availabilityEndDates,
                         @Param("preference") String preference);
 
-    @Query("MATCH (g:Group {name: $groupName}) SET g.isClosed = true" +
+    @Query("MATCH (g:Group {name: $name}) SET g.isClosed = true" +
         "RETURN g")
-    Group closeGroup(@Param("groupName") String groupName);
+    Group closeGroup(@Param("name") String groupName);
 
-    @Query("MATCH (g:Group {name: $groupName}) SET g.isClosedVoting = true" +
+    @Query("MATCH (g:Group {name: $name}) SET g.isClosedVoting = true" +
         "RETURN g")
-    Group closeVoting(@Param("groupName") String groupName);
+    Group closeVoting(@Param("name") String groupName);
 
     @Query("MATCH (g:Group {name: $name}) RETURN g")
     Group findGroupByName(@Param("name") String name);
@@ -56,16 +56,16 @@ public interface GroupRepository extends Neo4jRepository<Group, Long> {
     @Query("MATCH (u:User {email: $email}) "+
             "MATCH (g:Group {name: $name}) "+
             "MERGE (u)-[r:PERTENECE_A]->(g) "+
-            "SET r.preference = $preference, r.availabilityStartDates = $availabilityStartDates, r.availabilityEndDates = $availabilityEndDates" +
+            "SET r.preference = $preference, r.availabilityStartDates = $availabilityStartDates, r.availabilityEndDates = $availabilityEndDates " +
             "RETURN r.preference")
-    String joinGroupWithPreferences(@Param("groupName") String groupName, @Param("userEmail") String userEmail, @Param("preference") String preference, @Param("availabilityStartDates") List<LocalDate> availabilityStartDates, @Param("availabilityEndDates") List<LocalDate> availabilityEndDates);
+    String joinGroupWithPreferences(@Param("name") String groupName, @Param("email") String userEmail, @Param("preference") String preference, @Param("availabilityStartDates") List<LocalDate> availabilityStartDates, @Param("availabilityEndDates") List<LocalDate> availabilityEndDates);
 
     @Query("MATCH (u:User {email: $email}) "+
             "MATCH (g:Group {name: $name}) "+
             "MERGE (u)-[r:PERTENECE_A]->(g) "+
-            "SET r.preference = $preference" +
+            "SET r.preference = $preference " +
             "RETURN r.preference")
-    String joinPublicGroupWithPreferences(@Param("groupName") String groupName, @Param("userEmail") String userEmail, @Param("preference") String preference);
+    String joinPublicGroupWithPreferences(@Param("name") String groupName, @Param("email") String userEmail, @Param("preference") String preference);
 
     @Query("MATCH (u:User {email: $email})-[r:PERTENECE_A]->(g:Group) " +
             "RETURN g")
@@ -74,10 +74,10 @@ public interface GroupRepository extends Neo4jRepository<Group, Long> {
     @Query("MATCH (g:Group {privated: 'public', isClosed: false}) RETURN g")
     List<Group> findPublicGroups();
 
-    @Query("MATCH (u:User {email: $email}), (g:Group {name: $groupName}) " +
+    @Query("MATCH (u:User {email: $email}), (g:Group {name: $name}) " +
             "MERGE (u)-[:INVITADO_A]->(g)" +
             "RETURN u.name")
-    String inviteUserToGroup(@Param("groupName") String groupName, @Param("email") String email);
+    String inviteUserToGroup(@Param("name") String groupName, @Param("email") String email);
 
     @Query("MATCH (g:Group {tripType: $triptype}) " +
             "RETURN g")
@@ -91,28 +91,28 @@ public interface GroupRepository extends Neo4jRepository<Group, Long> {
             "RETURN g")
     List<Group> findInvitedGroups(@Param("email") String email);
 
-    @Query("MATCH (u:User {email: $email})-[r:INVITADO_A]->(g:Group {name: $groupName}) " +
+    @Query("MATCH (u:User {email: $email})-[r:INVITADO_A]->(g:Group {name: $name}) " +
             "DELETE r"+
             "MERGE (u)-[r:PERTENECE_A]->(g) " +
             "SET r.preference = $preference, r.availabilityStartDates = $startDates, r.availabilityEndDates = $endDates" +
             "RETURN g.name")
-    String acceptInvitation(@Param("groupName") String groupName, @Param("email") String email, @Param("preference") String preference, @Param("startDates") List<LocalDate> startDates, @Param("endDates") List<LocalDate> endDates);
+    String acceptInvitation(@Param("name") String groupName, @Param("email") String email, @Param("preference") String preference, @Param("startDates") List<LocalDate> startDates, @Param("endDates") List<LocalDate> endDates);
 
-    @Query("MATCH (u:User {email: $email})-[r:PERTENECE_A]->(g:Group {name: $groupName}) " +
+    @Query("MATCH (u:User {email: $email})-[r:PERTENECE_A]->(g:Group {name: $name}) " +
             "DELETE r" +
             "RETURN g")
-    Group leaveGroup(@Param("groupName") String groupName, @Param("email") String email);   
+    Group leaveGroup(@Param("name") String groupName, @Param("email") String email);   
     
 
-    @Query("MATCH (u:User)-[r:PERTENECE_A]->(g:Group {name: $groupName}) " +
+    @Query("MATCH (u:User)-[r:PERTENECE_A]->(g:Group {name: $name}) " +
             "RETURN r.availabilityStartDates ")
-    List<LocalDate> getUserAvailabilityStartDates(@Param("groupName") String groupName);
+    List<LocalDate> getUserAvailabilityStartDates(@Param("name") String groupName);
 
-    @Query("MATCH (u:User)-[r:PERTENECE_A]->(g:Group {name: $groupName}) " +
+    @Query("MATCH (u:User)-[r:PERTENECE_A]->(g:Group {name: $name}) " +
             "RETURN r.availabilityEndDates ")
-    List<LocalDate> getUserAvailabilityEndDates(@Param("groupName") String groupName);
+    List<LocalDate> getUserAvailabilityEndDates(@Param("name") String groupName);
 
-    @Query("MATCH (g:Group {name: $groupName}) " +
+    @Query("MATCH (g:Group {name: $name}) " +
             "SET g.departureDate = $departureDate, g.returnDate = $returnDate")
-    void updateGroupDates(@Param("groupName") String groupName, @Param("departureDate") LocalDate departureDate, @Param("returnDate") LocalDate returnDate);
+    void updateGroupDates(@Param("name") String groupName, @Param("departureDate") LocalDate departureDate, @Param("returnDate") LocalDate returnDate);
 }

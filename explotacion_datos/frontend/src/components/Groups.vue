@@ -49,7 +49,7 @@
               <svg xmlns="http://www.w3.org/2000/svg" class="icon-group" viewBox="0 0 24 24" fill="#16a085" width="20" height="20" style="vertical-align: middle; margin-right: 4px;">
                 <path d="M12 2a10 10 0 100 20 10 10 0 000-20zm3.5 7.5l-2 5.5-5.5 2 2-5.5 5.5-2z"/>
               </svg>
-              {{ group.type }}
+              {{ group.tripType }}
             </p>
 
             <div class="group-dates">
@@ -156,7 +156,7 @@ export default {
   computed: {
     filteredGroups() {
       return this.groups.filter(group => {
-        const matchType = this.selectedType ? group.type === this.selectedType : true;
+        const matchType = this.selectedType ? group.tripType === this.selectedType : true;
         const matchAudience = this.selectedAudience ? group.audience === this.selectedAudience : true;
         const matchDeparture = (() => {
           if (!this.departureFrom && !this.departureTo) return true;

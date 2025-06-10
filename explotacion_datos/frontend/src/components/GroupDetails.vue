@@ -1,29 +1,75 @@
 <template>
-  <div class="group-details-container">
-    <h1>{{ $t('group') }} {{ group.name }}</h1>
-    <p><strong>{{ $t('audience') }}</strong> {{ group.audience }}</p>
-    <p><strong>{{ $t('type') }}</strong> {{ group.type }}</p>
-    
-    <div v-if="!isMember">
-      <p><strong>{{ $t('departureDate') }}</strong> {{ formattedDepartureDate }}</p>
-      <p><strong>{{ $t('returnDate') }}</strong> {{ formattedReturnDate }}</p>
-      <div>
-        <h3>{{ $t('selectType') }}</h3>
-        <div class="customCheckBoxHolder2">
-          <label v-for="(type, index) in vacationTypes" :key="index">
-            <input 
-              type="radio" 
-              :value="type" 
-              v-model="selectedType" 
-            />
-            {{ $t(type) }} 
-          </label>
+  <div class="groups-container">
+    <button class="create-button" @click="goBack">{{ $t('back') }}</button>
+
+    <div class="profile-button-wrapper">
+      <div class="profile-button-container">
+        <a title="Go to profile page" @click="viewMyGroups" class="profile-button">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 profile-icon" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+          </svg>
+        </a>
+      </div>
+    </div>
+
+    <h1 class="main-title">{{ $t('group') }} {{ group.name }}</h1>
+
+    <div class="groups-content">
+      <div class="group-details-card">
+        <p class="group-name group-audience">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon-group" viewBox="0 0 24 24" fill="#16a085" width="20" height="20" style="vertical-align: middle; margin-right: 4px;">
+            <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 3-1.34 3-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
+          </svg>
+          <strong>{{ $t('audience') }}</strong> {{ group.audience }}
+        </p>
+        <p class="group-name">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon-group" viewBox="0 0 24 24" fill="#16a085" width="20" height="20" style="vertical-align: middle; margin-right: 4px;">
+            <path d="M12 2a10 10 0 100 20 10 10 0 000-20zm3.5 7.5l-2 5.5-5.5 2 2-5.5 5.5-2z"/>
+          </svg>
+          <strong>{{ $t('type') }}</strong> {{ group.type }}
+        </p>
+
+        <div class="group-dates">
+          <span class="date-icon" title="Departure date">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M2.5 19h19v2h-19zM21.4 9.5l-9 3.5-3 7h-2l2.3-6-5.7 2.2-.8-2 7.6-3-2.2-5.8 1.9-.7 2.2 5.8 8.1-3.1z"/>
+            </svg>
+            {{ group.departureDate ? formattedDepartureDate : 'N/A' }}
+          </span>
+          <span class="date-icon" title="Return date">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M2.5 19h19v2h-19zM21.4 9.5l-9-3.5-3-7h-2l2.3 6-5.7-2.2-.8 2 7.6 3-2.2 5.8 1.9.7 2.2-5.8 8.1 3.1z"/>
+            </svg>
+            {{ group.returnDate ? formattedReturnDate : 'N/A' }}
+          </span>
+        </div>
+
+        <div v-if="!isMember">
+          <div class="section-spacing">
+            <h3>{{ $t('selectType') }}</h3>
+            <div class="customCheckBoxHolder2">
+              <label 
+                v-for="(type, index) in vacationTypes" 
+                :key="index" 
+                class="radio-label"
+                :class="{ 'selected-radio': selectedType === type }"
+              >
+                <input 
+                  type="radio" 
+                  :value="type" 
+                  v-model="selectedType" 
+                />
+                {{ $t(type) }} 
+              </label>
+            </div>
+          </div>
+          
+          <button class="join-button" @click="joinGroup">{{ $t('joinGroup') }}</button>
+        </div>
+        <div v-else>
+          <p class="already-member-message">{{ $t('alreadyMember') }}</p>
         </div>
       </div>
-      <button class="join-button" @click="joinGroup">{{ $t('joinGroup') }}</button>
-    </div>
-    <div v-else>
-      <p>{{ $t('alreadyMember') }}</p>
     </div>
   </div>
 </template>
@@ -40,8 +86,7 @@ export default {
         'Cultural', 'Playa', 'Romántica', 'Relax', 
         'Aventura', 'Gastronómica', 'Bienestar', 'Montaña'
       ],
-      selectedType: '' ,
-      dateRanges: [{ start: "", end: "" }], 
+      selectedType: '',
     };
   },
   computed: {
@@ -64,35 +109,51 @@ export default {
         this.group = response.data;
       } catch (error) {
         console.error("Error fetching group details:", error);
+        alert("Failed to load group details.");
       }
     },
-    addDateRange() {
-      this.dateRanges.push({ start: "", end: "" });
+/*************  ✨ Windsurf Command ⭐  *************/
+    /**
+     * Navigates back to the previous page in the browser history.
+     */
+
+/*******  1f1c0f54-3587-489d-8590-219e7046c4e6  *******/
+    goBack() {
+      this.$router.go(-1); 
     },
-    removeDateRange(index) {
-      this.dateRanges.splice(index, 1);
+    viewMyGroups() {
+      this.$router.push('/groups/user'); 
     },
     async joinGroup() {
       const email = localStorage.getItem('email'); 
       if (!email) {
-        alert("User not logged in. Please log in to join a group.");
+        alert(this.$t("userNotLoggedIn"));
         return;
       }
+
+      if (!this.selectedType) {
+        alert(this.$t("pleaseSelectVacationType"));
+        return;
+      }
+
       try {
         const requestData = {
           groupName: this.group.name,
           email: email,
           preference: this.selectedType,
-          availabilityStartDates: null,
-          availabilityEndDates: null,
+          // availabilityStartDates y availabilityEndDates se eliminan
         };
         console.log("Sending data to backend:", requestData);
         const response = await axios.post("/api/groups/joinWithPreferences", requestData);
-        alert(`Successfully joined group: ${this.group.name}`);
-        this.isMember = true;
+        alert(this.$t('successfullyJoinedGroup', { groupName: this.group.name }));
+        this.isMember = true; 
       } catch (error) {
         console.error("Error joining group:", error);
-        alert("Failed to join group. Please try again.");
+        if (error.response && error.response.status === 409) { 
+          alert(this.$t('alreadyMemberError'));
+        } else {
+          alert(this.$t('failedToJoinGroup'));
+        }
       }
     },
   },
@@ -103,45 +164,256 @@ export default {
 </script>
 
 <style scoped>
-.group-details-container {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 40px;
-  background-color: #34495e;
+/* Copia y pega todos los estilos de la respuesta anterior aquí,
+   y luego añade/modifica la siguiente clase */
+
+/* Estilos de GroupsView.vue replicados para consistencia */
+.groups-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #2c3e50;
+  background-image: url('@/assets/aviones.png'); /* Asegúrate de que esta ruta sea correcta */
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
   color: white;
-  border-radius: 10px;
-  box-shadow: rgba(0, 0, 0, 0.1) 0px 20px 20px -15px;
+  font-family: 'Poppins', sans-serif;
+  min-height: 100vh;
+  padding-bottom: 100px;
+  overflow-y: auto;
 }
 
-.join-button,
-.add-date-button,
-.delete-button {
-  margin-top: 10px;
+.create-button { /* Reutilizado como botón de "back" */
+  position: absolute;
+  top: 20px;
+  left: 20px;
   background: linear-gradient(45deg, #16a085 0%, #1abc9c 100%);
   color: white;
-  font-size: 1.2rem;
-  padding: 10px 20px;
-  border-radius: 10px;
+  font-size: 1.5rem;
+  padding: 20px 40px;
+  border-radius: 20px;
   border: none;
   cursor: pointer;
   transition: all 0.2s ease-in-out;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 20px 10px -15px;
+  font-family: 'Poppins', sans-serif;
 }
 
-.add-date-button {
-  margin-bottom: 10px;
-}
-
-.join-button:hover,
-.add-date-button:hover,
-.delete-button:hover {
+.create-button:hover {
   transform: scale(1.03);
 }
 
-.input {
+.create-button:active {
+  transform: scale(0.95);
+}
+
+.profile-button-wrapper {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}
+
+.profile-button-container {
+  background-color: #16a085;
+  padding: 20px;
+  border-radius: 50%;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 8px;
+  transition: all 0.2s ease-in-out;
+}
+
+.profile-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  border-radius: 50%;
   width: 100%;
-  margin: 10px 0;
-  padding: 10px;
-  border-radius: 10px;
-  border: 2px solid #1abc9c;
+  height: 100%;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.w-5, .h-5, .profile-icon {
+  width: 2rem;
+  height: 2rem;
+  fill: white;
+}
+
+.profile-button-container:hover {
+  background-color: #1abc9c;
+}
+
+.profile-button-container:active {
+  background-color: #148f77;
+  transform: scale(0.95);
+  box-shadow: inset 0px 6px 8px rgba(0, 0, 0, 0.15);
+}
+
+.main-title {
+  color: #1abc9c;
+  font-size: 2rem;
+  margin: 80px 0 30px 0;
+  font-family: 'Poppins', sans-serif;
+}
+
+.groups-content {
+  text-align: center;
+  max-width: 800px; /* Ajustado para los detalles del grupo */
+  width: 90%;
+  background: #34495e;
+  border-radius: 30px;
+  padding: 30px;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 30px 30px -20px;
+  font-family: 'Poppins', sans-serif;
+  color: white; /* Asegúrate de que el texto dentro sea blanco */
+}
+
+.group-details-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* Alinea el texto a la izquierda dentro de la tarjeta */
+  padding: 15px;
+  background-color: #ecf0f1;
+  border-radius: 20px;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px;
+  color: #34495e; /* Color de texto para el contenido de la tarjeta */
+  font-family: 'Poppins', sans-serif;
+}
+
+.group-name {
+  color: #34495e;
+  font-weight: bold;
+  margin-bottom: 6px; /* Espacio entre los párrafos de detalles */
+  display: flex;
+  align-items: center;
+}
+
+.icon-group {
+  width: 18px;
+  height: 18px;
+  margin-right: 5px;
+  vertical-align: middle;
+}
+
+.group-dates {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+  gap: 10px;
+  font-weight: bold;
+  color: #34495e;
+  font-family: 'Poppins', sans-serif;
+  width: 100%; /* Para que ocupe todo el ancho de la tarjeta */
+}
+
+.date-icon {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.date-icon .icon {
+  width: 20px;
+  height: 20px;
+  fill: #16a085;
+}
+
+.join-button {
+  align-self: flex-end; /* Alinea el botón a la derecha dentro de la tarjeta */
+  background: linear-gradient(45deg, #16a085 0%, #1abc9c 100%);
+  color: white;
+  font-size: 1.2rem; /* Tamaño de fuente ajustado */
+  padding: 10px 20px;
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
+  margin-top: 20px; /* Espacio superior */
+  transition: all 0.2s ease-in-out;
+  font-family: 'Poppins', sans-serif;
+}
+
+.join-button:hover {
+  transform: scale(1.03);
+}
+
+.join-button:active {
+  transform: scale(0.95);
+}
+
+/* Estilos para los radio buttons (vacation types) */
+h3 {
+  color: #34495e; /* Color del texto para los títulos de sección */
+  margin-top: 20px;
+  margin-bottom: 10px;
+  align-self: flex-start; /* Alinea los títulos a la izquierda */
+}
+
+.customCheckBoxHolder2 {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: flex-start; /* Alinea los checkboxes a la izquierda */
+  width: 100%;
+}
+
+.radio-label {
+  background-color: #f1f1f1;
+  color: #34495e;
+  padding: 8px 15px;
+  border-radius: 15px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid #ddd;
+}
+
+.radio-label:hover {
+  background-color: #e0e0e0;
+}
+
+.radio-label input[type="radio"] {
+  display: none; /* Oculta el radio button original */
+}
+
+/* --- NUEVO ESTILO PARA EL TIPO SELECCIONADO --- */
+.radio-label.selected-radio {
+  background: linear-gradient(45deg, #16a085 0%, #1abc9c 100%); /* Fondo degradado */
+  color: white; /* Texto blanco para mayor contraste */
+  border-color: #16a085; /* Borde que coincide con el degradado */
+  font-weight: bold; /* Hacer el texto más llamativo */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra para que destaque */
+  transform: translateY(-2px); /* Un ligero efecto de elevación */
+}
+/* ------------------------------------------- */
+
+.already-member-message {
+    color: #16a085; /* Color para el mensaje de miembro */
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-top: 20px;
+    align-self: center; /* Centrar el mensaje */
+}
+
+.section-spacing {
+    margin-bottom: 20px; /* Espacio entre secciones como tipo de vacaciones y fechas */
+    width: 100%;
+}
+
+/* Asegúrate de que las fuentes se apliquen correctamente */
+button,
+.join-button,
+.create-button,
+.button,
+label,
+input,
+select,
+p,
+h1,
+h3 {
+  font-family: 'Poppins', sans-serif !important;
 }
 </style>

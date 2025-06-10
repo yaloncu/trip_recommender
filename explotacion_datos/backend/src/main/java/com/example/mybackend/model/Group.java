@@ -38,7 +38,7 @@ public class Group {
     private String email;
     private boolean isClosed;
     private boolean isClosedVoting;
-    private String type;
+    private String tripType;
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate departureDate;
     @JsonFormat(pattern = "yyyy-MM-dd")
@@ -205,8 +205,8 @@ public class Group {
      * 
      * @return the type of the group
      */
-    public String getType() {
-        return type; 
+    public String getTripType() {
+        return tripType; 
     }
 
     /**
@@ -214,8 +214,8 @@ public class Group {
      * 
      * @param type the type to set
      */
-    public void setType(String type) {
-        this.type = type; 
+    public void setTripType(String tripType) {
+        this.tripType = tripType; 
     }
 
     /**

@@ -65,7 +65,7 @@ class UserControllerImplTest {
                 .privated("public")
                 .isClosed(true)
                 .isClosedVoting(true)
-                .type("Test Trip Type")
+                .tripType("Test Trip Type")
                 .departureDate(LocalDate.of(2023, 10, 1))
                 .returnDate(LocalDate.of(2023, 10, 10))
                 .availabilityStartDates(List.of(LocalDate.of(2023, 9, 25)))

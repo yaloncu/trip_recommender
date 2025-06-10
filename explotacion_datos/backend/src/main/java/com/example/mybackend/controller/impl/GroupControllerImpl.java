@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.mybackend.controller.GroupController;
@@ -44,7 +45,7 @@ public class GroupControllerImpl implements GroupController {
     @PostMapping("/create")
     public Group createGroup(@RequestBody Group group) {
         try {
-             return groupService.createGroup(group.getName(), group.getEmail(), group.getAudience(), group.getPrivated(), group.isClosed(), group.getType(), group.getDepartureDate(), group.getReturnDate(), group.getAvailabilityStartDates(), group.getAvailabilityEndDates(), "");
+             return groupService.createGroup(group.getName(), group.getEmail(), group.getAudience(), group.getPrivated(), group.isClosed(), group.getTripType(), group.getDepartureDate(), group.getReturnDate(), group.getAvailabilityStartDates(), group.getAvailabilityEndDates(), "");
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -209,8 +210,8 @@ public class GroupControllerImpl implements GroupController {
      * @param body the request body containing the user's email
      * @return the list of groups the user belongs to
      */
-    @PostMapping("/user")
-    public List<Group> getUserGroups(String email) {
+    @GetMapping("/user")
+    public List<Group> getUserGroups(@RequestParam String email) {
         if (email == null || email.isEmpty()) {
             throw new IllegalArgumentException("Email is required");
         }

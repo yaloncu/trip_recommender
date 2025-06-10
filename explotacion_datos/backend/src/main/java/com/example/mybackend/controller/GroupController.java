@@ -57,8 +57,8 @@ public interface GroupController {
     @GetMapping("/public")
     List<Group> getPublicGroups();
 
-    @PostMapping("/user")
-    List<Group> getUserGroups(String email);
+    @GetMapping("/user")
+    List<Group> getUserGroups(@RequestParam String email);
 
     @GetMapping("/{name}")
     Group getGroupByName(@PathVariable String name);

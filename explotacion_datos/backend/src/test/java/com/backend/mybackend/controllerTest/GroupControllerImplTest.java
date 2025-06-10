@@ -44,7 +44,7 @@ class GroupControllerImplTest {
                 .privated("public")
                 .isClosed(false)
                 .isClosedVoting(false)
-                .type("Test Trip Type")
+                .tripType("Test Trip Type")
                 .departureDate(LocalDate.of(2023, 10, 1))
                 .returnDate(LocalDate.of(2023, 10, 10))
                 .availabilityStartDates(List.of(LocalDate.of(2023, 9, 25)))
@@ -58,7 +58,7 @@ class GroupControllerImplTest {
                 .privated("public")
                 .isClosed(true)
                 .isClosedVoting(true)
-                .type("Test Trip Type")
+                .tripType("Test Trip Type")
                 .departureDate(LocalDate.of(2023, 10, 1))
                 .returnDate(LocalDate.of(2023, 10, 10))
                 .availabilityStartDates(List.of(LocalDate.of(2023, 9, 25)))
@@ -86,7 +86,7 @@ class GroupControllerImplTest {
         assertEquals("Test Audience", grupo.getAudience());
         assertEquals("public", grupo.getPrivated());
         assertFalse(grupo.isClosed());
-        assertEquals("Test Trip Type", grupo.getType());
+        assertEquals("Test Trip Type", grupo.getTripType());
         assertEquals(LocalDate.of(2023, 10, 1), grupo.getDepartureDate());
         assertEquals(LocalDate.of(2023, 10, 10), grupo.getReturnDate());
         assertEquals(List.of(LocalDate.of(2023, 9, 25)), grupo.getAvailabilityStartDates());

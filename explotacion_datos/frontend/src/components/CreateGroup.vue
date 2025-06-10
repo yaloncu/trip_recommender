@@ -48,14 +48,14 @@
         <h3 class="title">{{ $t('selectAvailabilityDates') }}</h3>
         <div v-for="(range, index) in dateRanges" :key="index" class="compact-date-row">
           <div class="icon-date-group">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon-small" viewBox="0 0 24 24" fill="#16a085" title="Departure">
-              <path d="M2.5 19h19v2h-19zM21.4 9.5l-9-3.5-3-7h-2l2.3 6-5.7-2.2-.8 2 7.6 3-2.2 5.8 1.9.7 2.2-5.8 8.1 3.1z"/>
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon-small" viewBox="0 0 24 24" fill="#16a085" title="Return">
+              <path d="M2.5 19h19v2h-19zM21.4 9.5l-9 3.5-3 7h-2l2.3-6-5.7 2.2-.8-2 7.6-3-2.2-5.8 1.9-.7 2.2 5.8 8.1-3.1z"/>
             </svg>
             <input type="date" v-model="range.start" class="input compact-date" />
           </div>
           <div class="icon-date-group">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon-small" viewBox="0 0 24 24" fill="#16a085" title="Return">
-              <path d="M2.5 19h19v2h-19zM21.4 9.5l-9 3.5-3 7h-2l2.3-6-5.7 2.2-.8-2 7.6-3-2.2-5.8 1.9-.7 2.2 5.8 8.1-3.1z"/>
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon-small" viewBox="0 0 24 24" fill="#16a085" title="Departure">
+              <path d="M2.5 19h19v2h-19zM21.4 9.5l-9-3.5-3-7h-2l2.3 6-5.7-2.2-.8 2 7.6 3-2.2 5.8 1.9.7 2.2-5.8 8.1 3.1z"/>
             </svg>
             <input type="date" v-model="range.end" class="input compact-date" />
           </div>
@@ -74,14 +74,14 @@
         <h3 class="title">{{ $t('selectAvailabilityDates') }}</h3>
         <div class="compact-date-row">
           <div class="icon-date-group">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon-small" viewBox="0 0 24 24" fill="#16a085" title="Departure">
-              <path d="M2.5 19h19v2h-19zM21.4 9.5l-9-3.5-3-7h-2l2.3 6-5.7-2.2-.8 2 7.6 3-2.2 5.8 1.9.7 2.2-5.8 8.1 3.1z"/>
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon-small" viewBox="0 0 24 24" fill="#16a085" title="Return">
+              <path d="M2.5 19h19v2h-19zM21.4 9.5l-9 3.5-3 7h-2l2.3-6-5.7 2.2-.8-2 7.6-3-2.2-5.8 1.9-.7 2.2 5.8 8.1-3.1z"/>
             </svg>
             <input type="date" v-model="departureDate" class="input compact-date" />
           </div>
           <div class="icon-date-group">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon-small" viewBox="0 0 24 24" fill="#16a085" title="Return">
-              <path d="M2.5 19h19v2h-19zM21.4 9.5l-9 3.5-3 7h-2l2.3-6-5.7 2.2-.8-2 7.6-3-2.2-5.8 1.9-.7 2.2 5.8 8.1-3.1z"/>
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon-small" viewBox="0 0 24 24" fill="#16a085" title="Departure">
+              <path d="M2.5 19h19v2h-19zM21.4 9.5l-9-3.5-3-7h-2l2.3 6-5.7-2.2-.8 2 7.6 3-2.2 5.8 1.9.7 2.2-5.8 8.1 3.1z"/>
             </svg>
             <input type="date" v-model="returnDate" class="input compact-date" />
           </div>
@@ -114,7 +114,11 @@ export default {
       this.dateRanges.push({ start: '', end: '' });
     },
     removeDateRange(index) {
-      this.dateRanges.splice(index, 1);
+      if (this.dateRanges.length > 1) {
+        this.dateRanges.splice(index, 1);
+      } else {
+        alert('Debes tener al menos un rango de fechas de disponibilidad.');
+      }
     },
     joinGroup() {
       this.$router.push('/groups');
@@ -123,32 +127,55 @@ export default {
       this.$router.push('/groups/user');
     },
     async createGroup() {
-      if (!this.groupName || !this.audience || !this.privated) {
-        alert('All fields are required!');
+      if (!this.groupName || !this.audience || !this.privated || !this.selectedType) {
+        alert('Por favor, completa todos los campos obligatorios: Nombre del Grupo, Audiencia, Privacidad y Tipo de Viaje.');
         return;
       }
 
+      // 2. Validar fechas según el tipo de privacidad
+      if (this.privated === 'private') {
+        const hasEmptyRange = this.dateRanges.some(range => !range.start || !range.end);
+        if (hasEmptyRange) {
+          alert('Para grupos privados, asegúrate de que todos los rangos de fechas de disponibilidad estén completos.');
+          return;
+        }
+      } else if (this.privated === 'public') {
+        if (!this.departureDate || !this.returnDate) {
+          alert('Para grupos públicos, por favor, selecciona las fechas de salida y regreso.');
+          return;
+        }
+      }
+
+
       try {
         const email = localStorage.getItem('email');
-        if (!email) throw new Error('Missing email');
-
+        if (!email) {
+          alert('No se pudo encontrar tu correo electrónico. Por favor, inicia sesión de nuevo.');
+          this.$router.push('/login'); 
+          return;
+        }
         const requestData = {
           name: this.groupName,
           audience: this.audience,
           privated: this.privated,
-          email,
+          email: email,
           type: this.selectedType,
+          isClosed: false,
+          isClosedVoting: false,
+          description: "",
           departureDate: this.privated === 'public' ? this.departureDate : null,
           returnDate: this.privated === 'public' ? this.returnDate : null,
-          availabilityStartDate: this.privated === 'private' ? this.dateRanges.map(d => d.start) : [],
-          availabilityEndDate: this.privated === 'private' ? this.dateRanges.map(d => d.end) : []
+          availabilityStartDates: this.privated === 'private' ? this.dateRanges.map(d => d.start) : [],
+          availabilityEndDates: this.privated === 'private' ? this.dateRanges.map(d => d.end) : []
         };
+        console.log("Datos enviados al backend:", requestData);
 
         await axios.post('/api/groups/create', requestData);
-        this.$router.push('/groups');
+        alert('¡Grupo creado con éxito!');
+        this.$router.push('/groups/user');
       } catch (error) {
-        console.error('Error creating group:', error);
-        alert('Failed to create group.');
+        console.error('Error al crear el grupo:', error.response ? error.response.data : error.message);
+        alert('Hubo un problema al crear el grupo. Por favor, inténtalo de nuevo.');
       }
     }
   }
