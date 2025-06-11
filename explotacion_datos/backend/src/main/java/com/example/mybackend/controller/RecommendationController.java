@@ -30,7 +30,7 @@ public interface RecommendationController {
      * @return a list of recommendations for the group
      */
     @GetMapping("/recommendations/{groupId}")
-    List<String> getRecommendations(@PathVariable Long groupId);
+    List<String> getRecommendations(@PathVariable String groupName);
 
     /**
      * Get the final destination for a group.

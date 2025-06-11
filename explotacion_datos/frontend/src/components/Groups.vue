@@ -16,25 +16,42 @@
 
     <div class="groups-content">
       <div v-if="groups.length">
-        <!-- Filtros -->
         <div class="filters">
+          <div class="search-input-wrapper">
+            <svg xmlns="http://www.w3.org/2000/svg" class="search-icon" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+            </svg>
+            <input
+              type="text"
+              v-model="searchQuery"
+              :placeholder="$t('searchGroupByName')"
+              class="search-input" />
+          </div>
+
           <select v-model="selectedType" class="filter-select">
             <option value="">{{ $t('allTypes') }}</option>
-            <option value="adventure">Adventure</option>
-            <option value="cultural">Cultural</option>
-            <option value="relax">Relax</option>
+            <option value="Aventura">{{ $t('Aventura') }}</option>
+            <option value="Cultural">{{ $t('Cultural') }}</option>
+            <option value="Playa">{{ $t('Playa') }}</option>
+            <option value="Romántica">{{ $t('Romántica') }}</option>
+            <option value="Relax">{{ $t('Relax') }}</option>
+            <option value="Gastronómica">{{ $t('Gastronómica') }}</option>
+            <option value="Bienestar">{{ $t('Bienestar') }}</option>
+            <option value="Montaña">{{ $t('Montaña') }}</option>
           </select>
 
           <select v-model="selectedAudience" class="filter-select">
             <option value="">{{ $t('allAudiences') }}</option>
-            <option value="friends">Friends</option>
-            <option value="family">Family</option>
-            <option value="couples">Couples</option>
+            <option value="Adultos">{{ $t('adults') }}</option>
+            <option value="Jóvenes">{{ $t('youth') }}</option>
+            <option value="Familias">{{ $t('families') }}</option>
+            <option value="Tercera edad">{{ $t('3age') }}</option>
           </select>
 
-          <input type="date" v-model="departureFrom" class="filter-select" />
-          <input type="date" v-model="departureTo" class="filter-select" />
+          <input type="date" v-model="departureFrom" class="filter-select" :placeholder="$t('departureFrom')" />
+          <input type="date" v-model="departureTo" class="filter-select" :placeholder="$t('returnTo')" />
         </div>
+
 
         <ul class="group-list">
           <li v-for="group in filteredGroups" :key="group.name" class="group-item">
@@ -53,17 +70,17 @@
             </p>
 
             <div class="group-dates">
-              <span class="date-icon" title="Return date">
-                <svg xmlns="http://www.w3.org/2000/svg" class="icon" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M2.5 19h19v2h-19zM21.4 9.5l-9 3.5-3 7h-2l2.3-6-5.7 2.2-.8-2 7.6-3-2.2-5.8 1.9-.7 2.2 5.8 8.1-3.1z"/>
-                </svg>
-                {{ group.returnDate ? new Date(group.departureDate).toLocaleDateString() : 'N/A' }}
-              </span>
               <span class="date-icon" title="Departure date">
                 <svg xmlns="http://www.w3.org/2000/svg" class="icon" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M2.5 19h19v2h-19zM21.4 9.5l-9-3.5-3-7h-2l2.3 6-5.7-2.2-.8 2 7.6 3-2.2 5.8 1.9.7 2.2-5.8 8.1 3.1z"/>
                 </svg>
-                {{ group.departureDate ? new Date(group.returnDate).toLocaleDateString() : 'N/A' }}
+                {{ group.departureDate ? new Date(group.departureDate).toLocaleDateString() : 'N/A' }}
+              </span>
+              <span class="date-icon" title="Return date">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M2.5 19h19v2h-19zM21.4 9.5l-9 3.5-3 7h-2l2.3-6-5.7 2.2-.8-2 7.6-3-2.2-5.8 1.9-.7 2.2 5.8 8.1-3.1z"/>
+                </svg>
+                {{ group.returnDate ? new Date(group.returnDate).toLocaleDateString() : 'N/A' }}
               </span>
             </div>
             <button class="join-button" @click="viewGroupDetails(group.name)">{{ $t('viewGroup') }}</button>
@@ -79,7 +96,6 @@
       💬
     </button>
 
-    <!-- Contenedor del Chatbot -->
     <div v-if="isChatbotVisible" class="chatbot-container">
       <Chatbot />
     </div>
@@ -102,6 +118,7 @@ export default {
       selectedAudience: '',
       departureFrom: '',
       departureTo: '',
+      searchQuery: '',
     };
   },
   methods: {
@@ -155,17 +172,44 @@ export default {
   },
   computed: {
     filteredGroups() {
+      const lowerCaseSearchQuery = this.searchQuery.toLowerCase();
       return this.groups.filter(group => {
+        const matchName = group.name.toLowerCase().includes(lowerCaseSearchQuery);
+        if (this.searchQuery && !matchName) {
+          return false;
+        }
+
         const matchType = this.selectedType ? group.tripType === this.selectedType : true;
         const matchAudience = this.selectedAudience ? group.audience === this.selectedAudience : true;
-        const matchDeparture = (() => {
-          if (!this.departureFrom && !this.departureTo) return true;
-          const date = new Date(group.departureDate);
-          const from = this.departureFrom ? new Date(this.departureFrom) : null;
-          const to = this.departureTo ? new Date(this.departureTo) : null;
-          return (!from || date >= from) && (!to || date <= to);
+
+        const matchDepartureDates = (() => {
+          const groupDepartureDate = group.departureDate ? new Date(group.departureDate) : null;
+          const groupReturnDate = group.returnDate ? new Date(group.returnDate) : null;
+
+          const filterDepartureFrom = this.departureFrom ? new Date(this.departureFrom) : null;
+          const filterDepartureTo = this.departureTo ? new Date(this.departureTo) : null;
+          if (filterDepartureTo) {
+            filterDepartureTo.setHours(23, 59, 59, 999);
+          }
+
+          let passDepartureFrom = true;
+          if (filterDepartureFrom) {
+            passDepartureFrom = groupDepartureDate && groupDepartureDate >= filterDepartureFrom;
+          }
+
+          let passDepartureTo = true;
+          if (filterDepartureTo) {
+            passDepartureTo = groupReturnDate && groupReturnDate <= filterDepartureTo;
+          }
+          
+          if ((filterDepartureFrom && !groupDepartureDate) || (filterDepartureTo && !groupReturnDate)) {
+              return false;
+          }
+
+          return passDepartureFrom && passDepartureTo;
         })();
-        return matchType && matchAudience && matchDeparture;
+
+        return matchName && matchType && matchAudience && matchDepartureDates;
       });
     }
   },
@@ -181,7 +225,7 @@ export default {
 
 <style scoped>
 .chatbot-button {
-  display: none; /* Oculto, reemplazado por .chatBtn */
+  display: none; 
 }
 
 .chatbot-container {
@@ -469,10 +513,46 @@ ul {
   background-color: #34495e;
   color: white;
   font-family: 'Poppins', sans-serif;
+  box-sizing: border-box;
 }
 
 .filter-select option {
   background-color: #2c3e50;
+}
+
+.filter-select[type="date"] {
+  background-color: #ecf0f1;
+  color: #34495e;
+  padding: 10px;
+}
+
+.search-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-icon {
+  position: absolute;
+  left: 15px;
+  width: 20px;
+  height: 20px;
+  fill: #34495e;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.search-input {
+  padding-left: 45px; /* Asegura el espacio para la lupa */
+  padding-right: 15px; /* Buen padding a la derecha */
+  background-color: #ecf0f1;
+  color: #34495e;
+  border-radius: 10px;
+  border: 2px solid #1abc9c;
+  font-size: 1rem;
+  height: 40px;
+  box-sizing: border-box;
+  width: 100%; /* Ajusta el ancho según tu diseño */
 }
 
 .chatBtn {

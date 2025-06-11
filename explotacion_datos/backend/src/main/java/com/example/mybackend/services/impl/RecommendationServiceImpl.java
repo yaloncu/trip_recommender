@@ -27,8 +27,8 @@ public class RecommendationServiceImpl implements RecommendationService {
      * Create recommendations between a group and destinations based on the group's trip type and audience.
      * @param groupId The ID of the group.
      */
-    public void createGroupDestinationRecommendations(Long groupId) {
-        recommendationRepository.createGroupDestinationRecommendations(groupId);
+    public void createGroupDestinationRecommendations(String groupName) {
+        recommendationRepository.createGroupDestinationRecommendations(groupName);
     }
 
     /**
@@ -36,8 +36,8 @@ public class RecommendationServiceImpl implements RecommendationService {
      * @param groupId The ID of the group.
      * @return A list of destination names recommended for the group.
      */
-    public List<String> getRecommendations(Long groupId) {
-        return recommendationRepository.getRecommendations(groupId);
+    public List<String> getRecommendations(String groupName) {
+        return recommendationRepository.getRecommendations(groupName);
     }
 
     /**

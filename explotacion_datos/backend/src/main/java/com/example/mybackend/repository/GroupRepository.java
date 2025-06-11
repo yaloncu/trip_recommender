@@ -42,11 +42,11 @@ public interface GroupRepository extends Neo4jRepository<Group, Long> {
                         @Param("availabilityEndDates") List<LocalDate> availabilityEndDates,
                         @Param("preference") String preference);
 
-    @Query("MATCH (g:Group {name: $name}) SET g.isClosed = true" +
+    @Query("MATCH (g:Group {name: $name}) SET g.isClosed = true " +
         "RETURN g")
     Group closeGroup(@Param("name") String groupName);
 
-    @Query("MATCH (g:Group {name: $name}) SET g.isClosedVoting = true" +
+    @Query("MATCH (g:Group {name: $name}) SET g.isClosedVoting = true " +
         "RETURN g")
     Group closeVoting(@Param("name") String groupName);
 

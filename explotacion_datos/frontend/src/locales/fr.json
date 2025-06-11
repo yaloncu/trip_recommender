@@ -70,6 +70,10 @@
   "acceptInvite": "Accepter l'invitation",
   "enterEmailToInvite": "Entrez l'e-mail pour inviter",
   "yourGroups": "Deine Gruppen",
-  "pendingInvitations": "Invitations en attente"
+  "pendingInvitations": "Invitations en attente",
+  "allTypes": "Tous les types",
+  "allAudiences": "Tous les publics",
+  "vote": "Voter",
+  "searchGroupByName": "Rechercher par nom de groupe..."
 
 }

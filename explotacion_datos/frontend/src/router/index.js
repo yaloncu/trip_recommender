@@ -7,7 +7,8 @@ import CreateGroup from '../components/CreateGroup.vue';
 import JoinGroup from '../components/JoinGroup.vue';
 import UserGroups from '@/components/UserGroups.vue';
 import GroupDetails from '@/components/GroupDetails.vue';
-import Recommendations from '@/components/Recomendations.vue'; 
+import Recommendations from '@/components/Recomendations.vue';
+import VotePage from '@/components/Voting.vue'; 
 import { auth } from '@/firebaseConfig'; 
 
 const routes = [
@@ -59,7 +60,13 @@ const routes = [
     path: '/groups/:groupId/recommendations/:userId',
     name: 'Recommendations',
     component: Recommendations
+  },
+  {
+    path: '/vote/:groupId',
+    name: 'VotePage',
+    component: VotePage
   }
+
 ];
 
 const router = createRouter({

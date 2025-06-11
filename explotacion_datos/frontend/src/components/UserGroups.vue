@@ -10,24 +10,33 @@
       <div class="form-card">
         <h1 class="main-title">{{ $t('yourGroups') }}</h1>
         <div v-if="groups.length" class="groups-grid">
-          <div v-for="group in groups" :key="group.groupId" class="group-card">
-            <h3 class="group-name">{{ group.groupName }}</h3>
+          <div v-for="group in groups" :key="group.id" class="group-card">
+            <h3 class="group-name">{{ group.name }}</h3>
             <p><strong>{{ $t('preference') }}:</strong> {{ group.preference || 'No preference' }}</p>
             <p><strong>{{ $t('departureDate') }}:</strong> {{ group.departureDate ? new Date(group.departureDate).toLocaleDateString() : 'No departure date available' }}</p>
             <p><strong>{{ $t('arrivalDate') }}:</strong> {{ group.returnDate ? new Date(group.returnDate).toLocaleDateString() : 'No return date available' }}</p>
 
             <div v-if="isAdmin(group.email) && group.privated === 'private'" class="admin-actions">
               <input v-model="inviteEmail" type="email" :placeholder="$t('enterEmailToInvite')" class="input" />
-              <button @click="inviteUser(group.groupName)" class="invite-button">{{ $t('invite') }}</button>
+              <button @click="inviteUser(group.name)" class="invite-button">{{ $t('invite') }}</button>
             </div>
 
             <div class="group-actions">
-              <button v-if="group.isClosed && !group.isClosedVoting" @click="viewRecommendation(group.groupId)" class="recommend-button">{{ $t('recomendation') }}</button>
-              <button v-if="isAdmin(group.email) && !group.isClosed && group.privated === 'public'" @click="closeGroup(group.groupName)" class="close-button">{{ $t('closeGroup') }}</button>
-              <button v-if="isAdmin(group.email) && !group.isClosed && group.privated === 'private'" @click="closeGroupPrivate(group.groupName)" class="close-button">{{ $t('closeGroup') }}</button>
-              <button v-if="isAdmin(group.email) && group.isClosed && !group.isClosedVoting" @click="closeVoting(group.groupName)" class="close-button">{{ $t('closeVoting') }}</button>
-              <button @click="leaveGroup(group.groupName)" class="leave-button">{{ $t('leaveGroup') }}</button>
-              <button v-if="group.isVotingClosed" @click="viewFinalDestination(group.groupId)" class="final-destination-button">{{ $t('viewFinalDestination') }}</button>
+              <button v-if="group.closed && group.closedVoting" @click="viewRecommendation(group.id)" class="recommend-button">{{ $t('recomendation') }}</button>
+              <button v-if="isAdmin(group.email) && !group.closed && group.privated === 'public'" 
+                      @click="closeGroup(group.name)" class="close-button">
+                  {{ $t('closeGroup') }}
+              </button>
+              <button v-if="isAdmin(group.email) && !group.closed && group.privated === 'private'" 
+                      @click="closeGroupPrivate(group.name)" class="close-button">
+                  {{ $t('closeGroup') }}
+              </button>
+              <button v-if="group.closed && !group.closedVoting" @click="goToVoting(group.id)" class="recommend-button">
+                {{ $t('vote') }}
+              </button>
+              <button v-if="isAdmin(group.email) && group.closed && !group.closedVoting" @click="closeVoting(group.name)" class="close-button">{{ $t('closeVoting') }}</button>
+              <button @click="leaveGroup(group.name)" class="leave-button">{{ $t('leaveGroup') }}</button>
+              <button v-if="group.isVotingClosed" @click="viewFinalDestination(group.id)" class="final-destination-button">{{ $t('viewFinalDestination') }}</button>
             </div>
           </div>
         </div>
@@ -39,8 +48,8 @@
       <div class="form-card invitations-card">
         <h1 class="main-title">{{ $t('pendingInvitations') }}</h1>
         <div v-if="invitedGroups.length" class="invited-groups-container">
-          <div v-for="group in invitedGroups" :key="group.groupId" class="group-card">
-            <h2 class="group-name">{{ group.groupName }}</h2>
+          <div v-for="group in invitedGroups" :key="group.id" class="group-card">
+            <h2 class="group-name">{{ group.name }}</h2>
 
             <div>
               <h3 class="title">{{ $t('selectType') }}</h3>
@@ -107,26 +116,10 @@ export default {
         'Aventura', 'Gastronómica', 'Bienestar', 'Montaña'
       ],
       selectedType: '',
-      userEmail: '' // Initialize userEmail here
+      userEmail: '' 
     };
   },
   methods: {
-    async fetchGroups() {
-      if (!this.userEmail) {
-        return;
-      }
-
-      try {
-        const response = await axios.post(`/api/groups/user`, {
-          email: this.userEmail
-        });
-        console.log('Fetched groups:', response.data);
-        this.groups = response.data;
-      } catch (error) {
-        console.error('Error fetching groups:', error);
-        alert('Error loading your groups.');
-      }
-    },
     async fetchInvitedGroups() {
       try {
         const response = await axios.get(`/api/groups/invitations/${this.userEmail}`);
@@ -160,6 +153,9 @@ export default {
       console.log("User Email:", this.userEmail);
       return groupEmail.trim().toLowerCase() === this.userEmail.trim().toLowerCase();
     },
+    goToVoting(groupId) {
+      this.$router.push(`/vote/${groupId}`);
+    },
     async fetchUserGroups() {
       try {
         const email = localStorage.getItem('email');
@@ -167,7 +163,7 @@ export default {
           throw new Error('No email found in session.');
         }
 
-        const response = await axios.post('/api/groups/user', { email });
+        const response = await axios.get(`/api/groups/user?email=${email}`);
         this.groups = response.data;
         console.log('Fetched groups:', this.groups);
       } catch (error) {
@@ -192,31 +188,33 @@ export default {
         alert('Error al obtener las recomendaciones.');
       }
     },
-    async closeGroup(groupName) {
-      if (!confirm(`Are you sure you want to close the group ${groupName}?`)) {
-        return;
-      }
-      try {
-        const response = await axios.put(`/api/groups/close/${groupName}`);
-        alert(response.data.message);
-        this.fetchUserGroups();
-      } catch (error) {
-        console.error('Error closing group:', error);
-        alert('Error al cerrar el grupo.');
-      }
+    async closeGroup(name) {
+        console.log("Attempting to close group with name:", name); 
+        if (!confirm(`Are you sure you want to close the group ${name}?`)) {
+            return;
+        }
+        try {
+            const response = await axios.put(`/api/groups/close/${name}`); // Using 'name'
+            alert(`Grupo "${name}" cerrado exitosamente.`); 
+            this.fetchUserGroups();
+        } catch (error) {
+            console.error('Error closing group:', error);
+            alert('Error al cerrar el grupo.');
+        }
     },
-    async closeGroupPrivate(groupName) {
-      if (!confirm(`Are you sure you want to close the group ${groupName}?`)) {
-        return;
-      }
-      try {
-        const response = await axios.post(`/api/groups/closePrivate/${groupName}`);
-        alert(response.data.message);
-        this.fetchUserGroups();
-      } catch (error) {
-        console.error('Error closing group:', error);
-        alert('Error al cerrar el grupo.');
-      }
+    async closeGroupPrivate(name) { 
+        console.log("Attempting to close private group with name:", name);
+        if (!confirm(`Are you sure you want to close the group ${name}?`)) {
+            return;
+        }
+        try {
+            const response = await axios.post(`/api/groups/closePrivate/${name}`); 
+            alert(`Grupo privado "${name}" cerrado y recomendaciones calculadas.`);
+            this.fetchUserGroups();
+        } catch (error) {
+            console.error('Error closing group:', error);
+            alert('Error al cerrar el grupo.');
+        }
     },
     async closeVoting(groupName) {
       if (!confirm(`Are you sure you want to close voting for the group ${groupName}?`)) {

@@ -70,5 +70,9 @@
   "acceptInvite": "Accept invite",
   "enterEmailToInvite": "Enter email to invite",
   "yourGroups": "Your groups",
-  "pendingInvitations": "Pending invitations"
+  "pendingInvitations": "Pending invitations",
+  "allTypes": "All types",
+  "allAudiences": "All audiences",
+  "vote": "Vote",
+  "searchGroupByName": "Search by group name..."
 }

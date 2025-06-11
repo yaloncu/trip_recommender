@@ -32,10 +32,10 @@ public class RecommendationControllerImpl implements RecommendationController {
      * @return a list of recommendations for the group
      */
     @GetMapping("/recommendations/{groupId}")
-    public List<String> getRecommendations(@PathVariable Long groupId) {
+    public List<String> getRecommendations(@PathVariable String groupName) {
         try {
-            recommendationService.createGroupDestinationRecommendations(groupId);
-            return recommendationService.getRecommendations(groupId);
+            recommendationService.createGroupDestinationRecommendations(groupName);
+            return recommendationService.getRecommendations(groupName);
         } catch (Exception e) {
             e.printStackTrace();
             return null;

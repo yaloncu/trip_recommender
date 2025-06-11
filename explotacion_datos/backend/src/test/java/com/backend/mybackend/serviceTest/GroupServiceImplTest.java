@@ -3,6 +3,7 @@ package com.backend.mybackend.serviceTest;
 import com.example.mybackend.model.Group;
 import com.example.mybackend.model.User;
 import com.example.mybackend.repository.GroupRepository;
+import com.example.mybackend.repository.RecommendationRepository;
 import com.example.mybackend.repository.UserRepository;
 import com.example.mybackend.services.impl.GroupServiceImpl;
 
@@ -17,6 +18,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDate;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -29,8 +32,12 @@ class GroupServiceImplTest {
     @Mock
     private UserRepository userRepository;
 
+    @Mock
+    private RecommendationRepository recommendationRepository;
+
     @InjectMocks
     private GroupServiceImpl groupService;
+    
 
     private Group mockGroup;
 

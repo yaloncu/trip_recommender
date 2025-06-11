@@ -14,16 +14,18 @@ public interface RecommendationRepository extends Neo4jRepository<Group, Long> {
 
     @Query("MATCH (g:Group) " +
             "MATCH (d:Destino) " +
-            "WHERE id(g) = $groupId AND g.tripType IN d.tipo_vacacion " +
+            "WHERE g.name = $groupName AND g.tripType IN d.tipo_vacacion " +
             "AND g.audience IN d.publico_dirigido " +
             "MERGE (g)-[:RECOMIENDA]->(d) ")
-    void createGroupDestinationRecommendations(@Param("groupId") Long groupId);
+    void createGroupDestinationRecommendations(@Param("groupName") String groupName);
 
     @Query("MATCH (g:Group)<-[:RECOMIENDA]->(d:Destino) " +
             "WHERE id(g) = $groupId " +
             "RETURN d.nombre_destino AS destinationName")
-    List<String> getRecommendations(@Param("groupId") Long groupId);
+    List<String> getRecommendations(@Param("groupName") String groupName);
 
+/*************  ✨ Windsurf Command ⭐  *************/
+/*******  b2c4a2aa-5436-4ed0-8ee1-a62ce590fc33  *******/
     @Query("MATCH (u:User {email: $userId}), (g:Group), (d:Destino {nombre_destino: $city}) " +
             "WHERE id(g) = $groupId " + 
             "CREATE (v:Vote {email: $userId, groupId: $groupId}) " +

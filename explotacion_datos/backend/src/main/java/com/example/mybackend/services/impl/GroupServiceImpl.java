@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import com.example.mybackend.model.Group;
 import com.example.mybackend.model.User;
 import com.example.mybackend.repository.GroupRepository;
+import com.example.mybackend.repository.RecommendationRepository;
 import com.example.mybackend.repository.UserRepository;
 import com.example.mybackend.services.GroupService;
 
@@ -30,12 +31,14 @@ public class GroupServiceImpl implements GroupService {
     private final Driver driver;
     private final GroupRepository groupRepository;
     private final UserRepository userRepository;
+    private final RecommendationRepository recommendationRepository;
 
     @Autowired
-    public GroupServiceImpl(Driver driver, GroupRepository groupRepository, UserRepository userRepository){
+    public GroupServiceImpl(Driver driver, GroupRepository groupRepository, UserRepository userRepository, RecommendationRepository recommendationRepository) {
         this.driver = driver;
         this.groupRepository = groupRepository;
         this.userRepository = userRepository; 
+        this.recommendationRepository = recommendationRepository;
     }
 
     /**
@@ -72,6 +75,7 @@ public class GroupServiceImpl implements GroupService {
      * @param groupName The name of the group to close.
      */
     public Group closeGroup(String groupName) {
+        recommendationRepository.createGroupDestinationRecommendations(groupName);
         return groupRepository.closeGroup(groupName);
     }
 

@@ -1,80 +1,163 @@
 <template>
   <div class="voting-container">
-    <h1>Vote for Your Preferred Vacation Types</h1>
-    <div class="options">
-      <label v-for="type in vacationTypes" :key="type">
-        <input 
-          type="checkbox" 
-          :value="type" 
-          v-model="selectedTypes" 
-        />
-        {{ type }}
-      </label>
+    <button class="join-button-header" @click="back">{{ $t('back') }}</button>
+    <h1 class="main-title">{{ $t('voteForTrip') }}</h1>
+
+    <div class="form-card">
+      <h3 class="title">{{ $t('selectPreferredTypes') }}</h3>
+      <div class="checkbox-column">
+        <label v-for="type in vacationTypes" :key="type" class="radio-box">
+          <input 
+            type="checkbox" 
+            :value="type" 
+            v-model="selectedTypes" 
+          />
+          {{ $t(type) }}
+        </label>
+      </div>
+
+      <button @click="submitVotes" class="create-group-button">
+        {{ $t('submitVotes') }}
+      </button>
     </div>
-    <button @click="submitVotes">Submit Votes</button>
   </div>
 </template>
-  
-  <script>
-  import axios from 'axios'; 
-  axios.defaults.baseURL = 'http://localhost:8081';
-  axios.defaults.headers.common['Accept'] = 'application/json';
-  axios.defaults.headers.post['Content-Type'] = 'application/json';
 
-  export default {
-    data() {
-      return {
-        vacationTypes: [
-          'Cultural', 'Beach', 'Romantic', 'Relax', 
-          'Adventure', 'Gastronomy', 'Wellness', 'Mountain'
-        ],
-        selectedTypes: [],
-        userId:''
-      };
+<script>
+import axios from 'axios';
+axios.defaults.baseURL = 'http://localhost:8081';
+axios.defaults.headers.common['Accept'] = 'application/json';
+axios.defaults.headers.post['Content-Type'] = 'application/json';
+
+export default {
+  data() {
+    return {
+      vacationTypes: [
+        'Cultural', 'Playa', 'Romántica', 'Relax',
+        'Aventura', 'Gastronómica', 'Bienestar', 'Montaña'
+      ],
+      selectedTypes: [],
+      userId: '',
+      groupId: ''
+    };
+  },
+  created() {
+    this.groupId = this.$route.params.groupId;
+  },
+  methods: {
+    back() {
+      this.$router.push('/groups');
     },
-    methods: {
-      submitVotes() {
-      }
+    submitVotes() {
+      axios.post('/api/votes', {
+        groupId: this.groupId,
+        selectedTypes: this.selectedTypes,
+        userId: this.userId
+      })
+      .then(() => {
+        alert('Voto enviado correctamente');
+        this.$router.push('/groups');
+      })
+      .catch((error) => {
+        console.error('Error al enviar el voto', error);
+        alert('Error al enviar el voto');
+      });
     }
-  };
-  </script>
-  
-  <style scoped>
-  .voting-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    background-color: #191a1a;
-    color: white;
-    text-align: center;
   }
-  
-  .options {
-    margin: 20px 0;
-  }
-  
-  label {
-    display: block;
-    margin: 10px 0;
-  }
-  
-  input[type="checkbox"] {
-    margin-right: 10px;
-  }
-  
-  button {
-    margin-top: 20px;
-    padding: 10px 20px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    cursor: pointer;
-  }
-  
-  button:hover {
-    background-color: #45a049;
-  }
-  </style>
-  
+};
+</script>
+
+<style scoped>
+.voting-container {
+  position: relative;
+  min-height: 100vh;
+  padding-top: 100px;
+  padding-bottom: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-image: url('@/assets/aviones.png');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-color: #2c3e50;
+  color: white;
+  font-family: 'Poppins', sans-serif;
+}
+
+.join-button-header {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  background: linear-gradient(45deg, #16a085 0%, #1abc9c 100%);
+  color: white;
+  font-size: 1.5rem;
+  padding: 20px 40px;
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 20px 10px -15px;
+  z-index: 1000;
+}
+
+.join-button-header:hover {
+  transform: scale(1.03);
+}
+
+.main-title {
+  color: #1abc9c;
+  font-size: 2.2rem;
+  margin-bottom: 20px;
+}
+
+.form-card {
+  background: #34495e;
+  padding: 30px;
+  border-radius: 30px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  width: 90%;
+  max-width: 600px;
+}
+
+.title {
+  font-weight: bold;
+  margin: 20px 0 10px;
+}
+
+.checkbox-column {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.radio-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.create-group-button {
+  display: block;
+  width: 100%;
+  font-weight: bold;
+  background: linear-gradient(45deg, #16a085 0%, #1abc9c 100%);
+  color: white;
+  padding-block: 15px;
+  margin-top: 20px;
+  border-radius: 20px;
+  border: none;
+  transition: all 0.2s ease-in-out;
+  font-family: 'Poppins', sans-serif;
+}
+
+.create-group-button:hover {
+  background: #1abc9c;
+  transform: scale(1.03);
+}
+</style>

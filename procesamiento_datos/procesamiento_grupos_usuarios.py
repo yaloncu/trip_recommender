@@ -49,10 +49,10 @@ with driver.session() as session:
     for i in range(5):
         name = f"GrupoPublico{i+1}"
         email = f"usuario{i+1}@test.com"
-        audience = random.choice(['jóvenes', 'familias', 'aventureros'])
+        audience = random.choice(['Jóvenes', 'Familias', 'Adultos'])
         privated = 'public'
         isClosed = False
-        tripType = random.choice(['playa', 'cultural', 'aventura'])
+        tripType = random.choice(['Playa', 'Cultural', 'Aventura'])
 
         # Fechas aleatorias (hoy + i días)
         today = datetime.date.today()

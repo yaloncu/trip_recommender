@@ -69,5 +69,9 @@
   "invite": "Einladen",
   "acceptInvite": "Einladung annehmen",
   "enterEmailToInvite": "Geben Sie die E-Mail-Adresse ein, um einzuladen",
-  "pendingInvitations": "Ausstehende Einladungen"
+  "pendingInvitations": "Ausstehende Einladungen",
+  "allTypes": "Alle Typen",
+  "allAudiences": "Alle Zielgruppen",
+  "vote": "Abstimmen",
+  "searchGroupByName": "Suche nach Gruppenname..."
 }

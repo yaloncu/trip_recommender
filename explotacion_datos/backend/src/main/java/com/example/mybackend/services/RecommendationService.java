@@ -23,14 +23,14 @@ public interface RecommendationService {
      * Create recommendations between a group and destinations based on the group's trip type and audience.
      * @param groupId The ID of the group.
      */
-    void createGroupDestinationRecommendations(Long groupId);
+    void createGroupDestinationRecommendations(String groupName);
 
     /**
      * Retrieve recommendations for a group.
      * @param groupId The ID of the group.
      * @return A list of destination names recommended for the group.
      */
-    List<String> getRecommendations(Long groupId);
+    List<String> getRecommendations(String groupName);
 
     /**
      * Vote for a city in a group.
