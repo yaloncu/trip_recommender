@@ -8,6 +8,7 @@ import JoinGroup from '../components/JoinGroup.vue';
 import UserGroups from '@/components/UserGroups.vue';
 import GroupDetails from '@/components/GroupDetails.vue';
 import Recommendations from '@/components/Recomendations.vue';
+import GroupChat from '@/components/GroupChat.vue';
 import VotePage from '@/components/Voting.vue'; 
 import { auth } from '@/firebaseConfig'; 
 
@@ -65,8 +66,12 @@ const routes = [
     path: '/vote/:groupId',
     name: 'VotePage',
     component: VotePage
+  },
+  {
+    path: '/chat/:groupName',
+    name: 'GroupChat',
+    component: GroupChat
   }
-
 ];
 
 const router = createRouter({

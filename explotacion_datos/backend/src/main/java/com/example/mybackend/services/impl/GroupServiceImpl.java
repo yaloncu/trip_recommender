@@ -76,6 +76,7 @@ public class GroupServiceImpl implements GroupService {
      */
     public Group closeGroup(String groupName) {
         recommendationRepository.createGroupDestinationRecommendations(groupName);
+        System.out.println("Group closed: " + groupName);
         return groupRepository.closeGroup(groupName);
     }
 

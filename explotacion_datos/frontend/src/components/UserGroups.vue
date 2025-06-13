@@ -15,6 +15,9 @@
             <p><strong>{{ $t('preference') }}:</strong> {{ group.preference || 'No preference' }}</p>
             <p><strong>{{ $t('departureDate') }}:</strong> {{ group.departureDate ? new Date(group.departureDate).toLocaleDateString() : 'No departure date available' }}</p>
             <p><strong>{{ $t('arrivalDate') }}:</strong> {{ group.returnDate ? new Date(group.returnDate).toLocaleDateString() : 'No return date available' }}</p>
+            <button @click="$router.push(`/chat/${group.name}`)" class="recommend-button">
+              Chat
+            </button>
 
             <div v-if="isAdmin(group.email) && group.privated === 'private'" class="admin-actions">
               <input v-model="inviteEmail" type="email" :placeholder="$t('enterEmailToInvite')" class="input" />
@@ -104,6 +107,7 @@
 
 <script>
 import axios from 'axios';
+import GroupChat from '@/components/GroupChat.vue';
 
 export default {
   data() {
@@ -118,6 +122,9 @@ export default {
       selectedType: '',
       userEmail: '' 
     };
+  },
+  components: {
+    GroupChat
   },
   methods: {
     async fetchInvitedGroups() {
