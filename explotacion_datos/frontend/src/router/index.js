@@ -53,7 +53,7 @@ const routes = [
     meta: { requiresAuth: false } 
   },
   {
-    path: '/groups/:groupName', 
+    path: '/groups/:groupId ', 
     name: 'GroupDetails',
     component: GroupDetails
   },
@@ -68,7 +68,7 @@ const routes = [
     component: VotePage
   },
   {
-    path: '/chat/:groupName',
+    path: '/chat/:groupId',
     name: 'GroupChat',
     component: GroupChat
   }

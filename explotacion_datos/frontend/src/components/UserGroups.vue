@@ -15,7 +15,7 @@
             <p><strong>{{ $t('preference') }}:</strong> {{ group.preference || 'No preference' }}</p>
             <p><strong>{{ $t('departureDate') }}:</strong> {{ group.departureDate ? new Date(group.departureDate).toLocaleDateString() : 'No departure date available' }}</p>
             <p><strong>{{ $t('arrivalDate') }}:</strong> {{ group.returnDate ? new Date(group.returnDate).toLocaleDateString() : 'No return date available' }}</p>
-            <button @click="$router.push(`/chat/${group.name}`)" class="recommend-button">
+            <button @click="$router.push(`/chat/${group.id}`)" class="recommend-button">
               Chat
             </button>
 

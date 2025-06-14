@@ -21,12 +21,17 @@ public class MessageServiceImpl implements MessageService {
 
 /*************  ✨ Windsurf Command ⭐  *************/
 /*******  b53f17d6-6d17-4db5-a860-eb4faf75cd16  *******/
-    public Message save(String groupName, String sender, String content) {
-        Message message = new Message(null, groupName, sender, content, LocalDateTime.now());
+    public Message save(Long groupId, String sender, String content) {
+        Message message = new Message();
+        message.setGroupId(groupId);
+        message.setSender(sender);
+        message.setContent(content);
+        message.setTimestamp(LocalDateTime.now());
         return messageRepository.save(message);
     }
 
-    public List<Message> getMessagesByGroup(String groupName) {
-        return messageRepository.findByGroupNameOrderByTimestampAsc(groupName);
+
+    public List<Message> getMessagesByGroup(Long groupId) {
+        return messageRepository.findByGroupIdOrderByTimestampAsc(groupId);
     }
 }

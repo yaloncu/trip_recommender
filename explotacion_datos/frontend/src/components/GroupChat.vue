@@ -24,15 +24,16 @@ export default {
     return {
       messages: [],
       newMessage: '',
-      groupName: '',
+      groupId: '',
       username: '',
     };
   },
   created() {
-    this.groupName = this.$route.params.groupName;
+    this.groupId  = this.$route.params.groupId ;
+    console.log('Loaded chat for groupId:', this.groupId);
     this.username = localStorage.getItem('email') || 'Anon';
 
-    axios.get(`/api/messages/${this.groupName}`)
+    axios.get(`/api/messages/${this.groupId }`)
         .then(res => {
         this.messages = res.data;
         this.$nextTick(() => {
@@ -48,7 +49,7 @@ export default {
     stompClient = Stomp.over(socket);
 
     stompClient.connect({}, () => {
-        stompClient.subscribe(`/topic/group/${this.groupName}`, (msg) => {
+        stompClient.subscribe(`/topic/group/${this.groupId }`, (msg) => {
         this.messages.push(JSON.parse(msg.body));
         this.$nextTick(() => {
             const messagesContainer = this.$el.querySelector('.messages');
@@ -66,7 +67,7 @@ export default {
         content: this.newMessage,
       };
 
-      stompClient.send(`/app/chat.sendMessage/${this.groupName}`, {}, JSON.stringify(message));
+      stompClient.send(`/app/chat.sendMessage/${this.groupId }`, {}, JSON.stringify(message));
       this.newMessage = '';
     },
     formatTimestamp(timestamp) {

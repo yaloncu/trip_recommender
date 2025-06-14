@@ -21,7 +21,7 @@ public class Message {
   @Id 
   @GeneratedValue
   private Long id;
-
+  private Long groupId;
   private String groupName;
   private String sender;
   private String content;

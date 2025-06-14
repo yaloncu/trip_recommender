@@ -30,14 +30,14 @@ public class ChatControllerImpl implements ChatController {
         this.messageService = messageService;
     }
 
-    @MessageMapping("/chat.sendMessage/{groupName}")
-    public void sendMessage(@DestinationVariable String groupName, @Payload Message incomingMessage) {
-        Message saved = messageService.save(groupName, incomingMessage.getSender(), incomingMessage.getContent());
-        messagingTemplate.convertAndSend("/topic/group/" + groupName, saved);
+    @MessageMapping("/chat.sendMessage/{groupId}")
+    public void sendMessage(@DestinationVariable Long groupId , @Payload Message incomingMessage) {
+        Message saved = messageService.save(groupId , incomingMessage.getSender(), incomingMessage.getContent());
+        messagingTemplate.convertAndSend("/topic/group/" + groupId , saved);
     }
 
-    @GetMapping("/{groupName}")
-    public List<Message> getMessagesByGroup(@PathVariable String groupName) {
-        return messageService.getMessagesByGroup(groupName);
+    @GetMapping("/{groupId}")
+    public List<Message> getMessagesByGroup(@PathVariable Long groupId ) {
+        return messageService.getMessagesByGroup(groupId);
     }
 }
