@@ -10,6 +10,8 @@ import GroupDetails from '@/components/GroupDetails.vue';
 import Recommendations from '@/components/Recomendations.vue';
 import GroupChat from '@/components/GroupChat.vue';
 import VotePage from '@/components/Voting.vue'; 
+import ActivityGroups from '../components/ActivityGroups.vue';
+import SideMenu from '@/components/SideMenu.vue';
 import { auth } from '@/firebaseConfig'; 
 
 const routes = [
@@ -53,7 +55,7 @@ const routes = [
     meta: { requiresAuth: false } 
   },
   {
-    path: '/groups/:groupId ', 
+    path: '/groups/:groupName', 
     name: 'GroupDetails',
     component: GroupDetails
   },
@@ -71,7 +73,13 @@ const routes = [
     path: '/chat/:groupId',
     name: 'GroupChat',
     component: GroupChat
+  },
+  {
+    path: '/activities',
+    name: 'ActivityGroups',
+    component: ActivityGroups
   }
+
 ];
 
 const router = createRouter({

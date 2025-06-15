@@ -1,16 +1,7 @@
 <template>
+  <div class="page-with-menu">
+    <SideMenu />
   <div class="create-group-container">
-    <button class="join-button-header" @click="joinGroup">{{ $t('join') }}</button>
-    <div class="profile-button-wrapper">
-      <div class="profile-button-container">
-        <a title="Go to profile page" @click="viewMyGroups" class="profile-button">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 profile-icon" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
-          </svg>
-        </a>
-      </div>
-    </div>
-
     <h1 class="main-title">{{ $t('createGroup') }}</h1>
 
     <div class="form-card">
@@ -91,10 +82,12 @@
       <button @click="createGroup" class="create-group-button">{{ $t('createTheGroup') }}</button>
     </div>
   </div>
+  </div>
 </template>
 
 <script>
 import axios from 'axios';
+import SideMenu from '@/components/SideMenu.vue';
 
 export default {
   data() {
@@ -108,6 +101,9 @@ export default {
       dateRanges: [{ start: '', end: '' }],
       vacationTypes: ['Cultural', 'Playa', 'Romántica', 'Relax', 'Aventura', 'Gastronómica', 'Bienestar', 'Montaña']
     };
+  },
+  components: {
+    SideMenu
   },
   methods: {
     addDateRange() {
@@ -183,10 +179,21 @@ export default {
 </script>
 
 <style scoped>
+.page-with-menu {
+  display: flex;
+  width: 100vw;
+  overflow-x: hidden;
+}
+
+.main-content {
+  margin-left: 220px; 
+  width: calc(100% - 220px);
+}
+
 .create-group-container {
   position: relative;
   min-height: 100vh;
-  padding-top: 100px;
+  padding-top: 80px;
   padding-bottom: 100px;
   display: flex;
   flex-direction: column;
@@ -198,7 +205,10 @@ export default {
   background-color: #2c3e50;
   color: white;
   font-family: 'Poppins', sans-serif;
+  width: 100%;
+  box-sizing: border-box;
 }
+
 
 .join-button-header {
   position: absolute;

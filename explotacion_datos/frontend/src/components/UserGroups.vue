@@ -1,9 +1,8 @@
 <template>
+  <div class="page-with-menu">
+    <SideMenu />
+
   <div class="user-container">
-    <button class="join-button-header" @click="joinGroup">{{ $t('join') }}</button>
-    <button class="create-button-header" @click="createGroup">{{ $t('create') }}</button>
-
-
     <h1 class="main-title">{{ $t('yourGroups') }}</h1>
 
     <div class="cards-container">
@@ -103,11 +102,13 @@
       </div>
     </div>
   </div>
+  </div>
 </template>
 
 <script>
 import axios from 'axios';
 import GroupChat from '@/components/GroupChat.vue';
+import SideMenu from '@/components/SideMenu.vue';
 
 export default {
   data() {
@@ -124,7 +125,8 @@ export default {
     };
   },
   components: {
-    GroupChat
+    GroupChat,
+    SideMenu
   },
   methods: {
     async fetchInvitedGroups() {
@@ -327,22 +329,32 @@ export default {
 </script>
 
 <style scoped>
+.page-with-menu {
+  display: flex;
+  min-height: 100vh;
+}
+
+.main-content {
+  flex-grow: 1;
+  margin-left: 220px; 
+  box-sizing: border-box;
+}
+
 .user-container {
   position: relative;
+  padding: 100px 40px 100px 40px; 
   min-height: 100vh;
-  padding-top: 100px; /* Adjust padding to accommodate the header buttons */
-  padding-bottom: 100px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background-image: url('@/assets/mapamundi.png'); /* Assuming you have this asset */
+  width: 100%;
+  background-image: url('@/assets/mapamundi.png');
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
   background-color: #2c3e50;
   color: white;
   font-family: 'Poppins', sans-serif;
+  box-sizing: border-box;
 }
+
 
 .join-button-header {
   position: absolute;

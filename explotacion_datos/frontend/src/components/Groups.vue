@@ -1,16 +1,7 @@
 <template>
+  <div class="page-with-menu">
+    <SideMenu />
   <div class="groups-container">
-    <button class="create-button" @click="createGroup">{{ $t('create') }}</button>
-
-    <div class="profile-button-wrapper">
-      <div class="profile-button-container">
-        <a title="Go to profile page" @click="viewMyGroups" class="profile-button">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 profile-icon" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
-          </svg>
-        </a>
-      </div>
-    </div>
 
     <h1 class="main-title">{{ $t('joinAGroup') }}</h1>
 
@@ -57,29 +48,21 @@
           <li v-for="group in filteredGroups" :key="group.name" class="group-item">
             <span class="group-name group-title">{{ group.name }}</span>
             <span class="group-name group-audience">
-              <svg xmlns="http://www.w3.org/2000/svg" class="icon-group" viewBox="0 0 24 24" fill="#16a085" width="20" height="20" style="vertical-align: middle; margin-right: 4px;">
-                <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 3-1.34 3-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
-              </svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users-icon lucide-users"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><path d="M16 3.128a4 4 0 0 1 0 7.744"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><circle cx="9" cy="7" r="4"/></svg>
               {{ group.audience }}
             </span>
             <p class="group-name">
-              <svg xmlns="http://www.w3.org/2000/svg" class="icon-group" viewBox="0 0 24 24" fill="#16a085" width="20" height="20" style="vertical-align: middle; margin-right: 4px;">
-                <path d="M12 2a10 10 0 100 20 10 10 0 000-20zm3.5 7.5l-2 5.5-5.5 2 2-5.5 5.5-2z"/>
-              </svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-compass-icon lucide-compass"><path d="m16.24 7.76-1.804 5.411a2 2 0 0 1-1.265 1.265L7.76 16.24l1.804-5.411a2 2 0 0 1 1.265-1.265z"/><circle cx="12" cy="12" r="10"/></svg>
               {{ group.tripType }}
             </p>
 
             <div class="group-dates">
               <span class="date-icon" title="Departure date">
-                <svg xmlns="http://www.w3.org/2000/svg" class="icon" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M2.5 19h19v2h-19zM21.4 9.5l-9-3.5-3-7h-2l2.3 6-5.7-2.2-.8 2 7.6 3-2.2 5.8 1.9.7 2.2-5.8 8.1 3.1z"/>
-                </svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plane-takeoff-icon lucide-plane-takeoff"><path d="M2 22h20"/><path d="M6.36 17.4 4 17l-2-4 1.1-.55a2 2 0 0 1 1.8 0l.17.1a2 2 0 0 0 1.8 0L8 12 5 6l.9-.45a2 2 0 0 1 2.09.2l4.02 3a2 2 0 0 0 2.1.2l4.19-2.06a2.41 2.41 0 0 1 1.73-.17L21 7a1.4 1.4 0 0 1 .87 1.99l-.38.76c-.23.46-.6.84-1.07 1.08L7.58 17.2a2 2 0 0 1-1.22.18Z"/></svg>
                 {{ group.departureDate ? new Date(group.departureDate).toLocaleDateString() : 'N/A' }}
               </span>
               <span class="date-icon" title="Return date">
-                <svg xmlns="http://www.w3.org/2000/svg" class="icon" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M2.5 19h19v2h-19zM21.4 9.5l-9 3.5-3 7h-2l2.3-6-5.7 2.2-.8-2 7.6-3-2.2-5.8 1.9-.7 2.2 5.8 8.1-3.1z"/>
-                </svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plane-landing-icon lucide-plane-landing"><path d="M2 22h20"/><path d="M3.77 10.77 2 9l2-4.5 1.1.55c.55.28.9.84.9 1.45s.35 1.17.9 1.45L8 8.5l3-6 1.05.53a2 2 0 0 1 1.09 1.52l.72 5.4a2 2 0 0 0 1.09 1.52l4.4 2.2c.42.22.78.55 1.01.96l.6 1.03c.49.88-.06 1.98-1.06 2.1l-1.18.15c-.47.06-.95-.02-1.37-.24L4.29 11.15a2 2 0 0 1-.52-.38Z"/></svg>
                 {{ group.returnDate ? new Date(group.returnDate).toLocaleDateString() : 'N/A' }}
               </span>
             </div>
@@ -91,20 +74,13 @@
         <p>{{ $t('noGroupsAvailable') }}</p>
       </div>
     </div>
-    <button class="button" @click="joinSpecificGroup">{{ $t('joinSpecificGroup') }}</button>
-    <button class="chatbot-button" @click="toggleChatbot">
-      💬
-    </button>
-
-    <div v-if="isChatbotVisible" class="chatbot-container">
-      <Chatbot />
-    </div>
+  </div>
   </div>
 </template>
 
 <script>
 import axios from 'axios';
-import Chatbot from "@/components/Chatbot.vue";
+import SideMenu from '@/components/SideMenu.vue';
 axios.defaults.baseURL = 'http://localhost:8081';
 axios.defaults.headers.common['Accept'] = 'application/json';
 axios.defaults.headers.post['Content-Type'] = 'application/json';
@@ -131,6 +107,13 @@ export default {
     viewMyGroups() {
       this.$router.push('/groups/user');
     },
+/*************  ✨ Windsurf Command ⭐  *************/
+/**
+ * Navigates the user to the join with preferences page where they can join a specific group
+ * by providing preferences such as trip type, audience, and dates.
+ */
+
+/*******  9069768d-bf68-4ef5-b8c9-219307a482f7  *******/
     joinSpecificGroup() {
       this.$router.push('/groups/joinWithPreferences');
     },
@@ -217,29 +200,24 @@ export default {
     this.fetchGroups(); 
   },
   components: {
-    Chatbot,
+    SideMenu,
   },
 };
 </script>
 
 
 <style scoped>
-.chatbot-button {
-  display: none; 
+.page-with-menu {
+  display: flex;
+  width: 100vw;
+  overflow-x: hidden;
 }
 
-.chatbot-container {
-  position: fixed;
-  bottom: 100px;
-  right: 20px;
-  width: 400px;
-  height: 500px;
-  background: white;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  border-radius: 10px;
-  overflow: hidden;
-  z-index: 1000;
+.main-content {
+  margin-left: 220px;
+  width: calc(100% - 220px);
 }
+
 
 .groups-container {
   position: relative;
@@ -257,6 +235,8 @@ export default {
   min-height: 100vh;
   padding-bottom: 100px;
   overflow-y: auto;
+  width: 100%;
+  overflow-x: hidden;
 }
 
 
@@ -412,12 +392,14 @@ export default {
 .groups-content {
   text-align: center;
   max-width: 1200px;
-  width: 90%;
+  width: 100%;
   background: #34495e;
   border-radius: 30px;
   padding: 30px;
   box-shadow: rgba(0, 0, 0, 0.1) 0px 30px 30px -20px;
   font-family: 'Poppins', sans-serif;
+  box-sizing: border-box;
+  margin: 0 auto;
 }
 
 ul {
@@ -543,8 +525,8 @@ ul {
 }
 
 .search-input {
-  padding-left: 45px; /* Asegura el espacio para la lupa */
-  padding-right: 15px; /* Buen padding a la derecha */
+  padding-left: 45px; 
+  padding-right: 15px; 
   background-color: #ecf0f1;
   color: #34495e;
   border-radius: 10px;
@@ -552,7 +534,7 @@ ul {
   font-size: 1rem;
   height: 40px;
   box-sizing: border-box;
-  width: 100%; /* Ajusta el ancho según tu diseño */
+  width: 100%; 
 }
 
 .chatBtn {

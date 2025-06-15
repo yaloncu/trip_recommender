@@ -15,8 +15,8 @@ import com.example.mybackend.model.Message;
 @RequestMapping("/api/messages")
 public interface ChatController {
 
-    public void sendMessage(@DestinationVariable Long groupId , @Payload Message incomingMessage);
+    void sendMessage(@DestinationVariable Long groupId , @Payload Message incomingMessage);
 
     @GetMapping("/{groupId}")
-    public List<Message> getMessagesByGroup(@PathVariable Long groupId );
+    List<Message> getMessagesByGroup(@PathVariable Long groupId );
 }
