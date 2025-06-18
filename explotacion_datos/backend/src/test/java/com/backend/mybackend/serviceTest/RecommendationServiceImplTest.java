@@ -4,89 +4,64 @@ import com.example.mybackend.repository.RecommendationRepository;
 import com.example.mybackend.services.impl.RecommendationServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.neo4j.driver.Driver;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
 class RecommendationServiceImplTest {
 
-    @Mock
-    private Driver driver;
-
-    @Mock
     private RecommendationRepository recommendationRepository;
-
+    private Driver driver;
     private RecommendationServiceImpl recommendationService;
 
-    /*@BeforeEach
+    @BeforeEach
     void setUp() {
-        recommendationService = new RecommendationServiceImpl(driver);
-        // Usamos reflexión para inyectar el mock manualmente, ya que el constructor no lo permite directamente
-        try {
-            var field = RecommendationServiceImpl.class.getDeclaredField("recommendationRepository");
-            field.setAccessible(true);
-            field.set(recommendationService, recommendationRepository);
-        } catch (Exception e) {
-            fail("No se pudo inyectar el mock del repositorio: " + e.getMessage());
-        }
+        recommendationRepository = mock(RecommendationRepository.class);
+        driver = mock(Driver.class);
+        recommendationService = new RecommendationServiceImpl(driver, recommendationRepository);
     }
 
     @Test
     void testCreateGroupDestinationRecommendations() {
-        Long groupId = 1L;
+        String groupName = "AventuraJoven";
 
-        //doNothing().when(recommendationRepository).createGroupDestinationRecommendations(groupId);
+        doNothing().when(recommendationRepository).createGroupDestinationRecommendations(groupName);
 
-        //recommendationService.createGroupDestinationRecommendations(groupId);
-
-        //verify(recommendationRepository, times(1)).createGroupDestinationRecommendations(groupId);
+        assertDoesNotThrow(() -> recommendationService.createGroupDestinationRecommendations(groupName));
+        verify(recommendationRepository, times(1)).createGroupDestinationRecommendations(groupName);
     }
 
     @Test
     void testGetRecommendations() {
-        Long groupId = 2L;
-        List<String> expected = List.of("Paris", "Tokyo");
+        Long groupId = 1L;
+        List<String> mockRecommendations = Arrays.asList("París", "Roma", "Lisboa");
 
-        //when(recommendationRepository.getRecommendations(groupId)).thenReturn(expected);
+        when(recommendationRepository.getRecommendations(groupId)).thenReturn(mockRecommendations);
 
-        //List<String> result = recommendationService.getRecommendations(groupId);
+        List<String> result = recommendationService.getRecommendations(groupId);
 
-        //assertNotNull(result);
-        //assertEquals(2, result.size());
-        //assertEquals("Paris", result.get(0));
-        //verify(recommendationRepository).getRecommendations(groupId);
+        assertNotNull(result);
+        assertEquals(3, result.size());
+        assertEquals("París", result.get(0));
+        verify(recommendationRepository, times(1)).getRecommendations(groupId);
     }
 
     @Test
     void testVoteForCity() {
-        Long groupId = 3L;
         String userId = "user@example.com";
-        String city = "London";
+        String city = "Barcelona";
+        Long groupId = 42L;
+        String expectedResponse = "Voto registrado";
 
-        when(recommendationRepository.voteForCity(userId, city, groupId)).thenReturn("Vote recorded");
+        when(recommendationRepository.voteForCity(userId, city, groupId)).thenReturn(expectedResponse);
 
         String result = recommendationService.voteForCity(userId, city, groupId);
 
-        assertEquals("Vote recorded", result);
-        verify(recommendationRepository).voteForCity(userId, city, groupId);
+        assertEquals(expectedResponse, result);
+        verify(recommendationRepository, times(1)).voteForCity(userId, city, groupId);
     }
-
-    @Test
-    void testGetFinalDestination() {
-        Long groupId = 4L;
-        when(recommendationRepository.getFinalDestination(groupId)).thenReturn("Rome");
-
-        String result = recommendationService.getFinalDestination(groupId);
-
-        assertEquals("Rome", result);
-        verify(recommendationRepository).getFinalDestination(groupId);
-    }*/
 }

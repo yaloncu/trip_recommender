@@ -247,19 +247,14 @@ public class GroupServiceImpl implements GroupService {
 
         for (Map<String, Object> userAvail : availabilities) {
             int[] availabilityArray = new int[totalDays];
-            List<LocalDate> startDates2 = (List<LocalDate>) userAvail.get("startDates");
-            List<LocalDate> endDates2 = (List<LocalDate>) userAvail.get("endDates");
+            LocalDate startDate = (LocalDate) userAvail.get("startDates");
+            LocalDate endDate = (LocalDate) userAvail.get("endDates");
 
-            for (int i = 0; i < startDates.size(); i++) {
-                LocalDate startDate2 = startDates.get(i);
-                LocalDate endDate2 = endDates.get(i);
+            int startIndex = (int) ChronoUnit.DAYS.between(minStartDate, startDate);
+            int endIndex = (int) ChronoUnit.DAYS.between(minStartDate, endDate);
 
-                int startIndex = (int) ChronoUnit.DAYS.between(minStartDate, startDate2);
-                int endIndex = (int) ChronoUnit.DAYS.between(minStartDate, endDate2);
-
-                for (int j = startIndex; j <= endIndex; j++) {
-                    availabilityArray[j] = 1;
-                }
+            for (int j = startIndex; j <= endIndex; j++) {
+                availabilityArray[j] = 1;
             }
             userAvailabilityArrays.add(availabilityArray);
         }

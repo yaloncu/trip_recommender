@@ -1,5 +1,8 @@
 package com.example.mybackend.model;
 
+import lombok.AllArgsConstructor;
+
+
 public class VoteRequest {
     private Long groupId;
     private String userId;

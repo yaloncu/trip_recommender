@@ -2,8 +2,8 @@ package com.backend.mybackend.serviceTest;
 
 import com.example.mybackend.model.Group;
 import com.example.mybackend.model.User;
-import com.example.mybackend.repository.GroupRepository;
 import com.example.mybackend.repository.UserRepository;
+import com.example.mybackend.services.TokenService;
 import com.example.mybackend.services.impl.Neo4jUserServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,9 +15,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
-import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class Neo4jUserServiceImplTest {
@@ -26,10 +27,10 @@ class Neo4jUserServiceImplTest {
     private UserRepository userRepository;
 
     @Mock
-    private GroupRepository groupRepository;
+    private PasswordEncoder passwordEncoder;
 
     @Mock
-    private PasswordEncoder passwordEncoder;
+    private TokenService tokenService;
 
     @InjectMocks
     private Neo4jUserServiceImpl userService;
@@ -126,5 +127,65 @@ class Neo4jUserServiceImplTest {
         assertEquals(1, result.size());
         assertEquals("Test Group", result.get(0).getName());
         verify(userRepository).findUserGroups("test@example.com");
+    }
+
+    @Test
+    void testLoginWithGoogle_userExists() {
+        when(userRepository.findByEmail("test@example.com")).thenReturn(mockUser);
+        when(tokenService.generateToken("test@example.com")).thenReturn("mockToken");
+
+        Map<String, Object> result = userService.loginWithGoogle("test@example.com");
+
+        assertNotNull(result);
+        assertEquals("mockToken", result.get("token"));
+        assertEquals(mockUser, result.get("user"));
+        verify(tokenService).generateToken("test@example.com");
+    }
+
+    @Test
+    void testLoginWithGoogle_userNotFound() {
+        when(userRepository.findByEmail("notfound@example.com")).thenReturn(null);
+
+        assertThrows(RuntimeException.class, () -> userService.loginWithGoogle("notfound@example.com"));
+    }
+
+    @Test
+    void testHandleGoogleLogin_userExists() {
+        when(userRepository.findByEmail("test@example.com")).thenReturn(mockUser);
+        when(tokenService.generateToken("test@example.com")).thenReturn("mockToken");
+
+        Map<String, Object> result = userService.handleGoogleLogin("test@example.com");
+
+        assertNotNull(result);
+        assertEquals("mockToken", result.get("token"));
+        assertEquals(mockUser, result.get("user"));
+        verify(tokenService).generateToken("test@example.com");
+    }
+
+    @Test
+    void testHandleGoogleLogin_userNotFound() {
+        when(userRepository.findByEmail("missing@example.com")).thenReturn(null);
+
+        assertThrows(RuntimeException.class, () -> userService.handleGoogleLogin("missing@example.com"));
+    }
+
+    @Test
+    void testAddUserToGroup() {
+        doNothing().when(userRepository).addUserToGroup("test@example.com", "Test Group");
+
+        userService.addUserToGroup("test@example.com", "Test Group");
+
+        verify(userRepository).addUserToGroup("test@example.com", "Test Group");
+    }
+
+    @Test
+    void testSaveUser() {
+        when(userRepository.save(mockUser)).thenReturn(mockUser);
+
+        User result = userService.saveUser(mockUser);
+
+        assertNotNull(result);
+        assertEquals("test@example.com", result.getEmail());
+        verify(userRepository).save(mockUser);
     }
 }

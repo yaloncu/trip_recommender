@@ -1,127 +1,96 @@
 package com.backend.mybackend.controllerTest;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Map;
-
-import org.assertj.core.condition.Join;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.springframework.http.ResponseEntity;
-
-import com.example.mybackend.controller.impl.GroupControllerImpl;
 import com.example.mybackend.controller.impl.RecommendationControllerImpl;
 import com.example.mybackend.model.VoteRequest;
-import com.example.mybackend.model.Group;
-import com.example.mybackend.model.JoinGroupWithPreferencesRequest;
-import com.example.mybackend.services.GroupService;
 import com.example.mybackend.services.RecommendationService;
 
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.*;
+import org.springframework.http.ResponseEntity;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+import org.mockito.junit.jupiter.MockitoExtension;
+
+@ExtendWith(MockitoExtension.class)
 class RecommendationControllerImplTest {
+
     @Mock
     private RecommendationService recommendationService;
+
     @InjectMocks
-    private RecommendationControllerImpl recommendationController;
+    private RecommendationControllerImpl controller;
 
-    private Group mockGroup;
-    private Group mockGroupClosed;
-    private JoinGroupWithPreferencesRequest mockJoinGroupWithPreferencesRequest;
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
+    @Test
+    void testGetRecommendations_success() {
+        Long groupId = 1L;
+        List<String> mockRecommendations = List.of("Roma", "París", "Lisboa");
 
-        mockGroup = Group.builder()
-                .name("Test Group")
-                .email("Test Email")
-                .audience("Test Audience")
-                .privated("public")
-                .isClosed(false)
-                .isClosedVoting(false)
-                .tripType("Test Trip Type")
-                .departureDate(LocalDate.of(2023, 10, 1))
-                .returnDate(LocalDate.of(2023, 10, 10))
-                .availabilityStartDates(List.of(LocalDate.of(2023, 9, 25)))
-                .availabilityEndDates(List.of(LocalDate.of(2023, 9, 30)))
-                .build();
+        when(recommendationService.getRecommendations(groupId)).thenReturn(mockRecommendations);
 
-        mockGroupClosed = Group.builder()
-                .name("Test Group")
-                .email("Test Email")
-                .audience("Test Audience")
-                .privated("public")
-                .isClosed(true)
-                .isClosedVoting(true)
-                .tripType("Test Trip Type")
-                .departureDate(LocalDate.of(2023, 10, 1))
-                .returnDate(LocalDate.of(2023, 10, 10))
-                .availabilityStartDates(List.of(LocalDate.of(2023, 9, 25)))
-                .availabilityEndDates(List.of(LocalDate.of(2023, 9, 30)))
-                .build();
-                
-        mockJoinGroupWithPreferencesRequest = JoinGroupWithPreferencesRequest.builder()
-                .groupName("Test Group")
-                .email("Test Email")
-                .preference("Test Preference")
-                .availabilityStartDates(List.of(LocalDate.of(2023, 9, 25)))
-                .availabilityEndDates(List.of(LocalDate.of(2023, 9, 30)))
-                .build();
+        List<String> result = controller.getRecommendations(groupId);
+
+        assertNotNull(result);
+        assertEquals(3, result.size());
+        assertEquals("Roma", result.get(0));
     }
 
     @Test
-    void testGetRecommendations() {
-        Long groupId = 1L;
-        //when(recommendationService.getRecommendations(groupId)).thenReturn(List.of("Recommendation 1", "Recommendation 2"));
+    void testGetRecommendations_exception() {
+        Long groupId = 99L;
 
-        //List<String> response = recommendationController.getRecommendations(groupId);
+        when(recommendationService.getRecommendations(groupId)).thenThrow(new RuntimeException("DB error"));
 
-        //assertNotNull(response);
-        //assertEquals(List.of("Recommendation 1", "Recommendation 2"), response);
-        //verify(recommendationService, times(1)).createGroupDestinationRecommendations(groupId);
-        //verify(recommendationService, times(1)).getRecommendations(groupId);
+        List<String> result = controller.getRecommendations(groupId);
+
+        assertNull(result);
     }
-
-    /*@Test
-    void testGetFinalDestination() {
-        Long groupId = 1L;
-        when(recommendationService.getFinalDestination(groupId)).thenReturn("Final Destination");
-
-        String response = recommendationController.getFinalDestination(groupId);
-
-        assertNotNull(response);
-        assertEquals("Final Destination", response);
-        verify(recommendationService, times(1)).getFinalDestination(groupId);
-    }*/
 
     @Test
-    void testVoteForCity() {
-        /*Long groupId = 1L;
-        String userId = "1"; 
-        String city = "City";
+    void testVoteForCity_success() {
+        VoteRequest voteRequest = new VoteRequest();
+        voteRequest.setUserId("user123");
+        voteRequest.setCity("Barcelona");
+        voteRequest.setGroupId(42L);
 
-        VoteRequest voteRequest =
-          VoteRequest(groupId, userId, city);
+        when(recommendationService.voteForCity("user123", "Barcelona", 42L)).thenReturn("Voto registrado");
 
-        when(recommendationService.voteForCity(userId, city, groupId)).thenReturn("Vote registered");
-        String response = recommendationController.voteForCity(voteRequest);
-        assertNotNull(response);
-        assertEquals("Vote registered", response);
-        verify(recommendationService, times(1)).voteForCity(userId, city, groupId);
-    */
-}
+        ResponseEntity<String> response = controller.voteForCity(voteRequest);
 
-    private VoteRequest VoteRequest(Long groupId, String userId, String city) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'VoteRequest'");
+        assertEquals(200, response.getStatusCodeValue());
+        assertEquals("Voto registrado", response.getBody());
     }
 
+    @Test
+    void testVoteForCity_illegalArgument() {
+        VoteRequest voteRequest = new VoteRequest();
+        voteRequest.setUserId(null); // parámetro inválido
+        voteRequest.setCity("Madrid");
+        voteRequest.setGroupId(1L);
+
+        when(recommendationService.voteForCity(null, "Madrid", 1L))
+            .thenThrow(new IllegalArgumentException("userId no puede ser null"));
+
+        ResponseEntity<String> response = controller.voteForCity(voteRequest);
+
+        assertEquals(400, response.getStatusCodeValue());
+        assertTrue(response.getBody().contains("Parámetros inválidos"));
+    }
+
+    @Test
+    void testVoteForCity_exception() {
+        VoteRequest voteRequest = new VoteRequest(2L, "user123", "Roma");
+
+        when(recommendationService.voteForCity("user123", "Roma", 2L))
+            .thenThrow(new RuntimeException("Error inesperado"));
+
+        ResponseEntity<String> response = controller.voteForCity(voteRequest);
+
+        assertEquals(500, response.getStatusCodeValue());
+        assertTrue(response.getBody().contains("Error interno"));
+    }
 }

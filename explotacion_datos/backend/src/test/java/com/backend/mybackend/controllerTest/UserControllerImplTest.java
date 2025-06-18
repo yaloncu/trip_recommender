@@ -1,140 +1,368 @@
 package com.backend.mybackend.controllerTest;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import com.example.mybackend.controller.impl.UserControllerImpl;
+import com.example.mybackend.model.Group;
+import com.example.mybackend.model.User;
+import com.example.mybackend.services.Neo4jUserService;
+import com.example.mybackend.services.TokenService;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseToken;
 
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Map;
-
-import org.assertj.core.condition.Join;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.*;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import com.example.mybackend.controller.impl.GroupControllerImpl;
-import com.example.mybackend.controller.impl.RecommendationControllerImpl;
-import com.example.mybackend.controller.impl.UserControllerImpl;
-import com.example.mybackend.model.VoteRequest;
-import com.example.mybackend.model.Group;
-import com.example.mybackend.model.JoinGroupWithPreferencesRequest;
-import com.example.mybackend.model.User;
-import com.example.mybackend.services.GroupService;
-import com.example.mybackend.services.RecommendationService;
-import com.example.mybackend.services.impl.Neo4jUserServiceImpl;
+import java.util.*;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.*;
+
+import org.mockito.junit.jupiter.MockitoExtension;
+
+@ExtendWith(MockitoExtension.class)
 class UserControllerImplTest {
+
     @Mock
-    private Neo4jUserServiceImpl userService;
+    private Neo4jUserService userService;
+
+    @Mock
+    private TokenService tokenService;
+
     @InjectMocks
-    private UserControllerImpl userController;
+    private UserControllerImpl controller;
 
-    private User mockUser;
-    private User mockUserGoogle;
-    private Map<String, String> mockGoogleUser;
-    private Group mockGroupClosed;
+    @Test
+    void testProtectedRoute_validToken() {
+        String token = "Bearer valid.jwt.token";
 
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
+        when(tokenService.validateToken("valid.jwt.token")).thenReturn(true);
+        when(tokenService.extractEmailFromToken("valid.jwt.token")).thenReturn("user@example.com");
 
-        mockUser = User.builder()        
-                .email("Test Email")
-                .name("Test Name")
-                .password("Test Password")
-                .build();
+        ResponseEntity<String> response = controller.protectedRoute(token);
 
-        mockUserGoogle = User.builder()        
-                .email("Test Email")
-                .name("Test Name")
-                .build();
-
-        mockGoogleUser = Map.of("name", "Test Name", "email", "Test Email");
-
-        mockGroupClosed = Group.builder()
-                .name("Test Group")
-                .email("Test Email")
-                .audience("Test Audience")
-                .privated("public")
-                .isClosed(true)
-                .isClosedVoting(true)
-                .tripType("Test Trip Type")
-                .departureDate(LocalDate.of(2023, 10, 1))
-                .returnDate(LocalDate.of(2023, 10, 10))
-                .availabilityStartDates(List.of(LocalDate.of(2023, 9, 25)))
-                .availabilityEndDates(List.of(LocalDate.of(2023, 9, 30)))
-                .build();
+        assertEquals(200, response.getStatusCodeValue());
+        assertTrue(response.getBody().contains("Access granted"));
     }
 
     @Test
-    void testCreateUser() {
-        when(userService.createUser("Test Name", "Test Email", "Test Password")).thenReturn(mockUser);
+    void testProtectedRoute_invalidToken() {
+        String token = "Bearer invalid.token";
 
-        User response = userController.createUser(mockUser);
-        assertNotNull(response);
-        assertEquals("Test Email", response.getEmail());
-        assertEquals("Test Password", response.getPassword());
-        verify(userService, times(1)).createUser("Test Name", "Test Email", "Test Password");
+        when(tokenService.validateToken("invalid.token")).thenReturn(false);
+
+        ResponseEntity<String> response = controller.protectedRoute(token);
+
+        assertEquals(401, response.getStatusCodeValue());
+        assertEquals("Invalid token", response.getBody());
     }
 
     @Test
-    void testCreateUserWithGoogle_whenUserAlreadyExists() {
-        when(userService.checkUserExistsByEmail("Test Email")).thenReturn(true);
-        when(userService.getUserByEmail("Test Email")).thenReturn(mockUserGoogle);
+    void testCreateUser_manual() {
+        User user = new User();
+        user.setName("Ana");
+        user.setEmail("ana@example.com");
+        user.setPassword("1234");
 
-        //User response = userController.createUserFromGoogle(mockGoogleUser);
+        when(userService.createUser("Ana", "ana@example.com", "1234")).thenReturn(user);
 
-        //assertNotNull(response);
-        //assertEquals("Test Email", response.getEmail());
+        User result = controller.createUser(user);
 
-        //verify(userService, times(1)).checkUserExistsByEmail("Test Email");
-        //verify(userService, times(1)).getUserByEmail("Test Email");
-    }
-
-
-/*************  ✨ Windsurf Command ⭐  *************/
-/**
- * Test case for the login method in UserControllerImpl.
-/*******  846b5459-21e8-44d6-bd46-081dbb40fc42  *******/
-    @Test
-    void testLogin() {
-        when(userService.validateUser("Test Email", "Test Password")).thenReturn(true);
-        when(userService.getUserByEmail("Test Email")).thenReturn(mockUser);
-
-        boolean response = userController.login(mockUser);
-        assertNotNull(response);
-        assertTrue(response);
-        verify(userService, times(1)).validateUser("Test Email", "Test Password");
+        assertNotNull(result);
+        assertEquals("Ana", result.getName());
     }
 
     @Test
-    void testLoginWithGoogle() {
-        when(userService.checkUserExistsByEmail("Test Email")).thenReturn(true);
-        when(userService.getUserByEmail("Test Email")).thenReturn(mockUser);
+    void testCreateUser_google() {
+        User user = new User();
+        user.setName("Ana");
+        user.setEmail("ana@example.com");
+        user.setPassword(null); // Google
 
-        //boolean response = userController.loginWithGoogle(Map.of("email", "Test Email"));
-        //assertNotNull(response);
-        //assertTrue(response);
-        //verify(userService, times(1)).checkUserExistsByEmail("Test Email");
+        when(userService.createUser("Ana", "ana@example.com", null)).thenReturn(user);
+
+        User result = controller.createUser(user);
+
+        assertNotNull(result);
+        assertEquals("ana@example.com", result.getEmail());
     }
 
     @Test
-    void testGetUserGroups(){
-        when(userService.getUserGroups("Test Email")).thenReturn(List.of(mockGroupClosed));
+    void testLogin_success() {
+        User login = new User();
+        login.setEmail("ana@example.com");
+        login.setPassword("1234");
 
-        List<Group> response = userController.getUserGroups("Test Email");
-        assertNotNull(response);
-        assertFalse(response.isEmpty());
-        assertEquals(1, response.size());
-        assertEquals("Test Group", response.get(0).getName());
-        verify(userService, times(1)).getUserGroups("Test Email");
+        when(userService.validateUser("ana@example.com", "1234")).thenReturn(true);
+
+        boolean result = controller.login(login);
+
+        assertTrue(result);
     }
 
+    @Test
+    void testGetUserByEmail_found() {
+        User user = new User();
+        user.setEmail("ana@example.com");
+
+        when(userService.getUserByEmail("ana@example.com")).thenReturn(user);
+
+        ResponseEntity<User> response = controller.getUserByEmail("ana@example.com");
+
+        assertEquals(200, response.getStatusCodeValue());
+        assertEquals("ana@example.com", response.getBody().getEmail());
+    }
+
+    @Test
+    void testGetUserGroups() {
+        Group group = new Group();
+        group.setName("Viaje a Roma");
+
+        when(userService.getUserGroups("ana@example.com")).thenReturn(List.of(group));
+
+        List<Group> groups = controller.getUserGroups("ana@example.com");
+
+        assertEquals(1, groups.size());
+        assertEquals("Viaje a Roma", groups.get(0).getName());
+    }
+
+    @Test
+    void testUpdateUser_success() {
+        User updated = new User();
+        updated.setEmail("ana@example.com");
+        updated.setName("Ana Actualizada");
+        updated.setAboutMe("Me gusta viajar");
+        updated.setGender("F");
+        updated.setAge(30);
+
+        User existing = new User();
+        existing.setEmail("ana@example.com");
+
+        when(userService.getUserByEmail("ana@example.com")).thenReturn(existing);
+        when(userService.saveUser(existing)).thenReturn(updated);
+
+        ResponseEntity<User> response = controller.updateUser(updated);
+
+        assertEquals(200, response.getStatusCodeValue());
+        assertEquals("Ana Actualizada", response.getBody().getName());
+    }
+
+    @Test
+    void testCreateUserFromGoogle_success() throws Exception {
+        // Arrange
+        Map<String, String> payload = Map.of("token", "fakeToken");
+
+        FirebaseToken mockedToken = mock(FirebaseToken.class);
+        when(mockedToken.getEmail()).thenReturn("test@example.com");
+        when(mockedToken.getName()).thenReturn("Test User");
+
+        User mockedUser = new User("Test User", "test@example.com", null);
+        when(userService.checkUserExistsByEmail("test@example.com")).thenReturn(false);
+        when(userService.createUser("Test User", "test@example.com")).thenReturn(mockedUser);
+        when(tokenService.generateToken("test@example.com")).thenReturn("jwt-token");
+
+        try (MockedStatic<FirebaseAuth> firebaseAuthMockedStatic = mockStatic(FirebaseAuth.class)) {
+            FirebaseAuth mockFirebaseAuth = mock(FirebaseAuth.class);
+            firebaseAuthMockedStatic.when(FirebaseAuth::getInstance).thenReturn(mockFirebaseAuth);
+            when(mockFirebaseAuth.verifyIdToken("fakeToken")).thenReturn(mockedToken);
+
+            // Act
+            ResponseEntity<?> response = controller.createUserFromGoogle(payload);
+
+            // Assert
+            assertEquals(HttpStatus.OK, response.getStatusCode());
+            Map<String, String> body = (Map<String, String>) response.getBody();
+            assertEquals("test@example.com", body.get("email"));
+            assertEquals("jwt-token", body.get("token"));
+        }
+    }
+
+
+    @Test
+    void testLoginWithGoogle_success() {
+        Map<String, String> request = Map.of("email", "user@example.com");
+        Map<String, Object> loginResponse = Map.of("token", "jwtToken");
+
+        when(userService.handleGoogleLogin("user@example.com")).thenReturn(loginResponse);
+
+        ResponseEntity<?> response = controller.loginWithGoogle(request);
+
+        assertEquals(200, response.getStatusCodeValue());
+        assertEquals("jwtToken", ((Map<?, ?>) response.getBody()).get("token"));
+    }
+
+    @Test
+    void testCreateUser_incomplete() {
+        User user = new User(); // sin nombre ni email
+        User result = controller.createUser(user);
+        assertNull(result);
+    }
+
+    @Test
+    void testLogin_exception() {
+        User login = new User();
+        login.setEmail("crash@example.com");
+        login.setPassword("1234");
+
+        when(userService.validateUser(anyString(), anyString())).thenThrow(new RuntimeException("DB down"));
+
+        boolean result = controller.login(login);
+        assertFalse(result);
+    }
+
+    @Test
+    void testGetUserByEmail_notFound() {
+        when(userService.getUserByEmail("missing@example.com")).thenReturn(null);
+
+        ResponseEntity<User> response = controller.getUserByEmail("missing@example.com");
+
+        assertEquals(404, response.getStatusCodeValue());
+    }
+
+    @Test
+    void testUpdateUser_notFound() {
+        User input = new User();
+        input.setEmail("missing@example.com");
+
+        when(userService.getUserByEmail("missing@example.com")).thenReturn(null);
+
+        ResponseEntity<User> response = controller.updateUser(input);
+
+        assertEquals(404, response.getStatusCodeValue());
+    }
+
+    @Test
+    void testLoginWithGoogle_exception() {
+        Map<String, String> request = Map.of("email", "fail@example.com");
+
+        when(userService.handleGoogleLogin("fail@example.com")).thenThrow(new RuntimeException("Firebase error"));
+
+        ResponseEntity<?> response = controller.loginWithGoogle(request);
+
+        assertEquals(500, response.getStatusCodeValue());
+        assertEquals("Error during Google login", response.getBody());
+    }
+
+    @Test
+    void testCreateUserFromGoogle_existingUser() throws Exception {
+        Map<String, String> payload = Map.of("token", "token");
+
+        FirebaseToken firebaseToken = mock(FirebaseToken.class);
+        when(firebaseToken.getEmail()).thenReturn("existing@example.com");
+        when(firebaseToken.getName()).thenReturn("Existing User");
+
+        User user = new User();
+        user.setEmail("existing@example.com");
+
+        try (MockedStatic<FirebaseAuth> firebaseAuthMock = mockStatic(FirebaseAuth.class)) {
+            FirebaseAuth firebaseAuth = mock(FirebaseAuth.class);
+            firebaseAuthMock.when(FirebaseAuth::getInstance).thenReturn(firebaseAuth);
+            when(firebaseAuth.verifyIdToken("token")).thenReturn(firebaseToken);
+
+            // Muy importante: asegurar mocks de usuario
+            when(userService.checkUserExistsByEmail("existing@example.com")).thenReturn(true);
+            when(userService.getUserByEmail("existing@example.com")).thenReturn(user);
+            when(tokenService.generateToken("existing@example.com")).thenReturn("jwt");
+
+            // Ejecutar
+            ResponseEntity<?> response = controller.createUserFromGoogle(payload);
+
+            // Verificar
+            assertEquals(200, response.getStatusCodeValue());
+            assertNotNull(response.getBody());
+            Map<?, ?> body = (Map<?, ?>) response.getBody();
+            assertEquals("jwt", body.get("token"));
+            assertEquals("existing@example.com", body.get("email"));
+        }
+    }
+
+    @Test
+    void testProtectedRoute_malformedToken() {
+        String token = "invalidFormat";
+
+        ResponseEntity<String> response = controller.protectedRoute(token);
+
+        assertEquals(401, response.getStatusCodeValue());
+        assertEquals("Invalid token", response.getBody()); // Cambiado aquí
+    }
+
+
+    @Test
+    void testCreateUserFromGoogle_firebaseException() throws Exception {
+        Map<String, String> payload = Map.of("token", "badToken");
+
+        try (MockedStatic<FirebaseAuth> firebaseAuthMock = mockStatic(FirebaseAuth.class)) {
+            FirebaseAuth mockFirebaseAuth = mock(FirebaseAuth.class);
+            firebaseAuthMock.when(FirebaseAuth::getInstance).thenReturn(mockFirebaseAuth);
+            when(mockFirebaseAuth.verifyIdToken("badToken")).thenThrow(new RuntimeException("Firebase error"));
+
+            ResponseEntity<?> response = controller.createUserFromGoogle(payload);
+
+            assertEquals(500, response.getStatusCodeValue());
+            assertTrue(((Map<?, ?>) response.getBody()).get("message").toString().contains("Firebase error"));
+        }
+    }
+
+    @Test
+    void testUpdateUser_nullFields() {
+        User input = new User();
+        input.setEmail("ana@example.com");
+
+        User existing = new User();
+        existing.setEmail("ana@example.com");
+
+        when(userService.getUserByEmail("ana@example.com")).thenReturn(existing);
+        when(userService.saveUser(existing)).thenReturn(existing);
+
+        ResponseEntity<User> response = controller.updateUser(input);
+
+        assertEquals(200, response.getStatusCodeValue());
+        assertEquals("ana@example.com", response.getBody().getEmail());
+    }
+
+    @Test
+    void testGetUserGroups_empty() {
+        when(userService.getUserGroups("ana@example.com")).thenReturn(Collections.emptyList());
+
+        List<Group> groups = controller.getUserGroups("ana@example.com");
+
+        assertNotNull(groups);
+        assertTrue(groups.isEmpty());
+    }
+
+    @Test
+    void testCreateUserFromGoogle_firebaseException_2() throws Exception {
+        Map<String, String> payload = Map.of("token", "badToken");
+
+        try (MockedStatic<FirebaseAuth> firebaseAuthMock = mockStatic(FirebaseAuth.class)) {
+            FirebaseAuth mockAuth = mock(FirebaseAuth.class);
+            firebaseAuthMock.when(FirebaseAuth::getInstance).thenReturn(mockAuth);
+
+            when(mockAuth.verifyIdToken("badToken")).thenThrow(new RuntimeException("Firebase broken"));
+
+            ResponseEntity<?> response = controller.createUserFromGoogle(payload);
+
+            assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+            assertTrue(response.getBody().toString().contains("Google login/signup failed"));
+        }
+    }
+
+    @Test
+    void testUpdateUser_saveException() {
+        User updated = new User();
+        updated.setEmail("ana@example.com");
+        updated.setName("Ana Nueva");
+
+        User existing = new User();
+        existing.setEmail("ana@example.com");
+
+        when(userService.getUserByEmail("ana@example.com")).thenReturn(existing);
+        when(userService.saveUser(existing)).thenThrow(new RuntimeException("DB error"));
+
+        ResponseEntity<User> response = controller.updateUser(updated);
+
+        assertEquals(500, response.getStatusCodeValue());
+    }
 }
