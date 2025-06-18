@@ -30,7 +30,7 @@ public interface RecommendationService {
      * @param groupId The ID of the group.
      * @return A list of destination names recommended for the group.
      */
-    List<String> getRecommendations(String groupName);
+    List<String> getRecommendations(Long groupId);
 
     /**
      * Vote for a city in a group.
@@ -39,11 +39,6 @@ public interface RecommendationService {
      * @param groupId The ID of the group.
      */
     String voteForCity(String userId, String city, Long groupId);
-    /**
-     * Get the final destination for a group.
-     * @param groupId The ID of the group.
-     * @return The name of the final destination for the group.
-     */
-    String getFinalDestination(Long groupId);    
+   
 }
 

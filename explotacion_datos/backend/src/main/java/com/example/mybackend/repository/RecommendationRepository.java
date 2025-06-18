@@ -19,13 +19,11 @@ public interface RecommendationRepository extends Neo4jRepository<Group, Long> {
             "MERGE (g)-[:RECOMIENDA]->(d) ")
     void createGroupDestinationRecommendations(@Param("groupName") String groupName);
 
-    @Query("MATCH (g:Group)<-[:RECOMIENDA]->(d:Destino) " +
+    @Query("MATCH (g:Group)-[:RECOMIENDA]->(d:Destino) " +
             "WHERE id(g) = $groupId " +
             "RETURN d.nombre_destino AS destinationName")
-    List<String> getRecommendations(@Param("groupName") String groupName);
+    List<String> getRecommendations(@Param("groupId") Long groupId);
 
-/*************  ✨ Windsurf Command ⭐  *************/
-/*******  b2c4a2aa-5436-4ed0-8ee1-a62ce590fc33  *******/
     @Query("MATCH (u:User {email: $userId}), (g:Group), (d:Destino {nombre_destino: $city}) " +
             "WHERE id(g) = $groupId " + 
             "CREATE (v:Vote {email: $userId, groupId: $groupId}) " +
@@ -35,10 +33,14 @@ public interface RecommendationRepository extends Neo4jRepository<Group, Long> {
             "RETURN d.nombre_destino")
     String voteForCity(@Param("userId") String userId, @Param("city") String city, @Param("groupId") Long groupId);
     
-    @Query("MATCH (g:Group)-[:EN_VOTO]->(v:Vote)<-[:VOTADO_EN]-(d:Destino) " +
-            "WHERE id(g)=$groupId " +
-            "RETURN d.nombre_destino AS destination, COUNT(v) AS votes " +
-            "ORDER BY votes DESC LIMIT 1")
-    String getFinalDestination(@Param("groupId") Long groupId);
+    @Query("""
+        MATCH (g:Group)-[:EN_VOTO]->(v:Vote)<-[:VOTADO_EN]-(d:Destino)
+        WHERE g.name = $groupName
+        WITH d, COUNT(v) AS voteCount
+        ORDER BY voteCount DESC
+        LIMIT 1
+        RETURN d.nombre_destino
+        """)
+    String getFinalDestination(@Param("groupName") String groupName);
 
 }

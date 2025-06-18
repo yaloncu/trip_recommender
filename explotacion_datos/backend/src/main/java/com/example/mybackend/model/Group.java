@@ -36,6 +36,7 @@ public class Group {
     private String privated;
     private String audience;
     private String email;
+    private String finalDestination;
     private boolean isClosed;
     private boolean isClosedVoting;
     private String tripType;

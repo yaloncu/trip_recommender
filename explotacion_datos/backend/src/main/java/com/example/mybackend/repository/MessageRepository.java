@@ -5,4 +5,5 @@ import org.springframework.data.neo4j.repository.Neo4jRepository;
 import com.example.mybackend.model.Message;
 public interface MessageRepository extends Neo4jRepository<Message, Long> {
     List<Message> findByGroupIdOrderByTimestampAsc(Long groupId);
+    List<Message> findByActivityGroupIdOrderByTimestampAsc(Long activityGroupId);
 }

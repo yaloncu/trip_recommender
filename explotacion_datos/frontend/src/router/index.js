@@ -12,6 +12,12 @@ import GroupChat from '@/components/GroupChat.vue';
 import VotePage from '@/components/Voting.vue'; 
 import ActivityGroups from '../components/ActivityGroups.vue';
 import SideMenu from '@/components/SideMenu.vue';
+import CreateActivity from '@/components/CreateActivity.vue';
+import UserActivities from '@/components/UserActivities.vue';
+import Profile from '@/components/Profile.vue';
+import ActivityChat from '@/components/ActivityChat.vue';
+import ActivityParticipants from '@/components/ActivityParticipants.vue';
+import GroupParticipants from '@/components/GroupParticipants.vue';
 import { auth } from '@/firebaseConfig'; 
 
 const routes = [
@@ -43,6 +49,11 @@ const routes = [
     meta: { requiresAuth: false } 
   },
   {
+    path: '/activities/create',
+    name: 'CreateActivity',
+    component: CreateActivity
+  },
+  {
     path: '/groups/joinWithPreferences',
     name: 'JoinGroup',
     component: JoinGroup,
@@ -60,24 +71,44 @@ const routes = [
     component: GroupDetails
   },
   {
-    path: '/groups/:groupId/recommendations/:userId',
+    path: '/vote/:groupId',
     name: 'Recommendations',
     component: Recommendations
-  },
-  {
-    path: '/vote/:groupId',
-    name: 'VotePage',
-    component: VotePage
   },
   {
     path: '/chat/:groupId',
     name: 'GroupChat',
     component: GroupChat
   },
+   {
+    path: '/activity-chat/:activityId',
+    name: 'ActivityChat',
+    component: ActivityChat
+  },
   {
     path: '/activities',
     name: 'ActivityGroups',
     component: ActivityGroups
+  },
+  {
+    path: '/activities/user',
+    name: 'UserActivities',
+    component: UserActivities
+  },
+  {
+    path: '/profile',
+    name: 'Profile',
+    component: Profile
+  },
+  {
+  path: '/activity-participants/:id',
+  name: 'ActivityParticipants',
+  component: ActivityParticipants
+  },
+  {
+  path: '/group-participants/:id',
+  name: 'GroupParticipants',
+  component: GroupParticipants
   }
 
 ];

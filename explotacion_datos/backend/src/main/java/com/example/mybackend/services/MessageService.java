@@ -15,6 +15,8 @@ public interface MessageService {
 /*************  ✨ Windsurf Command ⭐  *************/
 /*******  b53f17d6-6d17-4db5-a860-eb4faf75cd16  *******/
     public Message save(Long groupId, String sender, String content);
-
     public List<Message> getMessagesByGroup(Long groupId);
+    public Message saveForActivity(Long activityId, String sender, String content);
+    public List<Message> getMessagesByActivityGroup(Long activityId);
+
 }

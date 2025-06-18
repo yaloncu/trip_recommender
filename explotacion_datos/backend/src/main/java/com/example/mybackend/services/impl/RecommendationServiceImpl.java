@@ -18,9 +18,9 @@ public class RecommendationServiceImpl implements RecommendationService {
     private final Driver driver;
     private final RecommendationRepository recommendationRepository;
 
-    public RecommendationServiceImpl(Driver driver) {
+    public RecommendationServiceImpl(Driver driver, RecommendationRepository recommendationRepository) {
         this.driver = driver;
-        this.recommendationRepository = null;
+        this.recommendationRepository = recommendationRepository;
     }
 
     /**
@@ -36,8 +36,8 @@ public class RecommendationServiceImpl implements RecommendationService {
      * @param groupId The ID of the group.
      * @return A list of destination names recommended for the group.
      */
-    public List<String> getRecommendations(String groupName) {
-        return recommendationRepository.getRecommendations(groupName);
+    public List<String> getRecommendations(Long groupId) {
+        return recommendationRepository.getRecommendations(groupId);
     }
 
     /**
@@ -48,15 +48,6 @@ public class RecommendationServiceImpl implements RecommendationService {
      */
     public String voteForCity(String userId, String city, Long groupId) {
         return recommendationRepository.voteForCity(userId, city, groupId);
-    }
-
-    /**
-     * Get the final destination for a group.
-     * @param groupId The ID of the group.
-     * @return The name of the final destination for the group.
-     */
-    public String getFinalDestination(Long groupId) {
-        return recommendationRepository.getFinalDestination(groupId);
     }
     
 }

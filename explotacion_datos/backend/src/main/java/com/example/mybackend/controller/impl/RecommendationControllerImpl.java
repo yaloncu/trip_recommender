@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import com.example.mybackend.model.VoteRequest;
 
 import com.example.mybackend.controller.RecommendationController;
 import com.example.mybackend.services.RecommendationService;
@@ -32,28 +33,12 @@ public class RecommendationControllerImpl implements RecommendationController {
      * @return a list of recommendations for the group
      */
     @GetMapping("/recommendations/{groupId}")
-    public List<String> getRecommendations(@PathVariable String groupName) {
+    public List<String> getRecommendations(@PathVariable Long groupId) {
         try {
-            recommendationService.createGroupDestinationRecommendations(groupName);
-            return recommendationService.getRecommendations(groupName);
+            return recommendationService.getRecommendations(groupId);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
-        }
-    }
-
-    /**
-     * Get the final destination for a group.
-     *
-     * @param groupId the ID of the group
-     * @return the final destination for the group
-     */
-    @GetMapping("/groups/{groupId}/finalDestination")
-    public String getFinalDestination(@PathVariable Long groupId) {
-        try {
-            return recommendationService.getFinalDestination(groupId);
-        } catch (Exception e) {
-            return "";
         }
     }
 
@@ -64,37 +49,19 @@ public class RecommendationControllerImpl implements RecommendationController {
      * @return a response entity with the result of the vote
      */
     @PostMapping("/vote")
-    public String voteForCity(@RequestBody VoteRequest voteRequest) {
+    public ResponseEntity<String> voteForCity(@RequestBody VoteRequest voteRequest) {
         try {
-            return recommendationService.voteForCity(voteRequest.getUserId(), voteRequest.getCity(), voteRequest.getGroupId());
+            String result = recommendationService.voteForCity(
+                voteRequest.getUserId(), 
+                voteRequest.getCity(), 
+                voteRequest.getGroupId()
+            );
+            return ResponseEntity.ok(result);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Parámetros inválidos: " + e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
-            return "";
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error interno al registrar el voto.");
         }
-    }
-
-    /**
-     * VoteRequest is a class that represents a vote request.
-     */
-    public static class VoteRequest {
-        private Long groupId; 
-        private String userId;
-        private String city;
-
-        public VoteRequest() {
-        }
-        public VoteRequest(Long groupId, String userId, String city) {
-            this.groupId = groupId;
-            this.userId = userId;
-            this.city = city;
-        }
-
-        // Getters y Setters
-        public String getUserId() { return userId; }
-        public void setUserId(String userId) { this.userId = userId; }
-        public String getCity() { return city; }
-        public void setCity(String city) { this.city = city; }
-        public Long getGroupId() { return groupId; }
-        public void setGroupId(Long groupId) { this.groupId = groupId; }
     }
 }

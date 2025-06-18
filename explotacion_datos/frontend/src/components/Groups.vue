@@ -1,82 +1,111 @@
 <template>
   <div class="page-with-menu">
     <SideMenu />
-  <div class="groups-container">
+    <div class="groups-container">
 
-    <h1 class="main-title">{{ $t('joinAGroup') }}</h1>
+      <h1 class="main-title">{{ $t('joinAGroup') }}</h1>
 
-    <div class="groups-content">
-      <div v-if="groups.length">
-        <div class="filters">
-          <div class="search-input-wrapper">
-            <svg xmlns="http://www.w3.org/2000/svg" class="search-icon" viewBox="0 0 20 20" fill="currentColor">
-              <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
-            </svg>
-            <input
-              type="text"
-              v-model="searchQuery"
-              :placeholder="$t('searchGroupByName')"
-              class="search-input" />
+      <div class="groups-content">
+        <div v-if="groups.length">
+          <div class="filters">
+            <div class="search-input-wrapper">
+              <svg xmlns="http://www.w3.org/2000/svg" class="search-icon" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+              </svg>
+              <input
+                type="text"
+                v-model="searchQuery"
+                :placeholder="$t('searchGroupByName')"
+                class="search-input" />
+            </div>
+
+            <select v-model="selectedType" class="filter-select">
+              <option value="">{{ $t('allTypes') }}</option>
+              <option value="Aventura">{{ $t('Aventura') }}</option>
+              <option value="Cultural">{{ $t('Cultural') }}</option>
+              <option value="Playa">{{ $t('Playa') }}</option>
+              <option value="Romántica">{{ $t('Romántica') }}</option>
+              <option value="Relax">{{ $t('Relax') }}</option>
+              <option value="Gastronómica">{{ $t('Gastronómica') }}</option>
+              <option value="Bienestar">{{ $t('Bienestar') }}</option>
+              <option value="Montaña">{{ $t('Montaña') }}</option>
+            </select>
+
+            <select v-model="selectedAudience" class="filter-select">
+              <option value="">{{ $t('allAudiences') }}</option>
+              <option value="Adultos">{{ $t('adults') }}</option>
+              <option value="Jóvenes">{{ $t('youth') }}</option>
+              <option value="Familias">{{ $t('families') }}</option>
+              <option value="Tercera edad">{{ $t('3age') }}</option>
+            </select>
+
+            <input type="date" v-model="departureFrom" class="filter-select" :placeholder="$t('departureDate')" />
+            <input type="date" v-model="departureTo" class="filter-select" :placeholder="$t('returnDate')" />
           </div>
 
-          <select v-model="selectedType" class="filter-select">
-            <option value="">{{ $t('allTypes') }}</option>
-            <option value="Aventura">{{ $t('Aventura') }}</option>
-            <option value="Cultural">{{ $t('Cultural') }}</option>
-            <option value="Playa">{{ $t('Playa') }}</option>
-            <option value="Romántica">{{ $t('Romántica') }}</option>
-            <option value="Relax">{{ $t('Relax') }}</option>
-            <option value="Gastronómica">{{ $t('Gastronómica') }}</option>
-            <option value="Bienestar">{{ $t('Bienestar') }}</option>
-            <option value="Montaña">{{ $t('Montaña') }}</option>
-          </select>
+          <ul class="group-list">
+            <li v-for="group in filteredGroups" :key="group.name" class="group-item">
+              <span class="group-name group-title">{{ group.name }}</span>
+              <span class="group-name group-audience">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                  viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                  class="lucide lucide-users-icon">
+                  <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                  <path d="M16 3.128a4 4 0 0 1 0 7.744"/>
+                  <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
+                  <circle cx="9" cy="7" r="4"/>
+                </svg>
+                {{ $t(group.audience) }}
+              </span>
+              <p class="group-name">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                  viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                  class="lucide lucide-compass-icon">
+                  <path d="m16.24 7.76-1.804 5.411a2 2 0 0 1-1.265 1.265L7.76 16.24l1.804-5.411a2 2 0 0 1 1.265-1.265z"/>
+                  <circle cx="12" cy="12" r="10"/>
+                </svg>
+                {{ group.tripType ? $t(group.tripType) : $t('unknownTripType') }}
+              </p>
 
-          <select v-model="selectedAudience" class="filter-select">
-            <option value="">{{ $t('allAudiences') }}</option>
-            <option value="Adultos">{{ $t('adults') }}</option>
-            <option value="Jóvenes">{{ $t('youth') }}</option>
-            <option value="Familias">{{ $t('families') }}</option>
-            <option value="Tercera edad">{{ $t('3age') }}</option>
-          </select>
+              <div class="group-dates">
+                <span class="date-icon" :title="$t('departureDate')">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="lucide lucide-plane-takeoff-icon">
+                    <path d="M2 22h20"/>
+                    <path d="M6.36 17.4 4 17l-2-4 1.1-.55a2 2 0 0 1 1.8 0l.17.1a2 2 0 0 0 1.8 0L8 12 5 6l.9-.45a2 2 0 0 1 2.09.2l4.02 3a2 2 0 0 0 2.1.2l4.19-2.06a2.41 2.41 0 0 1 1.73-.17L21 7a1.4 1.4 0 0 1 .87 1.99l-.38.76c-.23.46-.6.84-1.07 1.08L7.58 17.2a2 2 0 0 1-1.22.18Z"/>
+                  </svg>
+                  {{ group.departureDate ? new Date(group.departureDate).toLocaleDateString() : 'N/A' }}
+                </span>
+                <span class="date-icon" :title="$t('returnDate')">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="lucide lucide-plane-landing-icon">
+                    <path d="M2 22h20"/>
+                    <path d="M3.77 10.77 2 9l2-4.5 1.1.55c.55.28.9.84.9 1.45s.35 1.17.9 1.45L8 8.5l3-6 1.05.53a2 2 0 0 1 1.09 1.52l.72 5.4a2 2 0 0 0 1.09 1.52l4.4 2.2c.42.22.78.55 1.01.96l.6 1.03c.49.88-.06 1.98-1.06 2.1l-1.18.15c-.47.06-.95-.02-1.37-.24L4.29 11.15a2 2 0 0 1-.52-.38Z"/>
+                  </svg>
+                  {{ group.returnDate ? new Date(group.returnDate).toLocaleDateString() : 'N/A' }}
+                </span>
+              </div>
 
-          <input type="date" v-model="departureFrom" class="filter-select" :placeholder="$t('departureFrom')" />
-          <input type="date" v-model="departureTo" class="filter-select" :placeholder="$t('returnTo')" />
+              <button class="join-button" @click="viewGroupDetails(group.name)">
+                {{ $t('viewGroup') }}
+              </button>
+            </li>
+          </ul>
         </div>
-
-
-        <ul class="group-list">
-          <li v-for="group in filteredGroups" :key="group.name" class="group-item">
-            <span class="group-name group-title">{{ group.name }}</span>
-            <span class="group-name group-audience">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users-icon lucide-users"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><path d="M16 3.128a4 4 0 0 1 0 7.744"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><circle cx="9" cy="7" r="4"/></svg>
-              {{ group.audience }}
-            </span>
-            <p class="group-name">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-compass-icon lucide-compass"><path d="m16.24 7.76-1.804 5.411a2 2 0 0 1-1.265 1.265L7.76 16.24l1.804-5.411a2 2 0 0 1 1.265-1.265z"/><circle cx="12" cy="12" r="10"/></svg>
-              {{ group.tripType }}
-            </p>
-
-            <div class="group-dates">
-              <span class="date-icon" title="Departure date">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plane-takeoff-icon lucide-plane-takeoff"><path d="M2 22h20"/><path d="M6.36 17.4 4 17l-2-4 1.1-.55a2 2 0 0 1 1.8 0l.17.1a2 2 0 0 0 1.8 0L8 12 5 6l.9-.45a2 2 0 0 1 2.09.2l4.02 3a2 2 0 0 0 2.1.2l4.19-2.06a2.41 2.41 0 0 1 1.73-.17L21 7a1.4 1.4 0 0 1 .87 1.99l-.38.76c-.23.46-.6.84-1.07 1.08L7.58 17.2a2 2 0 0 1-1.22.18Z"/></svg>
-                {{ group.departureDate ? new Date(group.departureDate).toLocaleDateString() : 'N/A' }}
-              </span>
-              <span class="date-icon" title="Return date">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plane-landing-icon lucide-plane-landing"><path d="M2 22h20"/><path d="M3.77 10.77 2 9l2-4.5 1.1.55c.55.28.9.84.9 1.45s.35 1.17.9 1.45L8 8.5l3-6 1.05.53a2 2 0 0 1 1.09 1.52l.72 5.4a2 2 0 0 0 1.09 1.52l4.4 2.2c.42.22.78.55 1.01.96l.6 1.03c.49.88-.06 1.98-1.06 2.1l-1.18.15c-.47.06-.95-.02-1.37-.24L4.29 11.15a2 2 0 0 1-.52-.38Z"/></svg>
-                {{ group.returnDate ? new Date(group.returnDate).toLocaleDateString() : 'N/A' }}
-              </span>
-            </div>
-            <button class="join-button" @click="viewGroupDetails(group.name)">{{ $t('viewGroup') }}</button>
-          </li>
-        </ul>
-      </div>
-      <div v-else>
-        <p>{{ $t('noGroupsAvailable') }}</p>
+        <div v-else>
+          <p>{{ $t('noGroupsAvailable') }}</p>
+        </div>
       </div>
     </div>
   </div>
-  </div>
 </template>
+
 
 <script>
 import axios from 'axios';

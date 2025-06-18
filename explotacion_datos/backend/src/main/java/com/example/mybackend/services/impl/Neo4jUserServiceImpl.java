@@ -131,5 +131,10 @@ public class Neo4jUserServiceImpl implements Neo4jUserService {
     public List<Group> getUserGroups(String email) {
         return userRepository.findUserGroups(email);
     }
+
+    public User saveUser(User user) {
+        return userRepository.save(user);
+    }
+
     
 }

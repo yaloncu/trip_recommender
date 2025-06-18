@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.mybackend.controller.GroupController;
 import com.example.mybackend.model.Group;
 import com.example.mybackend.model.JoinGroupWithPreferencesRequest;
+import com.example.mybackend.model.SimpleUserDTO;
 import com.example.mybackend.services.GroupService;
 
 @RestController
@@ -95,7 +96,7 @@ public class GroupControllerImpl implements GroupController {
      * @param group the group details to update
      * @return the updated group
      */
-    @PutMapping("/closeVoting/{name}")
+    @PostMapping("/closeVoting/{groupName}")
     public Group closeVoting(@PathVariable String groupName) {
         try {
             return groupService.closeVoting(groupName); 
@@ -287,4 +288,11 @@ public class GroupControllerImpl implements GroupController {
             return null;
         }
     }
+
+    @GetMapping("/participants/{groupId}")
+    public ResponseEntity<List<SimpleUserDTO>> getParticipants(@PathVariable Long groupId) {
+        List<SimpleUserDTO> participants = groupService.getParticipantsByGroupId(groupId);
+        return ResponseEntity.ok(participants);
+    }
+
 }

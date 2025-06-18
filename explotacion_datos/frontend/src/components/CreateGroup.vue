@@ -1,87 +1,97 @@
 <template>
   <div class="page-with-menu">
     <SideMenu />
-  <div class="create-group-container">
-    <h1 class="main-title">{{ $t('createGroup') }}</h1>
+    <div class="create-group-container">
+      <h1 class="main-title">{{ $t('createGroup') }}</h1>
 
-    <div class="form-card">
-      <input v-model="groupName" type="text" :placeholder="$t('enterGroupName')" class="input" />
+      <div class="form-card">
+        <input v-model="groupName" type="text" :placeholder="$t('enterGroupName')" class="input" />
 
-      <h3 class="title">{{ $t('selectAudience') }}</h3>
-      <div class="checkbox-row">
-        <label v-for="aud in ['Adultos','Jóvenes','Familias','TerceraEdad']" :key="aud" class="radio-box">
-          <input type="radio" :value="aud" v-model="audience" />
-          {{ $t(aud.toLowerCase()) }}
-        </label>
-      </div>
+        <h3 class="title">{{ $t('selectAudience') }}</h3>
+        <div class="checkbox-row">
+          <label v-for="aud in ['adultos', 'jóvenes', 'familias', 'terceraEdad']" :key="aud" class="radio-box">
+            <input type="radio" :value="aud" v-model="audience" />
+            {{ $t(aud) }}
+          </label>
+        </div>
 
-      <h3 class="title">{{ $t('selectPrivacity') }}</h3>
-      <div class="checkbox-row">
-        <label class="radio-box">
-          <input type="radio" value="private" v-model="privated" />
-          {{ $t('private') }}
-        </label>
-        <label class="radio-box">
-          <input type="radio" value="public" v-model="privated" />
-          {{ $t('public') }}
-        </label>
-      </div>
+        <h3 class="title">{{ $t('selectPrivacity') }}</h3>
+        <div class="checkbox-row">
+          <label class="radio-box">
+            <input type="radio" value="private" v-model="privated" />
+            {{ $t('private') }}
+          </label>
+          <label class="radio-box">
+            <input type="radio" value="public" v-model="privated" />
+            {{ $t('public') }}
+          </label>
+        </div>
 
-      <h3 class="title">{{ $t('selectType') }}</h3>
-      <div class="checkbox-column">
-        <label v-for="type in vacationTypes" :key="type" class="radio-box">
-          <input type="radio" :value="type" v-model="selectedType" />
-          {{ $t(type) }}
-        </label>
-      </div>
+        <h3 class="title">{{ $t('selectType') }}</h3>
+        <div class="checkbox-column">
+          <label v-for="type in vacationTypes" :key="type" class="radio-box">
+            <input type="radio" :value="type" v-model="selectedType" />
+            {{ $t(type) }}
+          </label>
+        </div>
 
-      <div v-if="privated === 'private'">
-        <h3 class="title">{{ $t('selectAvailabilityDates') }}</h3>
-        <div v-for="(range, index) in dateRanges" :key="index" class="compact-date-row">
-          <div class="icon-date-group">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon-small" viewBox="0 0 24 24" fill="#16a085" title="Return">
-              <path d="M2.5 19h19v2h-19zM21.4 9.5l-9 3.5-3 7h-2l2.3-6-5.7 2.2-.8-2 7.6-3-2.2-5.8 1.9-.7 2.2 5.8 8.1-3.1z"/>
-            </svg>
-            <input type="date" v-model="range.start" class="input compact-date" />
+        <div v-if="privated === 'private'">
+          <h3 class="title">{{ $t('selectAvailabilityDates') }}</h3>
+          <div v-for="(range, index) in dateRanges" :key="index" class="compact-date-row">
+            <div class="icon-date-group">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                class="lucide lucide-plane-takeoff-icon">
+                <path d="M2 22h20"/>
+                <path d="M6.36 17.4 4 17l-2-4 1.1-.55a2 2 0 0 1 1.8 0l.17.1a2 2 0 0 0 1.8 0L8 12 5 6l.9-.45a2 2 0 0 1 2.09.2l4.02 3a2 2 0 0 0 2.1.2l4.19-2.06a2.41 2.41 0 0 1 1.73-.17L21 7a1.4 1.4 0 0 1 .87 1.99l-.38.76c-.23.46-.6.84-1.07 1.08L7.58 17.2a2 2 0 0 1-1.22.18Z"/>
+              </svg>
+              <input type="date" v-model="range.start" class="input compact-date" />
+            </div>
+            <div class="icon-date-group">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                class="lucide lucide-plane-landing-icon">
+                <path d="M2 22h20"/>
+                <path d="M3.77 10.77 2 9l2-4.5 1.1.55c.55.28.9.84.9 1.45s.35 1.17.9 1.45L8 8.5l3-6 1.05.53a2 2 0 0 1 1.09 1.52l.72 5.4a2 2 0 0 0 1.09 1.52l4.4 2.2c.42.22.78.55 1.01.96l.6 1.03c.49.88-.06 1.98-1.06 2.1l-1.18.15c-.47.06-.95-.02-1.37-.24L4.29 11.15a2 2 0 0 1-.52-.38Z"/>
+              </svg>
+              <input type="date" v-model="range.end" class="input compact-date" />
+            </div>
           </div>
-          <div class="icon-date-group">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon-small" viewBox="0 0 24 24" fill="#16a085" title="Departure">
-              <path d="M2.5 19h19v2h-19zM21.4 9.5l-9-3.5-3-7h-2l2.3 6-5.7-2.2-.8 2 7.6 3-2.2 5.8 1.9.7 2.2-5.8 8.1 3.1z"/>
-            </svg>
-            <input type="date" v-model="range.end" class="input compact-date" />
+          <div class="range-actions">
+            <button class="range-btn delete" @click="removeDateRange(dateRanges.length - 1)">
+              {{ $t('delete') }}
+            </button>
+            <button class="range-btn add" @click="addDateRange">
+              {{ $t('addDateRange') }}
+            </button>
           </div>
         </div>
-        <div class="range-actions">
-          <button class="range-btn delete" @click="removeDateRange(dateRanges.length - 1)">
-            {{ $t('delete') }}
-          </button>
-          <button class="range-btn add" @click="addDateRange">
-            {{ $t('addDateRange') }}
-          </button>
-        </div>
-      </div>
 
-      <div v-if="privated === 'public'">
-        <h3 class="title">{{ $t('selectAvailabilityDates') }}</h3>
-        <div class="compact-date-row">
-          <div class="icon-date-group">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon-small" viewBox="0 0 24 24" fill="#16a085" title="Return">
-              <path d="M2.5 19h19v2h-19zM21.4 9.5l-9 3.5-3 7h-2l2.3-6-5.7 2.2-.8-2 7.6-3-2.2-5.8 1.9-.7 2.2 5.8 8.1-3.1z"/>
-            </svg>
-            <input type="date" v-model="departureDate" class="input compact-date" />
-          </div>
-          <div class="icon-date-group">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon-small" viewBox="0 0 24 24" fill="#16a085" title="Departure">
-              <path d="M2.5 19h19v2h-19zM21.4 9.5l-9-3.5-3-7h-2l2.3 6-5.7-2.2-.8 2 7.6 3-2.2 5.8 1.9.7 2.2-5.8 8.1 3.1z"/>
-            </svg>
-            <input type="date" v-model="returnDate" class="input compact-date" />
+        <div v-if="privated === 'public'">
+          <h3 class="title">{{ $t('selectAvailabilityDates') }}</h3>
+          <div class="compact-date-row">
+            <div class="icon-date-group">
+              <svg xmlns="http://www.w3.org/2000/svg" class="icon-small" viewBox="0 0 24 24" fill="#16a085">
+                <path d="M2.5 19h19v2h-19zM21.4 9.5l-9 3.5-3 7h-2l2.3-6-5.7 2.2-.8-2 7.6-3-2.2-5.8 1.9-.7 2.2 5.8 8.1-3.1z"/>
+              </svg>
+              <input type="date" v-model="departureDate" class="input compact-date" />
+            </div>
+            <div class="icon-date-group">
+              <svg xmlns="http://www.w3.org/2000/svg" class="icon-small" viewBox="0 0 24 24" fill="#16a085">
+                <path d="M2.5 19h19v2h-19zM21.4 9.5l-9-3.5-3-7h-2l2.3 6-5.7-2.2-.8 2 7.6 3-2.2 5.8 1.9.7 2.2-5.8 8.1 3.1z"/>
+              </svg>
+              <input type="date" v-model="returnDate" class="input compact-date" />
+            </div>
           </div>
         </div>
-      </div>
 
-      <button @click="createGroup" class="create-group-button">{{ $t('createTheGroup') }}</button>
+        <button @click="createGroup" class="create-group-button">
+          {{ $t('createTheGroup') }}
+        </button>
+      </div>
     </div>
-  </div>
   </div>
 </template>
 
@@ -155,7 +165,7 @@ export default {
           audience: this.audience,
           privated: this.privated,
           email: email,
-          type: this.selectedType,
+          tripType: this.selectedType,
           isClosed: false,
           isClosedVoting: false,
           description: "",

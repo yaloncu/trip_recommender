@@ -2,20 +2,14 @@
   <div class="page-with-menu">
     <SideMenu />
     <div class="chat-container">
-      <h2 class="chat-title">
-        {{ $t('groupChatTitle') }}: {{ groupName }}
-      </h2>
-      
+
       <div class="messages">
         <div
           v-for="(msg, index) in messages"
           :key="index"
-          :class="['message', msg.sender === username ? 'sent' : 'received']"
-        >
+          :class="['message', msg.sender === username ? 'sent' : 'received']">
           <div class="bubble">
-            <div class="sender">
-              {{ msg.sender === username ? $t('you') : msg.sender }}
-            </div>
+            <div class="sender">{{ msg.sender === username ? $t('you') : msg.sender }}</div>
             <div class="content">{{ msg.content }}</div>
             <div class="timestamp">{{ formatTimestamp(msg.timestamp) }}</div>
           </div>
@@ -25,7 +19,7 @@
       <div class="messageBox">
         <input
           required
-          :placeholder="$t('writeMessagePlaceholder')"
+          placeholder="$t('writeMessagePlaceholder')"
           type="text"
           id="messageInput"
           v-model="newMessage"
@@ -58,47 +52,46 @@ import SideMenu from '@/components/SideMenu.vue';
 let stompClient = null;
 
 export default {
+  components: {
+    SideMenu,
+  },
   data() {
     return {
       messages: [],
       newMessage: '',
-      groupId: '',
+      activityId: '',
       username: '',
     };
   },
-  components: {
-    SideMenu,
-  },
   created() {
-    this.groupId  = this.$route.params.groupId ;
-    console.log('Loaded chat for groupId:', this.groupId);
+    this.activityId = this.$route.params.activityId;
     this.username = localStorage.getItem('email') || 'Anon';
 
-    axios.get(`/api/messages/${this.groupId }`)
-        .then(res => {
+    axios.get(`/api/messages/activity/${this.activityId}`)
+      .then(res => {
         this.messages = res.data;
         this.$nextTick(() => {
-            const messagesContainer = this.$el.querySelector('.messages');
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+          const messagesContainer = this.$el.querySelector('.messages');
+          messagesContainer.scrollTop = messagesContainer.scrollHeight;
         });
-        })
-        .catch(err => {
+      })
+      .catch(err => {
         console.error('Error al cargar mensajes anteriores:', err);
-        });
+      });
 
     const socket = new SockJS('http://localhost:8081/chat');
     stompClient = Stomp.over(socket);
 
     stompClient.connect({}, () => {
-        stompClient.subscribe(`/topic/group/${this.groupId }`, (msg) => {
+      stompClient.subscribe(`/topic/activity/${this.activityId}`, (msg) => {
         this.messages.push(JSON.parse(msg.body));
         this.$nextTick(() => {
-            const messagesContainer = this.$el.querySelector('.messages');
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+          const messagesContainer = this.$el.querySelector('.messages');
+          messagesContainer.scrollTop = messagesContainer.scrollHeight;
         });
-        });
+      });
     });
-    },
+  },
   methods: {
     sendMessage() {
       if (!this.newMessage.trim()) return;
@@ -108,28 +101,24 @@ export default {
         content: this.newMessage,
       };
 
-      stompClient.send(`/app/chat.sendMessage/${this.groupId }`, {}, JSON.stringify(message));
+      stompClient.send(`/app/chat.sendActivityMessage/${this.activityId}`, {}, JSON.stringify(message));
       this.newMessage = '';
     },
     formatTimestamp(timestamp) {
-        if (!timestamp) return '';
-        const date = new Date(timestamp);
-        return date.toLocaleString();
+      if (!timestamp) return '';
+      const date = new Date(timestamp);
+      return date.toLocaleString();
     }
   }
 };
 </script>
 
 <style scoped>
+/* Igual que el estilo que ya estás usando para mantener coherencia visual */
+
 .page-with-menu {
   display: flex;
   min-height: 100vh;
-}
-
-.main-content {
-  flex-grow: 1;
-  margin-left: 220px; 
-  box-sizing: border-box;
 }
 
 .chat-container {
@@ -183,7 +172,6 @@ export default {
   border-bottom-right-radius: 0;
 }
 
-/* Estilos para mensajes recibidos */
 .received {
   justify-content: flex-start;
 }
@@ -194,18 +182,15 @@ export default {
   border-bottom-left-radius: 0;
 }
 
-/* Nombre del remitente */
 .sender {
   font-weight: bold;
   margin-bottom: 5px;
 }
 
-/* Texto del mensaje */
 .content {
   font-size: 1rem;
 }
 
-/* Hora */
 .timestamp {
   font-size: 0.75rem;
   color: #2c3e50;
@@ -213,24 +198,6 @@ export default {
   margin-top: 5px;
 }
 
-input {
-  width: 80%;
-  padding: 10px;
-  border-radius: 10px;
-  border: none;
-  margin-right: 10px;
-}
-
-button {
-  padding: 10px 20px;
-  background-color: #1abc9c;
-  color: white;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-}
-
-/* From Uiverse.io by vinodjangid07 */ 
 .messageBox {
   width: fit-content;
   max-width: 90%;
@@ -244,76 +211,7 @@ button {
   margin-top: 20px;
 }
 
-.messageBox:focus-within {
-  border: 1px solid #16a085;
-}
-
-.fileUploadWrapper {
-  width: fit-content;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: Arial, Helvetica, sans-serif;
-}
-
-#file {
-  display: none;
-}
-.fileUploadWrapper label {
-  cursor: pointer;
-  width: fit-content;
-  height: fit-content;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-}
-.fileUploadWrapper label svg {
-  height: 18px;
-}
-.fileUploadWrapper label svg path {
-  transition: all 0.3s;
-}
-.fileUploadWrapper label svg circle {
-  transition: all 0.3s;
-}
-.fileUploadWrapper label:hover svg path {
-  stroke: #fff;
-}
-.fileUploadWrapper label:hover svg circle {
-  stroke: #fff;
-  fill: #3c3c3c;
-}
-.fileUploadWrapper label:hover .tooltip {
-  display: block;
-  opacity: 1;
-}
-.tooltip {
-  position: absolute;
-  top: -40px;
-  display: none;
-  opacity: 0;
-  color: white;
-  font-size: 10px;
-  text-wrap: nowrap;
-  background-color: #000;
-  padding: 6px 10px;
-  border: 1px solid #3c3c3c;
-  border-radius: 5px;
-  box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.596);
-  transition: all 0.3s;
-}
-
-.chat-title {
-  font-family: 'Poppins', sans-serif;
-  font-size: 1.8rem;
-  color: #1abc9c;
-  margin-bottom: 20px;
-  text-align: center;
-}
-
-#messageInput {
+input#messageInput {
   width: 300px;
   height: 100%;
   background-color: transparent;
@@ -323,12 +221,6 @@ button {
   color: white;
   font-family: 'Poppins', sans-serif;
   font-size: 1rem;
-}
-
-#messageInput:focus ~ #sendButton svg path,
-#messageInput:valid ~ #sendButton svg path {
-  fill: #3c3c3c;
-  stroke: white;
 }
 
 #sendButton {
@@ -346,10 +238,4 @@ button {
 #sendButton:hover svg path {
   stroke: #16a085;
 }
-
-#sendButton svg path {
-  transition: all 0.3s;
-}
-
-
 </style>

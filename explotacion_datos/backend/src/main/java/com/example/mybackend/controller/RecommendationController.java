@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.mybackend.controller.impl.RecommendationControllerImpl.VoteRequest;
+import com.example.mybackend.model.VoteRequest;
 import com.example.mybackend.services.RecommendationService;
 
 import java.util.HashMap;
@@ -30,16 +30,7 @@ public interface RecommendationController {
      * @return a list of recommendations for the group
      */
     @GetMapping("/recommendations/{groupId}")
-    List<String> getRecommendations(@PathVariable String groupName);
-
-    /**
-     * Get the final destination for a group.
-     *
-     * @param groupId the ID of the group
-     * @return the final destination for the group
-     */
-    @GetMapping("/groups/{groupId}/finalDestination")
-    String getFinalDestination(@PathVariable Long groupId);
+    List<String> getRecommendations(@PathVariable Long groupId);
 
     /**
      * Vote for a city in a group.
@@ -48,5 +39,5 @@ public interface RecommendationController {
      * @return a response entity with the result of the vote
      */
     @PostMapping("/vote")
-    String voteForCity(@RequestBody VoteRequest voteRequest);  
+    ResponseEntity<String> voteForCity(@RequestBody VoteRequest voteRequest);
 }

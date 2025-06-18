@@ -1,6 +1,7 @@
 package com.example.mybackend.repository;
 
 import com.example.mybackend.model.Group;
+import com.example.mybackend.model.SimpleUserDTO;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -46,9 +47,13 @@ public interface GroupRepository extends Neo4jRepository<Group, Long> {
         "RETURN g")
     Group closeGroup(@Param("name") String groupName);
 
-    @Query("MATCH (g:Group {name: $name}) SET g.isClosedVoting = true " +
+    @Query("MATCH (g:Group) WHERE g.name = $name SET g.isClosedVoting = true " +
         "RETURN g")
     Group closeVoting(@Param("name") String groupName);
+
+    @Query("MATCH (g:Group {name: $name}) " +
+       "SET g.finalDestination = $destination")
+    void setFinalDestination(@Param("name") String groupName, @Param("destination") String destination);
 
     @Query("MATCH (g:Group {name: $name}) RETURN g")
     Group findGroupByName(@Param("name") String name);
@@ -115,4 +120,12 @@ public interface GroupRepository extends Neo4jRepository<Group, Long> {
     @Query("MATCH (g:Group {name: $name}) " +
             "SET g.departureDate = $departureDate, g.returnDate = $returnDate")
     void updateGroupDates(@Param("name") String groupName, @Param("departureDate") LocalDate departureDate, @Param("returnDate") LocalDate returnDate);
+
+    @Query("""
+        MATCH (u:User)-[:PERTENECE_A]->(g:Group)
+        WHERE id(g) = $groupId
+        RETURN u.name AS name, u.email AS email, u.aboutMe AS aboutMe, u.gender AS gender, u.age AS age
+        """)
+    List<SimpleUserDTO> findParticipantsByGroupId(Long groupId);
+
 }

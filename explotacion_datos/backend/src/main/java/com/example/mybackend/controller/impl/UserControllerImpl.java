@@ -156,6 +156,22 @@ public class UserControllerImpl implements UserController {
         }
     }
 
+    @GetMapping("/users/{email}")
+    public ResponseEntity<User> getUserByEmail(@PathVariable String email) {
+        try {
+            User user = userService.getUserByEmail(email);
+            if (user != null) {
+                return ResponseEntity.ok(user);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+
     /**
      * Get groups for a specific user.
      *
@@ -171,4 +187,26 @@ public class UserControllerImpl implements UserController {
             return null;
         }
     }
+
+    @PostMapping("/users/update")
+    public ResponseEntity<User> updateUser(@RequestBody User updatedUser) {
+        try {
+            User existingUser = userService.getUserByEmail(updatedUser.getEmail());
+            if (existingUser == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            }
+
+            existingUser.setName(updatedUser.getName());
+            existingUser.setAboutMe(updatedUser.getAboutMe());
+            existingUser.setGender(updatedUser.getGender());
+            existingUser.setAge(updatedUser.getAge());
+
+            User savedUser = userService.saveUser(existingUser);
+            return ResponseEntity.ok(savedUser);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
 }

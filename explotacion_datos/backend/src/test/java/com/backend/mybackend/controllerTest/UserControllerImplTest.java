@@ -22,7 +22,7 @@ import org.springframework.http.ResponseEntity;
 import com.example.mybackend.controller.impl.GroupControllerImpl;
 import com.example.mybackend.controller.impl.RecommendationControllerImpl;
 import com.example.mybackend.controller.impl.UserControllerImpl;
-import com.example.mybackend.controller.impl.RecommendationControllerImpl.VoteRequest;
+import com.example.mybackend.model.VoteRequest;
 import com.example.mybackend.model.Group;
 import com.example.mybackend.model.JoinGroupWithPreferencesRequest;
 import com.example.mybackend.model.User;

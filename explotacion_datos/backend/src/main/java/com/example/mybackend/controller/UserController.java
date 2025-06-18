@@ -66,6 +66,8 @@ public interface UserController {
     @PostMapping("/login/google")
     ResponseEntity<?> loginWithGoogle(Map<String, String> googleLoginRequest);
 
+    @GetMapping("/users/{email}")
+    public ResponseEntity<User> getUserByEmail(@PathVariable String email);
     /**
      * Get groups for a specific user.
      *
@@ -74,4 +76,7 @@ public interface UserController {
      */
     @GetMapping("/users/{email}/groups")
     public List<Group> getUserGroups(@PathVariable String email);
+
+    @PostMapping("/users/update")
+    public ResponseEntity<User> updateUser(@RequestBody User updatedUser);
 }

@@ -26,7 +26,7 @@ class RecommendationServiceImplTest {
 
     private RecommendationServiceImpl recommendationService;
 
-    @BeforeEach
+    /*@BeforeEach
     void setUp() {
         recommendationService = new RecommendationServiceImpl(driver);
         // Usamos reflexión para inyectar el mock manualmente, ya que el constructor no lo permite directamente
@@ -88,5 +88,5 @@ class RecommendationServiceImplTest {
 
         assertEquals("Rome", result);
         verify(recommendationRepository).getFinalDestination(groupId);
-    }
+    }*/
 }

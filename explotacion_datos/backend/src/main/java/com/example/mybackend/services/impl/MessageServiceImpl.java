@@ -34,4 +34,17 @@ public class MessageServiceImpl implements MessageService {
     public List<Message> getMessagesByGroup(Long groupId) {
         return messageRepository.findByGroupIdOrderByTimestampAsc(groupId);
     }
+
+    public Message saveForActivity(Long activityId, String sender, String content) {
+        Message message = new Message();
+        message.setActivityGroupId(activityId);
+        message.setSender(sender);
+        message.setContent(content);
+        message.setTimestamp(LocalDateTime.now());
+        return messageRepository.save(message);
+    }
+
+    public List<Message> getMessagesByActivityGroup(Long activityId) {
+        return messageRepository.findByActivityGroupIdOrderByTimestampAsc(activityId);
+    }
 }

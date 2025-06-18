@@ -7,30 +7,104 @@
         <h1 class="main-title">{{ $t('publicActivities') }}</h1>
 
         <div class="groups-content">
+          <div class="filters">
+            <input
+              type="text"
+              v-model="searchQuery"
+              :placeholder="$t('searchByTitle')"
+              class="filter-select search-input"
+            />
+            <input
+              type="text"
+              v-model="selectedLocation"
+              :placeholder="$t('location')"
+              class="filter-select search-input"
+            />
+
+            <select v-model="selectedType" class="filter-select">
+              <option value="">{{ $t('allTypes') }}</option>
+              <option value="Aventura">{{ $t('Aventura') }}</option>
+              <option value="Cultural">{{ $t('Cultural') }}</option>
+              <option value="Playa">{{ $t('Playa') }}</option>
+              <option value="Romántica">{{ $t('Romántica') }}</option>
+              <option value="Relax">{{ $t('Relax') }}</option>
+              <option value="Gastronómica">{{ $t('Gastronómica') }}</option>
+              <option value="Bienestar">{{ $t('Bienestar') }}</option>
+              <option value="Montaña">{{ $t('Montaña') }}</option>
+            </select>
+
+            <input type="date" v-model="startDateFrom" class="filter-select" />
+            <input type="date" v-model="startDateTo" class="filter-select" />
+          </div>
+          
           <div v-if="activities.length">
             <ul class="group-list">
-              <li v-for="activity in activities" :key="activity.id" class="group-item">
+              <li v-for="activity in filteredActivities" :key="activity.id" class="group-item">
                 <span class="group-title">{{ activity.title }}</span>
+
                 <p class="group-name">
-                  <strong>{{ $t('theme') }}:</strong> {{ activity.type }}
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="lucide lucide-landmark-icon">
+                    <path d="M10 18v-7" />
+                    <path d="M11.12 2.198a2 2 0 0 1 1.76.006l7.866 3.847c.476.233.31.949-.22.949H3.474c-.53 0-.695-.716-.22-.949z" />
+                    <path d="M14 18v-7" />
+                    <path d="M18 18v-7" />
+                    <path d="M3 22h18" />
+                    <path d="M6 18v-7" />
+                  </svg>
+                  {{ $t(activity.type) }}
                 </p>
+
                 <p class="group-name">
-                  <strong>{{ $t('place') }}:</strong> {{ activity.location }}
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="lucide lucide-map-pin-icon">
+                    <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" />
+                    <circle cx="12" cy="10" r="3" />
+                  </svg>
+                  {{ activity.location }}
                 </p>
+
                 <div class="group-dates">
-                  <span class="date-icon" title="Start date">
-                    📅 {{ new Date(activity.startDateTime).toLocaleDateString() }}
-                  </span>
-                  <span class="date-icon" title="Start time">
-                    ⏰ {{ new Date(activity.startDateTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }}
-                  </span>
+                  <p class="group-name">
+                    <span class="date-icon" :title="$t('startDate')">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                        viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-calendar-icon">
+                        <path d="M8 2v4" />
+                        <path d="M16 2v4" />
+                        <rect width="18" height="18" x="3" y="4" rx="2" />
+                        <path d="M3 10h18" />
+                      </svg>
+                      {{ new Date(activity.startDateTime).toLocaleDateString() }}
+                    </span>
+                  </p>
+
+                  <p class="group-name">
+                    <span class="date-icon" :title="$t('startTime')">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                        viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-clock-icon">
+                        <circle cx="12" cy="12" r="10" />
+                        <polyline points="12 6 12 12 16 14" />
+                      </svg>
+                      {{ new Date(activity.startDateTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }}
+                    </span>
+                  </p>
                 </div>
-                <button class="join-button" @click="viewActivityDetails(activity.id)">
-                  {{ $t('viewActivity') }}
+
+                <button class="join-button" @click="joinActivity(activity.id)">
+                  {{ $t('joinActivity') }}
                 </button>
               </li>
             </ul>
           </div>
+
           <div v-else>
             <p>{{ $t('noActivitiesAvailable') }}</p>
           </div>
@@ -52,7 +126,30 @@ export default {
   data() {
     return {
       activities: [],
+      searchQuery: '',
+      selectedType: '',
+      selectedLocation: '',
+      startDateFrom: '',
+      startDateTo: '',
     };
+  },
+  computed: {
+    filteredActivities() {
+      return this.activities.filter(activity => {
+        const matchTitle = activity.title.toLowerCase().includes(this.searchQuery.toLowerCase());
+        const matchType = this.selectedType ? activity.type === this.selectedType : true;
+        const matchLocation = activity.location.toLowerCase().includes(this.selectedLocation.toLowerCase());
+
+        const activityDate = new Date(activity.startDateTime);
+        const fromDate = this.startDateFrom ? new Date(this.startDateFrom) : null;
+        const toDate = this.startDateTo ? new Date(this.startDateTo + 'T23:59:59') : null;
+
+        const matchDateFrom = fromDate ? activityDate >= fromDate : true;
+        const matchDateTo = toDate ? activityDate <= toDate : true;
+
+        return matchTitle && matchType && matchLocation && matchDateFrom && matchDateTo;
+      });
+    }
   },
   methods: {
     async fetchActivities() {
@@ -63,8 +160,21 @@ export default {
         console.error('Error fetching activities:', error);
       }
     },
-    viewActivityDetails(id) {
-      this.$router.push({ name: 'ActivityDetails', params: { id } });
+    joinActivity(activityId) {
+      const userEmail = localStorage.getItem('email');
+      if (!userEmail) {
+        alert('Debes iniciar sesión para inscribirte.');
+        return;
+      }
+
+      axios.post(`/api/activities/join/${activityId}`, { email: userEmail })
+        .then(() => {
+          alert('Te has inscrito correctamente en la actividad.');
+        })
+        .catch(error => {
+          console.error('Error al inscribirse:', error);
+          alert('No se pudo completar la inscripción.');
+        });
     }
   },
   mounted() {
@@ -78,7 +188,7 @@ export default {
   display: flex;
   min-height: 100vh;
   background-color: #2c3e50;
-  background-image: url('@/assets/aviones.png');
+  background-image: url('@/assets/mapamundi.png');
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
@@ -156,4 +266,35 @@ export default {
 .join-button:hover {
   transform: scale(1.03);
 }
+
+.filters {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-bottom: 20px;
+  font-family: 'Poppins', sans-serif;
+}
+
+.filter-select {
+  padding: 10px;
+  font-size: 1rem;
+  border-radius: 10px;
+  border: 2px solid #1abc9c;
+  background-color: #34495e;
+  color: white;
+  font-family: 'Poppins', sans-serif;
+  box-sizing: border-box;
+}
+
+.filter-select option {
+  background-color: #2c3e50;
+}
+
+.filter-select[type="date"] {
+  background-color: #ecf0f1;
+  color: #34495e;
+  padding: 10px;
+}
+
 </style>

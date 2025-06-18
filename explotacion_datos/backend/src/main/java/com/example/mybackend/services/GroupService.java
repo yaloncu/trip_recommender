@@ -23,6 +23,7 @@ import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
 import com.example.mybackend.model.Group;
+import com.example.mybackend.model.SimpleUserDTO;
 import com.example.mybackend.model.User;
 import com.example.mybackend.repository.GroupRepository;
 import org.slf4j.Logger;
@@ -159,4 +160,6 @@ public interface GroupService {
      * @param groupName The name of the group to recommend a date for.
      */
     void recommendDateUsingSlidingWindow(String groupName);
+
+    List<SimpleUserDTO> getParticipantsByGroupId(Long groupId);
 }

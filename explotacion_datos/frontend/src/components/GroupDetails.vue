@@ -1,59 +1,92 @@
 <template>
   <div class="page-with-menu">
     <SideMenu />
-  <div class="groups-container">
-    <h1 class="main-title">{{ $t('group') }} {{ group.name }}</h1>
+    <div class="groups-container">
+      <h1 class="main-title">{{ $t('group') }} {{ group.name }}</h1>
 
-    <div class="groups-content">
-      <div class="group-details-card">
-        <p class="group-name group-audience">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users-icon lucide-users"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><path d="M16 3.128a4 4 0 0 1 0 7.744"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><circle cx="9" cy="7" r="4"/></svg>
-          {{ group.audience }}
-        </p>
-        <p class="group-name">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-compass-icon lucide-compass"><path d="m16.24 7.76-1.804 5.411a2 2 0 0 1-1.265 1.265L7.76 16.24l1.804-5.411a2 2 0 0 1 1.265-1.265z"/><circle cx="12" cy="12" r="10"/></svg>
-          {{ group.tripType }}
-        </p>
+      <div class="groups-content">
+        <div class="group-details-card">
+          <p class="group-name group-audience">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+              viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+              class="lucide lucide-users-icon">
+              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+              <path d="M16 3.128a4 4 0 0 1 0 7.744"/>
+              <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
+              <circle cx="9" cy="7" r="4"/>
+            </svg>
+            {{ $t(group.audience) }}
+          </p>
 
-        <div class="group-dates">
-          <span class="date-icon" title="Departure date">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plane-takeoff-icon lucide-plane-takeoff"><path d="M2 22h20"/><path d="M6.36 17.4 4 17l-2-4 1.1-.55a2 2 0 0 1 1.8 0l.17.1a2 2 0 0 0 1.8 0L8 12 5 6l.9-.45a2 2 0 0 1 2.09.2l4.02 3a2 2 0 0 0 2.1.2l4.19-2.06a2.41 2.41 0 0 1 1.73-.17L21 7a1.4 1.4 0 0 1 .87 1.99l-.38.76c-.23.46-.6.84-1.07 1.08L7.58 17.2a2 2 0 0 1-1.22.18Z"/></svg>
-                {{ group.departureDate ? new Date(group.departureDate).toLocaleDateString() : 'N/A' }}
-          </span>
-          <span class="date-icon" title="Return date">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plane-landing-icon lucide-plane-landing"><path d="M2 22h20"/><path d="M3.77 10.77 2 9l2-4.5 1.1.55c.55.28.9.84.9 1.45s.35 1.17.9 1.45L8 8.5l3-6 1.05.53a2 2 0 0 1 1.09 1.52l.72 5.4a2 2 0 0 0 1.09 1.52l4.4 2.2c.42.22.78.55 1.01.96l.6 1.03c.49.88-.06 1.98-1.06 2.1l-1.18.15c-.47.06-.95-.02-1.37-.24L4.29 11.15a2 2 0 0 1-.52-.38Z"/></svg>
-                {{ group.returnDate ? new Date(group.returnDate).toLocaleDateString() : 'N/A' }}
-          </span>
-        </div>
+          <p class="group-name">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+              viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+              class="lucide lucide-compass-icon">
+              <path d="m16.24 7.76-1.804 5.411a2 2 0 0 1-1.265 1.265L7.76 16.24l1.804-5.411a2 2 0 0 1 1.265-1.265z"/>
+              <circle cx="12" cy="12" r="10"/>
+            </svg>
+            {{ $t(group.tripType) }}
+          </p>
 
-        <div v-if="!isMember">
-          <div class="section-spacing">
-            <h3>{{ $t('selectType') }}</h3>
-            <div class="customCheckBoxHolder2">
-              <label 
-                v-for="(type, index) in vacationTypes" 
-                :key="index" 
-                class="radio-label"
-                :class="{ 'selected-radio': selectedType === type }"
-              >
-                <input 
-                  type="radio" 
-                  :value="type" 
-                  v-model="selectedType" 
-                />
-                {{ $t(type) }} 
-              </label>
-            </div>
+          <div class="group-dates">
+            <span class="date-icon" :title="$t('departureDate')">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                class="lucide lucide-plane-takeoff-icon">
+                <path d="M2 22h20"/>
+                <path d="M6.36 17.4 4 17l-2-4 1.1-.55a2 2 0 0 1 1.8 0l.17.1a2 2 0 0 0 1.8 0L8 12 5 6l.9-.45a2 2 0 0 1 2.09.2l4.02 3a2 2 0 0 0 2.1.2l4.19-2.06a2.41 2.41 0 0 1 1.73-.17L21 7a1.4 1.4 0 0 1 .87 1.99l-.38.76c-.23.46-.6.84-1.07 1.08L7.58 17.2a2 2 0 0 1-1.22.18Z"/>
+              </svg>
+              {{ group.departureDate ? new Date(group.departureDate).toLocaleDateString() : 'N/A' }}
+            </span>
+
+            <span class="date-icon" :title="$t('returnDate')">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                class="lucide lucide-plane-landing-icon">
+                <path d="M2 22h20"/>
+                <path d="M3.77 10.77 2 9l2-4.5 1.1.55c.55.28.9.84.9 1.45s.35 1.17.9 1.45L8 8.5l3-6 1.05.53a2 2 0 0 1 1.09 1.52l.72 5.4a2 2 0 0 0 1.09 1.52l4.4 2.2c.42.22.78.55 1.01.96l.6 1.03c.49.88-.06 1.98-1.06 2.1l-1.18.15c-.47.06-.95-.02-1.37-.24L4.29 11.15a2 2 0 0 1-.52-.38Z"/>
+              </svg>
+              {{ group.returnDate ? new Date(group.returnDate).toLocaleDateString() : 'N/A' }}
+            </span>
           </div>
-          
-          <button class="join-button" @click="joinGroup">{{ $t('joinGroup') }}</button>
-        </div>
-        <div v-else>
-          <p class="already-member-message">{{ $t('alreadyMember') }}</p>
+
+          <div v-if="!isMember">
+            <div class="section-spacing">
+              <h3>{{ $t('selectType') }}</h3>
+              <div class="customCheckBoxHolder2">
+                <label 
+                  v-for="(type, index) in vacationTypes" 
+                  :key="index" 
+                  class="radio-label"
+                  :class="{ 'selected-radio': selectedType === type }"
+                >
+                  <input 
+                    type="radio" 
+                    :value="type" 
+                    v-model="selectedType" 
+                  />
+                  {{ $t(type) }}
+                </label>
+              </div>
+            </div>
+
+            <button class="join-button" @click="joinGroup">
+              {{ $t('joinGroup') }}
+            </button>
+          </div>
+
+          <div v-else>
+            <p class="already-member-message">
+              {{ $t('alreadyMember') }}
+            </p>
+          </div>
         </div>
       </div>
     </div>
-  </div>
   </div>
 </template>
 

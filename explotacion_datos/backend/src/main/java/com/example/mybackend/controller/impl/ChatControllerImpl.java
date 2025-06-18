@@ -36,8 +36,22 @@ public class ChatControllerImpl implements ChatController {
         messagingTemplate.convertAndSend("/topic/group/" + groupId , saved);
     }
 
+    @MessageMapping("/chat.sendActivityMessage/{activityId}")
+    public void sendMessageToActivity(@DestinationVariable Long activityId, @Payload Message incomingMessage) {
+        Message saved = messageService.saveForActivity(activityId, incomingMessage.getSender(), incomingMessage.getContent());
+        messagingTemplate.convertAndSend("/topic/activity/" + activityId, saved);
+    }
+
+
     @GetMapping("/{groupId}")
     public List<Message> getMessagesByGroup(@PathVariable Long groupId ) {
         return messageService.getMessagesByGroup(groupId);
     }
+
+    @GetMapping("/activity/{activityId}")
+    public List<Message> getMessagesByActivity(@PathVariable Long activityId) {
+        return messageService.getMessagesByActivityGroup(activityId);
+    }
+
+
 }

@@ -18,6 +18,7 @@ import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
 import com.example.mybackend.model.Group;
+import com.example.mybackend.model.SimpleUserDTO;
 import com.example.mybackend.model.User;
 import com.example.mybackend.repository.GroupRepository;
 import com.example.mybackend.repository.RecommendationRepository;
@@ -86,6 +87,8 @@ public class GroupServiceImpl implements GroupService {
      * @param groupName The name of the group to close the voting for.
      */
     public Group closeVoting(String groupName) {
+        String destination = recommendationRepository.getFinalDestination(groupName);
+        groupRepository.setFinalDestination(groupName, destination);
         return groupRepository.closeVoting(groupName);
     }
 
@@ -286,7 +289,11 @@ public class GroupServiceImpl implements GroupService {
         logger.info("Calculated bestStartDate: {}", bestStartDate);
         logger.info("Calculated bestEndDate: {}", bestEndDate);
 
-        // Guardar las fechas en el nodo del grupo
         groupRepository.updateGroupDates(groupName, bestStartDate, bestEndDate);    
     } 
+
+    @Override
+    public List<SimpleUserDTO> getParticipantsByGroupId(Long groupId) {
+        return groupRepository.findParticipantsByGroupId(groupId);
+    }
 }

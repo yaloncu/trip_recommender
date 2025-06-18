@@ -33,6 +33,10 @@ public class ActivityGroup {
     private String description;
     private String location;
     private String type; 
+    private String adminEmail;
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
     private ZonedDateTime startDateTime;
+    @Relationship(type = "INSCRITO")
+    private List<User> inscritos = new ArrayList<>();
+
 }

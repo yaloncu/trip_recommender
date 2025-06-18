@@ -22,6 +22,7 @@ public class Message {
   @GeneratedValue
   private Long id;
   private Long groupId;
+  private Long activityGroupId; 
   private String groupName;
   private String sender;
   private String content;

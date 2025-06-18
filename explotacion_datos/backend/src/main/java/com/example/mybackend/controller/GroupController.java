@@ -2,6 +2,7 @@ package com.example.mybackend.controller;
 
 import com.example.mybackend.model.Group;
 import com.example.mybackend.model.JoinGroupWithPreferencesRequest;
+import com.example.mybackend.model.SimpleUserDTO;
 import com.example.mybackend.model.User;
 import com.example.mybackend.services.GroupService;
 import com.example.mybackend.services.Neo4jUserService;
@@ -39,7 +40,7 @@ public interface GroupController {
     @PostMapping("/closePrivate/{name}")
     Group closeGroupPrivate(@PathVariable String name);
 
-    @PutMapping("/closeVoting/{name}")
+    @PostMapping("/closeVoting/{name}")
     Group closeVoting(@PathVariable String groupName);
 
     @PostMapping("/joinWithPreferences")
@@ -71,4 +72,7 @@ public interface GroupController {
 
     @GetMapping("/audience/{audience}")
     List<Group> getGroupsByAudience(@PathVariable String audience);
+
+    @GetMapping("/participants/{groupId}")
+    public ResponseEntity<List<SimpleUserDTO>> getParticipants(@PathVariable Long groupId);
 }

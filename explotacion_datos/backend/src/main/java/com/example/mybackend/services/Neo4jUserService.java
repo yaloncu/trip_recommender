@@ -85,4 +85,7 @@ public interface Neo4jUserService {
      * @return a list of groups that the user belongs to
      */
     List<Group> getUserGroups(String email);
+
+    User saveUser(User user);
+
 }

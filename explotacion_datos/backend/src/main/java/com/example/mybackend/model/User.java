@@ -31,6 +31,9 @@ public class User {
     private String name;
     private String email;
     private String password;
+    private String aboutMe;
+    private String gender;
+    private Integer age;
 
     @Relationship(type = "PERTENECE_A", direction = Relationship.Direction.OUTGOING)
     private List<Group> groups = new ArrayList<>();
@@ -130,6 +133,30 @@ public class User {
      */
     public void setGroups(List<Group> groups) {
         this.groups = groups;
+    }
+
+    public String getAboutMe() {
+        return aboutMe;
+    }
+
+    public void setAboutMe(String aboutMe) {
+        this.aboutMe = aboutMe;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public Integer getAge() {
+        return age;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
     }
     
     /**

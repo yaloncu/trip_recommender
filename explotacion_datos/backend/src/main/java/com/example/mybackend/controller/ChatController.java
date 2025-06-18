@@ -16,7 +16,10 @@ import com.example.mybackend.model.Message;
 public interface ChatController {
 
     void sendMessage(@DestinationVariable Long groupId , @Payload Message incomingMessage);
-
+    @MessageMapping("/chat.sendActivityMessage/{activityId}")
+    void sendMessageToActivity(@DestinationVariable Long activityId, @Payload Message incomingMessage);
     @GetMapping("/{groupId}")
     List<Message> getMessagesByGroup(@PathVariable Long groupId );
+    @GetMapping("/activity/{activityId}")
+    List<Message> getMessagesByActivity(@PathVariable Long activityId);
 }
