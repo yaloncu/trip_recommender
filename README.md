@@ -30,7 +30,6 @@ La aplicación se implementó utilizando una arquitectura basada en microservici
 3. **Base de Datos:** Contenedor con Neo4j para la gestión de datos.
 4. **Frontend:** Desarrollado con Vue.js y servido mediante Nginx.
 5. **Backend:** Implementado con Java y Spring Boot para manejar la lógica del negocio.
-6. **Chatbot:** Basado en Rasa para asistir a los usuarios en la organización de viajes.
 
 ## Instrucciones de Instalación y Despliegue
 
@@ -65,9 +64,6 @@ La aplicación se implementó utilizando una arquitectura basada en microservici
 4. **Revisión del Administrador:**
    - El administrador cierra el grupo y los usuarios votan por el destino final.
 
-## Futuros Desarrollos
-- Integración de filtros de búsqueda avanzada para grupos.
-- Extensión de funcionalidades del chatbot.
-- Mejora en los algoritmos de recomendación de destinos.
+
 
 
