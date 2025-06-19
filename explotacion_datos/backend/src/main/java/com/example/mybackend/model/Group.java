@@ -5,17 +5,28 @@ import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.GeneratedValue;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
-import groovyjarjarantlr4.v4.parse.v4ParserException;
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+
 /**
  * Group represents a group entity in the application.
  * It contains information about the group such as its name, members, and other relevant details.
  */
+
 @Node
+@Builder
+@Data 
+@NoArgsConstructor
+@AllArgsConstructor
 public class Group {
 
     @Id
@@ -25,12 +36,17 @@ public class Group {
     private String privated;
     private String audience;
     private String email;
+    private String finalDestination;
     private boolean isClosed;
     private boolean isClosedVoting;
-    private String type;
+    private String tripType;
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate departureDate;
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate returnDate;
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private List<LocalDate> availabilityStartDates;
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private List<LocalDate> availabilityEndDates;
 
     @Relationship(type = "PERTENECE_A", direction = Relationship.Direction.INCOMING)
@@ -38,8 +54,6 @@ public class Group {
 
     public Group(String name) {
         this.name = name;
-    }
-    public Group() {
     }
 
     // Getters y Setters
@@ -192,8 +206,8 @@ public class Group {
      * 
      * @return the type of the group
      */
-    public String getType() {
-        return type; 
+    public String getTripType() {
+        return tripType; 
     }
 
     /**
@@ -201,8 +215,8 @@ public class Group {
      * 
      * @param type the type to set
      */
-    public void setType(String type) {
-        this.type = type; 
+    public void setTripType(String tripType) {
+        this.tripType = tripType; 
     }
 
     /**
@@ -246,7 +260,7 @@ public class Group {
      * 
      * @return the availability start dates of the group
      */
-    public List<LocalDate> getAvailabilityStartDate() {
+    public List<LocalDate> getAvailabilityStartDates() {
         return availabilityStartDates;
     }
 
@@ -255,7 +269,7 @@ public class Group {
      * 
      * @param startDate the availability start dates to set
      */
-    public void setAvailabilityStartDate(List<LocalDate> startDate) {
+    public void setAvailabilityStartDates(List<LocalDate> startDate) {
         this.availabilityStartDates = startDate;
     }
 
@@ -264,7 +278,7 @@ public class Group {
      * 
      * @return the availability end dates of the group
      */
-    public List<LocalDate> getAvailabilityEndDate() {
+    public List<LocalDate> getAvailabilityEndDates() {
         return availabilityEndDates;
     }
 
@@ -273,7 +287,7 @@ public class Group {
      * 
      * @param endDate the availability end dates to set
      */
-    public void setAvailabilityEndDate(List<LocalDate> endDate) {
+    public void setAvailabilityEndDates(List<LocalDate> endDate) {
         this.availabilityEndDates = endDate;
     }
     

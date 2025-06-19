@@ -5,6 +5,11 @@ import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.GeneratedValue;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +18,10 @@ import java.util.List;
  * It contains information about the user such as its name, email, and other relevant details.
  */
 @Node
+@Builder
+@Data 
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
 
     @Id
@@ -22,12 +31,12 @@ public class User {
     private String name;
     private String email;
     private String password;
+    private String aboutMe;
+    private String gender;
+    private Integer age;
 
     @Relationship(type = "PERTENECE_A", direction = Relationship.Direction.OUTGOING)
     private List<Group> groups = new ArrayList<>();
-
-    public User() {
-    }
 
     public User(String name, String email, String password) {
         this.name = name;
@@ -124,6 +133,30 @@ public class User {
      */
     public void setGroups(List<Group> groups) {
         this.groups = groups;
+    }
+
+    public String getAboutMe() {
+        return aboutMe;
+    }
+
+    public void setAboutMe(String aboutMe) {
+        this.aboutMe = aboutMe;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public Integer getAge() {
+        return age;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
     }
     
     /**

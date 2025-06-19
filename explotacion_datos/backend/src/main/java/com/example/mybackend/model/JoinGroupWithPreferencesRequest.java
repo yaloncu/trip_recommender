@@ -3,9 +3,18 @@ package com.example.mybackend.model;
 import java.time.LocalDate;
 import java.util.List;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 /**
  * JoinGroupWithPreferencesRequest represents a request to join a group with preferences.
  */
+@Builder
+@Data 
+@NoArgsConstructor
+@AllArgsConstructor
 public class JoinGroupWithPreferencesRequest {
     private String groupName;
     private String email;

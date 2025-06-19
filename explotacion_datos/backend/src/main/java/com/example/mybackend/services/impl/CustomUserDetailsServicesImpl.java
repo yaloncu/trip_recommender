@@ -1,4 +1,4 @@
-package com.example.mybackend.services;
+package com.example.mybackend.services.impl;
 
 import java.util.ArrayList;
 
@@ -15,8 +15,7 @@ import com.example.mybackend.repository.UserRepository;
  * CustomUserDetailsService is a service that provides custom user details.
  */
 @Service
-public class CustomUserDetailsService implements UserDetailsService {
-
+public class CustomUserDetailsServicesImpl implements UserDetailsService{
     @Autowired
     private UserRepository userRepository; 
 
