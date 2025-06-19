@@ -18,6 +18,7 @@ import Profile from '@/components/Profile.vue';
 import ActivityChat from '@/components/ActivityChat.vue';
 import ActivityParticipants from '@/components/ActivityParticipants.vue';
 import GroupParticipants from '@/components/GroupParticipants.vue';
+import Contact from '@/components/Contact.vue';
 import { auth } from '@/firebaseConfig'; 
 
 const routes = [
@@ -109,8 +110,12 @@ const routes = [
   path: '/group-participants/:id',
   name: 'GroupParticipants',
   component: GroupParticipants
+  },
+  {
+    path: '/contact',
+    name: 'Contact',
+    component: Contact
   }
-
 ];
 
 const router = createRouter({

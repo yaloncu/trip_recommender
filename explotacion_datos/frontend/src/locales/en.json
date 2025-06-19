@@ -113,7 +113,8 @@
     "activities": "Activities",
     "myActivities": "My Activities",
     "createActivity": "Create Activity",
-    "profile": "Profile"
+    "profile": "Profile",
+    "contact": "Contact"
   },
   "yourActivities": "Your Activities",
   "leaveActivity": "Leave Activity",
@@ -122,5 +123,14 @@
   "No return date available": "No return date available",
   "voteForTrip": "Vote for Trip Type",
   "selectPreferredTypes": "Select your preferred types",
-  "submitVotes": "Submit Votes"
+  "submitVotes": "Submit Votes",
+  "contact": {
+    "title": "Contact",
+    "description": "If you have any questions or want to exercise your privacy rights, you can write to us at:"
+  },
+  "cookies": {
+    "message": "We use cookies to improve your experience. You can accept all or customize your preferences.",
+    "accept": "Accept",
+    "reject": "Reject"
+  }
 }

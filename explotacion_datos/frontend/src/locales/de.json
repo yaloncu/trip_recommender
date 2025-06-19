@@ -111,7 +111,8 @@
     "activities": "Aktivitäten",
     "myActivities": "Meine Aktivitäten",
     "createActivity": "Aktivität erstellen",
-    "profile": "Profil"
+    "profile": "Profil",
+    "contact": "Kontakt"
   },
   "yourActivities": "Deine Aktivitäten",
   "leaveActivity": "Aktivität verlassen",
@@ -122,5 +123,14 @@
   "selectPreferredTypes": "Wähle deine bevorzugten Typen",
   "submitVotes": "Abstimmung abschicken",
   "yourProfile": "Dein Profil",
-  "yourGroups": "Deine Gruppen"
+  "yourGroups": "Deine Gruppen",
+  "contact": {
+    "title": "Kontakt",
+    "description": "Wenn Sie Fragen haben oder Ihre Datenschutzrechte ausüben möchten, können Sie uns schreiben an:"
+  },
+  "cookies": {
+    "message": "Wir verwenden Cookies, um Ihre Erfahrung zu verbessern. Sie können alle akzeptieren oder Ihre Einstellungen anpassen.",
+    "accept": "Akzeptieren",
+    "reject": "Ablehnen"
+  }
 }

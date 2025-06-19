@@ -254,7 +254,7 @@ export default {
   flex-direction: column;
   align-items: center;
   background-color: #2c3e50;
-  background-image: url('@/assets/aviones.png');
+  background-image: url('@/assets/mapamundi.png');
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;

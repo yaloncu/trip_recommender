@@ -108,7 +108,8 @@
     "activities": "Actividades",
     "myActivities": "Mis actividades",
     "createActivity": "Crear actividad",
-    "profile": "Perfil"
+    "profile": "Perfil",
+    "contact": "Contacto"
   },
   "yourActivities": "Tus actividades",
   "leaveActivity": "Salir de la actividad",
@@ -118,5 +119,14 @@
   "voteForTrip": "Votar por tipo de viaje",
   "selectPreferredTypes": "Selecciona los tipos que prefieres",
   "submitVotes": "Enviar votos",
-  "unknownTripType": "Tipo desconocido"
+  "unknownTripType": "Tipo desconocido",
+  "contact": {
+    "title": "Contacto",
+    "description": "Si tienes alguna duda o deseas ejercer tus derechos de privacidad, puedes escribirnos a:"
+  },
+  "cookies": {
+    "message": "Usamos cookies para mejorar tu experiencia. Puedes aceptar todas o configurar tus preferencias.",
+    "accept": "Aceptar",
+    "reject": "Rechazar"
+  }
 }

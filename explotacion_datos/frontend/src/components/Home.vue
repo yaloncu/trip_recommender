@@ -20,11 +20,21 @@
       </div>
     </div>
   </div>
+
+  <div id="app">
+    <router-view />
+    <CookieBanner />
+  </div>
 </template>
 
 <script>
+import CookieBanner from './CookieBanner.vue';
+
 export default {
   name: "Home",
+  components: {
+    CookieBanner
+  },
   data() {
     return {
       selectedLocale: this.$i18n.locale

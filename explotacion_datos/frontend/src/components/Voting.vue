@@ -76,7 +76,7 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-image: url('@/assets/aviones.png');
+  background-image: url('@/assets/mapamundi.png');
   background-size: cover;
   background-position: center;
   background-attachment: fixed;

@@ -107,7 +107,8 @@
     "activities": "Activités",
     "myActivities": "Mes activités",
     "createActivity": "Créer une activité",
-    "profile": "Profil"
+    "profile": "Profil",
+    "contact": "Contact"
   },
   "yourActivities": "Vos activités",
   "leaveActivity": "Quitter l'activité",
@@ -116,5 +117,14 @@
   "No return date available": "Aucune date de retour disponible",
   "voteForTrip": "Voter pour un type de voyage",
   "selectPreferredTypes": "Sélectionnez vos types préférés",
-  "submitVotes": "Soumettre les votes"
+  "submitVotes": "Soumettre les votes",
+  "contact": {
+    "title": "Contact",
+    "description": "Si vous avez des questions ou souhaitez exercer vos droits en matière de confidentialité, vous pouvez nous écrire à :"
+  },
+  "cookies": {
+    "message": "Nous utilisons des cookies pour améliorer votre expérience. Vous pouvez tout accepter ou personnaliser vos préférences.",
+    "accept": "Accepter",
+    "reject": "Refuser"
+  }
 }
