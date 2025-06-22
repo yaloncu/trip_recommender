@@ -128,5 +128,9 @@
     "message": "Usamos cookies para mejorar tu experiencia. Puedes aceptar todas o configurar tus preferencias.",
     "accept": "Aceptar",
     "reject": "Rechazar"
-  }
+  },
+  "hasFinalDestination": "¿Destino concreto?",
+  "enterFinalDestination": "Introduce el destino final",
+  "yes": "Sí",
+  "no": "No"
 }

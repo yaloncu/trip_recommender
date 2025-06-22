@@ -126,5 +126,9 @@
     "message": "Nous utilisons des cookies pour améliorer votre expérience. Vous pouvez tout accepter ou personnaliser vos préférences.",
     "accept": "Accepter",
     "reject": "Refuser"
-  }
+  },
+  "hasFinalDestination": "Destination spécifique ?",
+  "enterFinalDestination": "Entrez la destination finale",
+  "yes": "Oui",
+  "no": "Non"
 }

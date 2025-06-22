@@ -46,7 +46,7 @@ public class GroupControllerImpl implements GroupController {
     @PostMapping("/create")
     public Group createGroup(@RequestBody Group group) {
         try {
-             return groupService.createGroup(group.getName(), group.getEmail(), group.getAudience(), group.getPrivated(), group.isClosed(), group.getTripType(), group.getDepartureDate(), group.getReturnDate(), group.getAvailabilityStartDates(), group.getAvailabilityEndDates(), "");
+             return groupService.createGroup(group.getName(), group.getEmail(), group.getAudience(), group.getPrivated(), group.isClosed(), group.getTripType(), group.getDepartureDate(), group.getReturnDate(), group.getAvailabilityStartDates(), group.getAvailabilityEndDates(), "", group.getFinalDestination());
         } catch (Exception e) {
             e.printStackTrace();
             return null;

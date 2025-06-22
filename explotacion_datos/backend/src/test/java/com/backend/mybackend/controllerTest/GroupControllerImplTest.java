@@ -47,6 +47,7 @@ class GroupControllerImplTest {
         group.setReturnDate(LocalDate.of(2025, 7, 10));
         group.setAvailabilityStartDates(List.of(LocalDate.of(2025, 6, 25)));
         group.setAvailabilityEndDates(List.of(LocalDate.of(2025, 6, 30)));
+        group.setFinalDestination("Roma"); // <-- AÑADIDO: debe existir si el servicio lo usa
 
         when(groupService.createGroup(
             eq("TestGroup"),
@@ -59,13 +60,15 @@ class GroupControllerImplTest {
             eq(LocalDate.of(2025, 7, 10)),
             eq(List.of(LocalDate.of(2025, 6, 25))),
             eq(List.of(LocalDate.of(2025, 6, 30))),
-            eq("")
+            eq(""),
+            eq("Roma")
         )).thenReturn(group);
 
         Group result = controller.createGroup(group);
 
         assertNotNull(result);
         assertEquals("TestGroup", result.getName());
+        assertEquals("Roma", result.getFinalDestination()); // <-- validación opcional
     }
 
     @Test
@@ -266,7 +269,11 @@ class GroupControllerImplTest {
         Group group = new Group();
         group.setName("TestError");
 
-        when(groupService.createGroup(any(), any(), any(), any(), anyBoolean(), any(), any(), any(), anyList(), anyList(), any()))
+        when(groupService.createGroup(
+            any(), any(), any(), any(), anyBoolean(),
+            any(), any(), any(), anyList(), anyList(),
+            any(), any()
+        ))
             .thenThrow(new RuntimeException("DB error"));
 
         Group result = controller.createGroup(group);
@@ -351,7 +358,7 @@ class GroupControllerImplTest {
 
     @Test
     void testCreateGroup_exception() {
-        when(groupService.createGroup(any(), any(), any(), any(), anyBoolean(), any(), any(), any(), any(), any(), anyString()))
+        when(groupService.createGroup(any(), any(), any(), any(), anyBoolean(), any(), any(), any(), any(), any(), anyString(), any()))
             .thenThrow(new RuntimeException("DB error"));
         Group group = new Group();
         Group result = controller.createGroup(group);

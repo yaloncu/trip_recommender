@@ -55,29 +55,29 @@ class GroupServiceImplTest {
 
     @Test
     void testCreatePrivateGroup() {
-        when(groupRepository.createPrivateGroup(any(), any(), any(), any(), anyBoolean(), any(), any(), any(), any(), any()))
+        when(groupRepository.createPrivateGroup(any(), any(), any(), any(), anyBoolean(), any(), any(), any(), any(), any(), any(), any()))
             .thenReturn(mockGroup);
 
         Group result = groupService.createGroup("Test Group", "test@example.com", "Adults", "private", false,
                 "Adventure", LocalDate.now(), LocalDate.now().plusDays(5),
-                List.of(LocalDate.now()), List.of(LocalDate.now().plusDays(5)), "Nature");
+                List.of(LocalDate.now()), List.of(LocalDate.now().plusDays(5)), "Nature", "");
 
         assertNotNull(result);
         assertEquals("Test Group", result.getName());
-        verify(groupRepository).createPrivateGroup(any(), any(), any(), any(), anyBoolean(), any(), any(), any(), any(), any());
+        verify(groupRepository).createPrivateGroup(any(), any(), any(), any(), anyBoolean(), any(), any(), any(), any(), any(), any(), any());
     }
 
     @Test
     void testCreatePublicGroup() {
-        when(groupRepository.createPublicGroup(any(), any(), any(), any(), anyBoolean(), any(), any(), any(), any(), any(), any()))
+        when(groupRepository.createPublicGroup(any(), any(), any(), any(), anyBoolean(), any(), any(), any(), any(), any(), any(), any()))
             .thenReturn(mockGroup);
         Group result = groupService.createGroup("Test Group", "test@example.com", "Adults", "public", false,
                 "Adventure", LocalDate.now(), LocalDate.now().plusDays(5),
-                List.of(LocalDate.now()), List.of(LocalDate.now().plusDays(5)), "Culture");
+                List.of(LocalDate.now()), List.of(LocalDate.now().plusDays(5)), "Culture", "");
 
         assertNotNull(result);
         assertEquals("Test Group", result.getName());
-        verify(groupRepository).createPublicGroup(any(), any(), any(), any(), anyBoolean(), any(), any(), any(), any(), any(), any());
+        verify(groupRepository).createPublicGroup(any(), any(), any(), any(), anyBoolean(), any(), any(), any(), any(), any(), any(), any());
     }
 
     @Test
@@ -266,15 +266,15 @@ class GroupServiceImplTest {
 
     @Test
     void testCreateGroupWithUnknownPrivacyType_defaultsToPublic() {
-        when(groupRepository.createPublicGroup(any(), any(), any(), any(), anyBoolean(), any(), any(), any(), any(), any(), any()))
+        when(groupRepository.createPublicGroup(any(), any(), any(), any(), anyBoolean(), any(), any(), any(), any(), any(), any(), any()))
             .thenReturn(mockGroup);
 
         Group result = groupService.createGroup("Test Group", "test@example.com", "Adults", "unknown", false,
                 "Adventure", LocalDate.now(), LocalDate.now().plusDays(5),
-                List.of(LocalDate.now()), List.of(LocalDate.now().plusDays(5)), "Nature");
+                List.of(LocalDate.now()), List.of(LocalDate.now().plusDays(5)), "Nature", "");
 
         assertNotNull(result);
-        verify(groupRepository).createPublicGroup(any(), any(), any(), any(), anyBoolean(), any(), any(), any(), any(), any(), any());
+        verify(groupRepository).createPublicGroup(any(), any(), any(), any(), anyBoolean(), any(), any(), any(), any(), any(), any(), any());
     }
 
 @Test
