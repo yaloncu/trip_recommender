@@ -132,5 +132,9 @@
     "message": "We use cookies to improve your experience. You can accept all or customize your preferences.",
     "accept": "Accept",
     "reject": "Reject"
-  }
+  },
+  "hasFinalDestination": "Specific destination?",
+  "enterFinalDestination": "Enter the final destination",
+  "yes": "Yes",
+  "no": "No"
 }

@@ -51,7 +51,7 @@ public interface GroupService {
     Group createGroup(String groupName, String email, String audience, String privated, boolean isClosed,
                     String tripType, LocalDate departureDate, LocalDate returnDate,
                     List<LocalDate> availabilityStartDates, List<LocalDate> availabilityEndDates,
-                    String preference);   
+                    String preference, String finalDestination);   
     /**
      * Closes a group in the Neo4j database.
      *

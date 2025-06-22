@@ -21,15 +21,18 @@ public interface GroupRepository extends Neo4jRepository<Group, Long> {
             "WITH g " +
             "MATCH (u:User {email: $email}), (g:Group {name: $name}) " +
             "CREATE (u)-[r:PERTENECE_A]->(g) " +
+            "SET r.preference = $preference " +
+            "SET r.finalDestination = $finalDestination " +
             "SET r.preference = $preference, r.availabilityStartDates = $availabilityStartDates, r.availabilityEndDates = $availabilityEndDates " +
             "RETURN g")
-    Group createPrivateGroup(@Param("name") String groupName, @Param("email") String email, @Param("audience") String audience, @Param("privated") String privated, @Param("isClosed") boolean isClosed, @Param("tripType") String tripType, @Param("departureDate") LocalDate departureDate, @Param("returnDate") LocalDate returnDate, @Param("availabilityStartDates") List<LocalDate> availabilityStartDates, @Param("availabilityEndDates") List<LocalDate> availabilityEndDates);
+    Group createPrivateGroup(@Param("name") String groupName, @Param("email") String email, @Param("audience") String audience, @Param("privated") String privated, @Param("isClosed") boolean isClosed, @Param("tripType") String tripType, @Param("departureDate") LocalDate departureDate, @Param("returnDate") LocalDate returnDate, @Param("availabilityStartDates") List<LocalDate> availabilityStartDates, @Param("availabilityEndDates") List<LocalDate> availabilityEndDates, @Param("preference") String preference, @Param("finalDestination") String finalDestination);
 
         @Query("CREATE (g:Group {name: $name, email: $email, audience: $audience, privated: $privated, isClosed: false, isClosedVoting: false, tripType: $tripType, departureDate: $departureDate, returnDate: $returnDate}) " +
         "WITH g " +
         "MATCH (u:User {email: $email}) " +
         "CREATE (u)-[r:PERTENECE_A]->(g) " +
         "SET r.preference = $preference " +
+        "SET r.finalDestination = $finalDestination " +
         "RETURN g")
         Group createPublicGroup(@Param("name") String groupName,
                         @Param("email") String email,
@@ -41,7 +44,8 @@ public interface GroupRepository extends Neo4jRepository<Group, Long> {
                         @Param("returnDate") LocalDate returnDate,
                         @Param("availabilityStartDates") List<LocalDate> availabilityStartDates,
                         @Param("availabilityEndDates") List<LocalDate> availabilityEndDates,
-                        @Param("preference") String preference);
+                        @Param("preference") String preference,
+                        @Param("finalDestination") String finalDestination);
 
     @Query("MATCH (g:Group {name: $name}) SET g.isClosed = true " +
         "RETURN g")

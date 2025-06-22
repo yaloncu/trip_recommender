@@ -132,5 +132,9 @@
     "message": "Wir verwenden Cookies, um Ihre Erfahrung zu verbessern. Sie können alle akzeptieren oder Ihre Einstellungen anpassen.",
     "accept": "Akzeptieren",
     "reject": "Ablehnen"
-  }
+  },
+  "hasFinalDestination": "Konkretes Reiseziel?",
+  "enterFinalDestination": "Geben Sie das endgültige Reiseziel ein",
+  "yes": "Ja",
+  "no": "Nein"
 }

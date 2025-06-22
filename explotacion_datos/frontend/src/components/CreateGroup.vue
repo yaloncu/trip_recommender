@@ -87,6 +87,23 @@
           </div>
         </div>
 
+        <h3 class="title">{{ $t('hasFinalDestination') }}</h3>
+        <div class="destination-toggle">
+          <span class="toggle-label">No</span>
+          <label class="switch">
+            <input type="checkbox" v-model="hasFinalDestination" />
+            <span class="slider"></span>
+          </label>
+          <span class="toggle-label">Sí</span>
+        </div>
+        <div v-if="hasFinalDestination" class="final-destination-input">
+          <input
+            type="text"
+            v-model="finalDestination"
+            :placeholder="$t('enterFinalDestination')"
+            class="input"
+          />
+        </div>
         <button @click="createGroup" class="create-group-button">
           {{ $t('createTheGroup') }}
         </button>
@@ -109,7 +126,9 @@ export default {
       departureDate: '',
       returnDate: '',
       dateRanges: [{ start: '', end: '' }],
-      vacationTypes: ['Cultural', 'Playa', 'Romántica', 'Relax', 'Aventura', 'Gastronómica', 'Bienestar', 'Montaña']
+      vacationTypes: ['Cultural', 'Playa', 'Romántica', 'Relax', 'Aventura', 'Gastronómica', 'Bienestar', 'Montaña'],
+      hasFinalDestination: false,
+      finalDestination: ''
     };
   },
   components: {
@@ -172,7 +191,8 @@ export default {
           departureDate: this.privated === 'public' ? this.departureDate : null,
           returnDate: this.privated === 'public' ? this.returnDate : null,
           availabilityStartDates: this.privated === 'private' ? this.dateRanges.map(d => d.start) : [],
-          availabilityEndDates: this.privated === 'private' ? this.dateRanges.map(d => d.end) : []
+          availabilityEndDates: this.privated === 'private' ? this.dateRanges.map(d => d.end) : [],
+          finalDestination: this.hasFinalDestination ? this.finalDestination : ""
         };
         console.log("Datos enviados al backend:", requestData);
 
@@ -426,4 +446,133 @@ export default {
   border-radius: 12px;
 }
 
+.final-destination-input {
+  margin-top: 16px;
+}
+
+.label {
+  height: 60px;
+  width: 120px;
+  background-color: #ffffff;
+  border-radius: 30px;
+  -webkit-box-shadow: inset 0 0 5px 4px rgba(255, 255, 255, 1),
+    inset 0 0 20px 1px rgba(0, 0, 0, 0.488), 10px 20px 30px rgba(0, 0, 0, 0.096),
+    inset 0 0 0 3px rgba(0, 0, 0, 0.3);
+  box-shadow: inset 0 0 5px 4px rgba(255, 255, 255, 1),
+    inset 0 0 20px 1px rgba(0, 0, 0, 0.488), 10px 20px 30px rgba(0, 0, 0, 0.096),
+    inset 0 0 0 3px rgba(0, 0, 0, 0.3);
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  cursor: pointer;
+  position: relative;
+  -webkit-transition: -webkit-transform 0.4s;
+  transition: -webkit-transform 0.4s;
+  transition: transform 0.4s;
+}
+
+.label:hover {
+  -webkit-transform: perspective(100px) rotateX(5deg) rotateY(-5deg);
+  transform: perspective(100px) rotateX(5deg) rotateY(-5deg);
+}
+
+#checkbox:checked ~ .label:hover {
+  -webkit-transform: perspective(100px) rotateX(-5deg) rotateY(5deg);
+  transform: perspective(100px) rotateX(-5deg) rotateY(5deg);
+}
+
+#checkbox {
+  display: none;
+}
+
+#checkbox:checked ~ .label::before {
+  left: 70px;
+  background-color: #000000;
+  background-image: linear-gradient(315deg, #000000 0%, #414141 70%);
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
+
+.label::before {
+  position: absolute;
+  content: "";
+  height: 40px;
+  width: 40px;
+  border-radius: 50%;
+  background-color: #000000;
+  background-image: linear-gradient(
+    130deg,
+    #757272 10%,
+    #ffffff 11%,
+    #726f6f 62%
+  );
+  left: 10px;
+  -webkit-box-shadow: 0 2px 1px rgba(0, 0, 0, 0.3),
+    10px 10px 10px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 2px 1px rgba(0, 0, 0, 0.3), 10px 10px 10px rgba(0, 0, 0, 0.3);
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
+
+.destination-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.toggle-label {
+  font-weight: bold;
+  color: white;
+  font-size: 0.9rem;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 26px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  background-color: #ccc;
+  border-radius: 34px;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  transition: 0.4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 20px;
+  width: 20px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  border-radius: 50%;
+  transition: 0.4s;
+}
+
+input:checked + .slider {
+  background-color: #1abc9c;
+}
+
+input:checked + .slider:before {
+  transform: translateX(24px);
+}
 </style>

@@ -59,13 +59,13 @@ public class GroupServiceImpl implements GroupService {
     public Group createGroup(String groupName, String email, String audience, String privated, boolean isClosed,
                         String tripType, LocalDate departureDate, LocalDate returnDate,
                         List<LocalDate> availabilityStartDates, List<LocalDate> availabilityEndDates,
-                        String preference) {
+                        String preference, String finalDestination) {
     if ("private".equals(privated)) {
         return groupRepository.createPrivateGroup(groupName, email, audience, privated, isClosed, tripType,
-            departureDate, returnDate, availabilityStartDates, availabilityEndDates);
+            departureDate, returnDate, availabilityStartDates, availabilityEndDates, preference, finalDestination);
     } else {
         return groupRepository.createPublicGroup(groupName, email, audience, privated, isClosed, tripType,
-            departureDate, returnDate, availabilityStartDates, availabilityEndDates, preference);
+            departureDate, returnDate, availabilityStartDates, availabilityEndDates, preference, finalDestination);
     }
 }
 
