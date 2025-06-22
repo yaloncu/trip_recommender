@@ -32,7 +32,7 @@ public interface GroupRepository extends Neo4jRepository<Group, Long> {
         "MATCH (u:User {email: $email}) " +
         "CREATE (u)-[r:PERTENECE_A]->(g) " +
         "SET r.preference = $preference " +
-        "SET r.finalDestination = $finalDestination " +
+        "SET g.finalDestination = $finalDestination " +
         "RETURN g")
         Group createPublicGroup(@Param("name") String groupName,
                         @Param("email") String email,
