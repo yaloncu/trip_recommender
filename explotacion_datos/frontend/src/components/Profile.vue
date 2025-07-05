@@ -6,16 +6,23 @@
 
       <div class="profile-card">
         <div class="profile-field" v-for="key in visibleFields" :key="key">
-          <label class="field-label">{{ $t(key) }}:</label>
+          <label class="field-label" :for="key">{{ $t(key) }}:</label>
           <div class="field-value">
             <input
               v-if="editing[key]"
               v-model="editableFields[key]"
               class="edit-input"
+              :id="key"
               :type="key === 'age' ? 'number' : 'text'"
+              :aria-label="$t(key)"
             />
-            <span v-else>{{ editableFields[key] }}</span>
-            <button @click="toggleEdit(key)" class="edit-btn">
+            <span v-else :id="key">{{ editableFields[key] }}</span>
+
+            <button
+              @click="toggleEdit(key)"
+              class="edit-btn"
+              :aria-label="editing[key] ? $t('stopEditing') + ' ' + $t(key) : $t('edit') + ' ' + $t(key)"
+            >
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                 class="lucide lucide-pencil">
@@ -25,6 +32,7 @@
             </button>
           </div>
         </div>
+
         <button class="save-button" @click="saveProfile">{{ $t('saveChanges') }}</button>
       </div>
     </div>
@@ -182,4 +190,21 @@ export default {
 .save-button:hover {
   transform: scale(1.03);
 }
+:focus {
+  outline: 3px solid #1abc9c;
+  outline-offset: 2px;
+}
+input::placeholder {
+  color: #bdc3c7;
+}
+#sendButton {
+  min-width: 44px;
+  min-height: 44px;
+}
+
+.edit-btn, .save-button {
+  min-width: 44px;
+  min-height: 44px;
+}
+
 </style>

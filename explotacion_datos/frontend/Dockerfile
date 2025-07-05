@@ -5,6 +5,7 @@ WORKDIR /app
 
 # Instalar las dependencias
 COPY frontend/package*.json ./
+
 #RUN npm install
 RUN npm install
 

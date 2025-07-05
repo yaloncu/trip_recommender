@@ -1,22 +1,37 @@
 <template>
-  <div class="voting-container">
-    <button class="join-button-header" @click="back">{{ $t('back') }}</button>
-    <h1 class="main-title">{{ $t('voteForTrip') }}</h1>
+  <div class="voting-container" role="main" aria-labelledby="main-title">
+    <button class="join-button-header" @click="back" :aria-label="$t('back')">
+      {{ $t('back') }}
+    </button>
 
-    <div class="form-card">
-      <h3 class="title">{{ $t('selectPreferredTypes') }}</h3>
+    <h1 id="main-title" class="main-title">{{ $t('voteForTrip') }}</h1>
+
+    <div class="form-card" role="form" aria-label="Form to vote for trip type">
+      <h2 class="title">{{ $t('selectPreferredTypes') }}</h2>
+
       <div class="checkbox-column">
-        <label v-for="type in vacationTypes" :key="type" class="radio-box">
-          <input 
-            type="checkbox" 
-            :value="type" 
-            v-model="selectedTypes" 
+        <label
+          v-for="type in vacationTypes"
+          :key="type"
+          class="radio-box"
+          :for="`checkbox-${type}`"
+        >
+          <input
+            type="checkbox"
+            :id="`checkbox-${type}`"
+            :value="type"
+            v-model="selectedTypes"
+            :aria-label="$t(type)"
           />
           {{ $t(type) }}
         </label>
       </div>
 
-      <button @click="submitVotes" class="create-group-button">
+      <button
+        @click="submitVotes"
+        class="create-group-button"
+        :aria-label="$t('submitVotes')"
+      >
         {{ $t('submitVotes') }}
       </button>
     </div>
@@ -160,4 +175,27 @@ export default {
   background: #1abc9c;
   transform: scale(1.03);
 }
+:focus {
+  outline: 3px solid #1abc9c;
+  outline-offset: 2px;
+}
+input::placeholder {
+  color: #bdc3c7;
+}
+#sendButton {
+  min-width: 44px;
+  min-height: 44px;
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 </style>

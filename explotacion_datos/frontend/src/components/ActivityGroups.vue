@@ -2,26 +2,34 @@
   <div class="page-with-menu">
     <SideMenu />
 
-    <div class="main-content">
+    <main class="main-content" role="main" aria-labelledby="activitiesTitle">
       <div class="groups-container">
-        <h1 class="main-title">{{ $t('publicActivities') }}</h1>
+        <h1 class="main-title" id="activitiesTitle">{{ $t('publicActivities') }}</h1>
 
-        <div class="groups-content">
-          <div class="filters">
+        <section class="groups-content">
+          <form class="filters" role="search" aria-label="{{ $t('filterActivities') }}">
+            <label for="searchTitle" class="sr-only">{{ $t('searchByTitle') }}</label>
             <input
+              id="searchTitle"
               type="text"
               v-model="searchQuery"
               :placeholder="$t('searchByTitle')"
               class="filter-select search-input"
+              :aria-label="$t('searchByTitle')"
             />
+
+            <label for="searchLocation" class="sr-only">{{ $t('location') }}</label>
             <input
+              id="searchLocation"
               type="text"
               v-model="selectedLocation"
               :placeholder="$t('location')"
               class="filter-select search-input"
+              :aria-label="$t('location')"
             />
 
-            <select v-model="selectedType" class="filter-select">
+            <label for="selectType" class="sr-only">{{ $t('allTypes') }}</label>
+            <select id="selectType" v-model="selectedType" class="filter-select" :aria-label="$t('allTypes')">
               <option value="">{{ $t('allTypes') }}</option>
               <option value="Aventura">{{ $t('Aventura') }}</option>
               <option value="Cultural">{{ $t('Cultural') }}</option>
@@ -33,20 +41,20 @@
               <option value="Montaña">{{ $t('Montaña') }}</option>
             </select>
 
-            <input type="date" v-model="startDateFrom" class="filter-select" />
-            <input type="date" v-model="startDateTo" class="filter-select" />
-          </div>
-          
+            <label for="startFrom" class="sr-only">{{ $t('startDateFrom') }}</label>
+            <input id="startFrom" type="date" v-model="startDateFrom" class="filter-select" :aria-label="$t('startDateFrom')" />
+
+            <label for="startTo" class="sr-only">{{ $t('startDateTo') }}</label>
+            <input id="startTo" type="date" v-model="startDateTo" class="filter-select" :aria-label="$t('startDateTo')" />
+          </form>
+
           <div v-if="activities.length">
             <ul class="group-list">
-              <li v-for="activity in filteredActivities" :key="activity.id" class="group-item">
+              <li v-for="activity in filteredActivities" :key="activity.id" class="group-item" :aria-label="`${activity.title}, ${$t(activity.type)}, ${activity.location}`">
                 <span class="group-title">{{ activity.title }}</span>
 
                 <p class="group-name">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                    class="lucide lucide-landmark-icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-landmark-icon" aria-hidden="true">
                     <path d="M10 18v-7" />
                     <path d="M11.12 2.198a2 2 0 0 1 1.76.006l7.866 3.847c.476.233.31.949-.22.949H3.474c-.53 0-.695-.716-.22-.949z" />
                     <path d="M14 18v-7" />
@@ -58,10 +66,7 @@
                 </p>
 
                 <p class="group-name">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                    class="lucide lucide-map-pin-icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin-icon" aria-hidden="true">
                     <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" />
                     <circle cx="12" cy="10" r="3" />
                   </svg>
@@ -71,10 +76,7 @@
                 <div class="group-dates">
                   <p class="group-name">
                     <span class="date-icon" :title="$t('startDate')">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                        viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                        class="lucide lucide-calendar-icon">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar-icon" aria-hidden="true">
                         <path d="M8 2v4" />
                         <path d="M16 2v4" />
                         <rect width="18" height="18" x="3" y="4" rx="2" />
@@ -86,10 +88,7 @@
 
                   <p class="group-name">
                     <span class="date-icon" :title="$t('startTime')">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                        viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                        class="lucide lucide-clock-icon">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock-icon" aria-hidden="true">
                         <circle cx="12" cy="12" r="10" />
                         <polyline points="12 6 12 12 16 14" />
                       </svg>
@@ -98,7 +97,7 @@
                   </p>
                 </div>
 
-                <button class="join-button" @click="joinActivity(activity.id)">
+                <button class="join-button" @click="joinActivity(activity.id)" :aria-label="`${$t('joinActivity')}: ${activity.title}`">
                   {{ $t('joinActivity') }}
                 </button>
               </li>
@@ -108,9 +107,9 @@
           <div v-else>
             <p>{{ $t('noActivitiesAvailable') }}</p>
           </div>
-        </div>
+        </section>
       </div>
-    </div>
+    </main>
   </div>
 </template>
 
@@ -297,4 +296,15 @@ export default {
   padding: 10px;
 }
 
+:focus {
+  outline: 3px solid #1abc9c;
+  outline-offset: 2px;
+}
+input::placeholder {
+  color: #bdc3c7;
+}
+#sendButton {
+  min-width: 44px;
+  min-height: 44px;
+}
 </style>

@@ -3,48 +3,130 @@
     <SideMenu />
     <div class="user-container">
       <h1 class="main-title">{{ $t('yourActivities') }}</h1>
-      
+
       <div class="cards-container">
         <div class="form-card">
           <div v-if="activities.length" class="groups-grid">
-            <div v-for="activity in activities" :key="activity.id" class="group-card">
-              <h3 class="group-name">{{ activity.title }}</h3>
+            <div
+              v-for="activity in activities"
+              :key="activity.id"
+              class="group-card"
+              role="region"
+              :aria-label="`${$t('activity')}: ${activity.title}`"
+            >
+              <h2 class="group-name">{{ activity.title }}</h2>
+
               <p>
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-landmark-icon lucide-landmark">
-                  <path d="M10 18v-7"/><path d="M11.12 2.198a2 2 0 0 1 1.76.006l7.866 3.847c.476.233.31.949-.22.949H3.474c-.53 0-.695-.716-.22-.949z"/><path d="M14 18v-7"/><path d="M18 18v-7"/><path d="M3 22h18"/><path d="M6 18v-7"/>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24" height="24"
+                  viewBox="0 0 24 24"
+                  fill="none" stroke="currentColor"
+                  stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M10 18v-7" />
+                  <path d="M11.12 2.198a2 2 0 0 1 1.76.006l7.866 3.847c.476.233.31.949-.22.949H3.474c-.53 0-.695-.716-.22-.949z" />
+                  <path d="M14 18v-7" />
+                  <path d="M18 18v-7" />
+                  <path d="M3 22h18" />
+                  <path d="M6 18v-7" />
                 </svg>
                 {{ activity.type }}
               </p>
+
               <p>
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin-icon lucide-map-pin">
-                  <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24" height="24"
+                  viewBox="0 0 24 24"
+                  fill="none" stroke="currentColor"
+                  stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" />
+                  <circle cx="12" cy="10" r="3" />
                 </svg>
                 {{ activity.location }}
               </p>
+
               <p>
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar-icon lucide-calendar">
-                  <path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24" height="24"
+                  viewBox="0 0 24 24"
+                  fill="none" stroke="currentColor"
+                  stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M8 2v4" />
+                  <path d="M16 2v4" />
+                  <rect width="18" height="18" x="3" y="4" rx="2" />
+                  <path d="M3 10h18" />
                 </svg>
                 {{ formatDate(activity.startDateTime) }}
               </p>
+
               <p>{{ activity.description }}</p>
-              <p>
-                <button @click="$router.push(`/activity-chat/${activity.id}`)" class="recommend-button">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-message-square-text-icon lucide-message-square-text">
-                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M13 8H7"/><path d="M17 12H7"/>
+
+              <div class="group-actions">
+                <button
+                  class="recommend-button"
+                  :aria-label="$t('openChat')"
+                  @click="$router.push(`/activity-chat/${activity.id}`)"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24" height="24"
+                    viewBox="0 0 24 24"
+                    fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                    <path d="M13 8H7" />
+                    <path d="M17 12H7" />
                   </svg>
                 </button>
-                <button @click="viewParticipants(activity.id)" class="recommend-button">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users-icon lucide-users">
-                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><path d="M16 3.128a4 4 0 0 1 0 7.744"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><circle cx="9" cy="7" r="4"/>
+
+                <button
+                  class="recommend-button"
+                  :aria-label="$t('viewParticipants')"
+                  @click="viewParticipants(activity.id)"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24" height="24"
+                    viewBox="0 0 24 24"
+                    fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                    <path d="M16 3.128a4 4 0 0 1 0 7.744" />
+                    <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                    <circle cx="9" cy="7" r="4" />
                   </svg>
                 </button>
-              </p>
+              </div>
+
               <p>
-                <button @click="leaveActivity(activity.id)" class="leave-button">{{ $t('leaveActivity') }}</button>
+                <button
+                  class="leave-button"
+                  :aria-label="$t('leaveActivity')"
+                  @click="leaveActivity(activity.id)"
+                >
+                  {{ $t('leaveActivity') }}
+                </button>
               </p>
             </div>
           </div>
+
           <div v-else>
             <p>{{ $t('notInAnyActivity') }}</p>
           </div>
@@ -418,5 +500,17 @@ button.invite-button:hover {
 }
 .recommend-button {
   border: 2px solid red;
+}
+
+:focus {
+  outline: 3px solid #1abc9c;
+  outline-offset: 2px;
+}
+input::placeholder {
+  color: #bdc3c7;
+}
+#sendButton {
+  min-width: 44px;
+  min-height: 44px;
 }
 </style>

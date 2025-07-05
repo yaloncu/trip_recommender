@@ -1,18 +1,19 @@
 <template>
   <div class="page-with-menu">
     <SideMenu />
-    <div class="participants-container">
-      <h1 class="main-title">
+    <main class="participants-container" role="main" aria-labelledby="participantsTitle">
+      <h1 id="participantsTitle" class="main-title">
         {{ $t('participantsTitle') }} ({{ participants.length }})
       </h1>
 
-      <div class="card">
+      <section class="card" role="region" :aria-label="$t('participantsTitle')">
         <p v-if="participants.length === 0">{{ $t('noParticipants') }}</p>
         <ul v-else class="participants-list">
           <li
             v-for="(participant, index) in participants"
             :key="index"
             class="participant-item"
+            :aria-label="participant.name || participant.email"
           >
             <div class="participant-info">
               <strong>{{ participant.name || participant.email }}</strong>
@@ -33,8 +34,8 @@
             </div>
           </li>
         </ul>
-      </div>
-    </div>
+      </section>
+    </main>
   </div>
 </template>
 
@@ -126,5 +127,17 @@ export default {
   padding-left: 15px;
   font-size: 0.95rem;
   color: #bdc3c7;
+}
+
+:focus {
+  outline: 3px solid #1abc9c;
+  outline-offset: 2px;
+}
+input::placeholder {
+  color: #bdc3c7;
+}
+#sendButton {
+  min-width: 44px;
+  min-height: 44px;
 }
 </style>

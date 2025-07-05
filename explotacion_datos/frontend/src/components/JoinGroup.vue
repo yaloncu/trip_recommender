@@ -1,48 +1,61 @@
 <template>
-  <div class="join-group-container">
-    <button class="join-button-header" @click="back">{{ $t('back') }}</button>
+  <div class="form-card" role="form" aria-labelledby="formTitle">
+    <label for="groupName" class="visually-hidden">{{ $t('enterGroupName') }}</label>
+    <input
+      id="groupName"
+      v-model="groupName"
+      type="text"
+      :placeholder="$t('enterGroupName')"
+      class="input"
+    />
 
-    <h1 class="main-title">{{ $t('joinAGroup') }}</h1>
+    <label for="email" class="visually-hidden">{{ $t('enterYourEmail') }}</label>
+    <input
+      id="email"
+      v-model="email"
+      type="email"
+      :placeholder="$t('enterYourEmail')"
+      class="input"
+    />
 
-    <div class="form-card">
-      <input v-model="groupName" type="text" :placeholder="$t('enterGroupName')" class="input" />
-      <input v-model="email" type="email" :placeholder="$t('enterYourEmail')" class="input" />
+    <h3 class="title" id="vacationTypeTitle">{{ $t('selectType') }}</h3>
+    <div class="checkbox-column" role="radiogroup" :aria-labelledby="'vacationTypeTitle'">
+      <label v-for="type in vacationTypes" :key="type" class="radio-box">
+        <input
+          type="radio"
+          :value="type"
+          v-model="selectedType"
+          :aria-label="$t(type)"
+        />
+        {{ $t(type) }}
+      </label>
+    </div>
 
-      <h3 class="title">{{ $t('selectType') }}</h3>
-      <div class="checkbox-column">
-        <label v-for="type in vacationTypes" :key="type" class="radio-box">
-          <input type="radio" :value="type" v-model="selectedType" />
-          {{ $t(type) }}
+    <h3 class="title" id="availabilityTitle">{{ $t('selectAvailabilityDates') }}</h3>
+    <div v-for="(range, index) in dateRanges" :key="index" class="compact-date-row">
+      <div class="icon-date-group">
+        <label :for="'start-date-' + index" class="visually-hidden">
+          {{ $t('startDate') }}
         </label>
+        <input
+          type="date"
+          :id="'start-date-' + index"
+          v-model="range.start"
+          class="input compact-date"
+        />
       </div>
 
-      <h3 class="title">{{ $t('selectAvailabilityDates') }}</h3>
-      <div v-for="(range, index) in dateRanges" :key="index" class="compact-date-row">
-        <div class="icon-date-group">
-          <svg xmlns="http://www.w3.org/2000/svg" class="icon-small" viewBox="0 0 24 24" fill="#16a085">
-            <path d="M2.5 19h19v2h-19zM21.4 9.5l-9 3.5-3 7h-2l2.3-6-5.7 2.2-.8-2 7.6-3-2.2-5.8 1.9-.7 2.2 5.8 8.1-3.1z"/>
-          </svg>
-          <input type="date" v-model="range.start" class="input compact-date" />
-        </div>
-        <div class="icon-date-group">
-          <svg xmlns="http://www.w3.org/2000/svg" class="icon-small" viewBox="0 0 24 24" fill="#16a085">
-            <path d="M2.5 19h19v2h-19zM21.4 9.5l-9-3.5-3-7h-2l2.3 6-5.7-2.2-.8 2 7.6 3-2.2 5.8 1.9.7 2.2-5.8 8.1 3.1z"/>
-          </svg>
-          <input type="date" v-model="range.end" class="input compact-date" />
-        </div>
+      <div class="icon-date-group">
+        <label :for="'end-date-' + index" class="visually-hidden">
+          {{ $t('endDate') }}
+        </label>
+        <input
+          type="date"
+          :id="'end-date-' + index"
+          v-model="range.end"
+          class="input compact-date"
+        />
       </div>
-      <div class="range-actions">
-        <button class="range-btn delete" @click="removeDateRange(dateRanges.length - 1)">
-          {{ $t('delete') }}
-        </button>
-        <button class="range-btn add" @click="addDateRange">
-          {{ $t('addDateRange') }}
-        </button>
-      </div>
-
-      <button @click="joinGroupWithPreferences" class="create-group-button">
-        {{ $t('joinGroup') }}
-      </button>
     </div>
   </div>
 </template>
@@ -254,4 +267,27 @@ export default {
   background: #1abc9c;
   transform: scale(1.03);
 }
+:focus {
+  outline: 3px solid #1abc9c;
+  outline-offset: 2px;
+}
+input::placeholder {
+  color: #bdc3c7;
+}
+#sendButton {
+  min-width: 44px;
+  min-height: 44px;
+}
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 </style>

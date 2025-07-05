@@ -7,11 +7,19 @@
       <div class="recommendations-card">
         <p v-if="recommendations.length === 0">{{ $t('noRecommendations') }}</p>
         <ul v-else class="recommendations-list">
-          <li v-for="(city, index) in recommendations" :key="index" class="recommendation-item">
+          <li
+            v-for="(city, index) in recommendations"
+            :key="index"
+            class="recommendation-item"
+          >
             <div class="recommendation-info">
               <strong>{{ city }}</strong>
             </div>
-            <button class="recommend-button" @click="voteForCity(city)">
+            <button
+              class="recommend-button"
+              @click="voteForCity(city)"
+              :aria-label="$t('voteForCity') + ' ' + city"
+            >
               {{ $t('vote') }}
             </button>
           </li>
@@ -135,5 +143,17 @@ export default {
 }
 .recommend-button:hover {
   transform: scale(1.05);
+}
+
+:focus {
+  outline: 3px solid #1abc9c;
+  outline-offset: 2px;
+}
+input::placeholder {
+  color: #bdc3c7;
+}
+#sendButton {
+  min-width: 44px;
+  min-height: 44px;
 }
 </style>

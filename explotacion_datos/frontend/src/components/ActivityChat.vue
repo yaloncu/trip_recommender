@@ -1,32 +1,37 @@
 <template>
   <div class="page-with-menu">
     <SideMenu />
-    <div class="chat-container">
+    <main class="chat-container" role="main" aria-labelledby="chatTitle">
 
-      <div class="messages">
-        <div
+      <h1 id="chatTitle" class="sr-only">{{ $t('activityChat') }}</h1>
+
+      <section class="messages" role="log" aria-live="polite" aria-relevant="additions">
+        <article
           v-for="(msg, index) in messages"
           :key="index"
-          :class="['message', msg.sender === username ? 'sent' : 'received']">
+          :class="['message', msg.sender === username ? 'sent' : 'received']"
+          :aria-label="`${msg.sender === username ? $t('you') : msg.sender}: ${msg.content}`">
           <div class="bubble">
             <div class="sender">{{ msg.sender === username ? $t('you') : msg.sender }}</div>
             <div class="content">{{ msg.content }}</div>
             <div class="timestamp">{{ formatTimestamp(msg.timestamp) }}</div>
           </div>
-        </div>
-      </div>
+        </article>
+      </section>
 
-      <div class="messageBox">
+      <form class="messageBox" role="form" aria-label="{{ $t('writeMessageLabel') }}" @submit.prevent="sendMessage">
+        <label for="messageInput" class="sr-only">{{ $t('writeMessageLabel') }}</label>
         <input
           required
-          placeholder="$t('writeMessagePlaceholder')"
+          :placeholder="$t('writeMessagePlaceholder')"
           type="text"
           id="messageInput"
           v-model="newMessage"
           @keyup.enter="sendMessage"
+          :aria-label="$t('writeMessageLabel')"
         />
-        <button id="sendButton" @click="sendMessage">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 664 663">
+        <button id="sendButton" type="submit" :aria-label="$t('sendMessage')">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 664 663" aria-hidden="true">
             <path
               stroke-linejoin="round"
               stroke-linecap="round"
@@ -38,8 +43,8 @@
             />
           </svg>
         </button>
-      </div>
-    </div>
+      </form>
+    </main>
   </div>
 </template>
 
@@ -238,4 +243,17 @@ input#messageInput {
 #sendButton:hover svg path {
   stroke: #16a085;
 }
+
+:focus {
+  outline: 3px solid #1abc9c;
+  outline-offset: 2px;
+}
+input::placeholder {
+  color: #bdc3c7;
+}
+#sendButton {
+  min-width: 44px;
+  min-height: 44px;
+}
+
 </style>

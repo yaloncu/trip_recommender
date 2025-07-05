@@ -1,7 +1,10 @@
 <template>
-  <div class="home-container">
+  <div class="home-container" role="mail"> 
     <!-- Selector de idioma -->
     <div class="language-selector">
+      <label for="locales" class="visually-hidden">
+        {{ $t('lang.change') }}
+      </label>
       <span>{{ $t('lang.change') }}</span>:
       <select id="locales" v-model="selectedLocale" @change="changeLocale">
         <option value="en">{{ $t('lang.eng') }}</option>
@@ -137,4 +140,27 @@ export default {
 .login-button:active, .signup-button:active {
   transform: scale(0.95);
 }
+:focus {
+  outline: 3px solid #1abc9c;
+  outline-offset: 2px;
+}
+input::placeholder {
+  color: #bdc3c7;
+}
+#sendButton {
+  min-width: 44px;
+  min-height: 44px;
+}
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 </style>
