@@ -1,26 +1,27 @@
-# CDSGarage - Proyecto de Gestión de Grupos y Recomendación de Destinos de Viaje
+# Proyecto de Gestión de Grupos y Recomendación de Destinos de Viaje
 
 ## Objetivos
 
-El objetivo principal de este proyecto es facilitar la organización de viajes en grupo mediante:
+El objetivo principal de esta aplicación web es facilitar la organización colaborativa de viajes y actividades grupales, optimizando la planificación conjunta, la toma de decisiones y la interacción entre personas con intereses comunes.
 
-1. **Encontrar fechas comunes:** Utilizando algoritmos para calcular las fechas que mejor se adapten a todos los participantes.
+1. **Crear y gestionar grupos de viaje, con dos modalidades:** 
+   - **Grupos públicos**, accesibles a cualquier usuario registrado, pensados para socializar y conectar con nuevas personas.
+   - **Grupos privados**, reservados para círculos cerrados de amigos o familiares, mediante invitación.
 
-2. **Recomendar destinos ideales:** Basándose en las preferencias colectivas de los usuarios.
 
-3. **Conectar compañeros de viaje:** Permitiendo a los usuarios unirse a grupos con intereses similares o formar grupos privados con sus conocidos.
+2. **Proponer y votar fechas y destinos**:
+  - En grupos privados, los usuarios introducen sus intervalos de disponibilidad.
+  - Un algoritmo eficiente propone automáticamente las fechas óptimas para todos.
+  - Posteriormente, se habilita la votación de destinos sugeridos por los participantes.
+
+3. **Crear actividades públicas**, definidas con lugar, fecha y hora, a las que cualquier usuario puede unirse directamente sin necesidad de coordinación adicional.
+
+4. **Comunicarse en tiempo real** gracias a un sistema de mensajería integrado en cada grupo, lo que facilita la coordinación y el intercambio ágil de información.
+
+5. **Utilizar la aplicación en distintos idiomas** (español, inglés, francés y alemán), gracias a su soporte multilingüe e interfaz accesible conforme a la normativa europea.
 
 ## Descripción del Proyecto
-Este proyecto consiste en una aplicación web basada en microservicios para la organización de viajes en grupo. La aplicación está dirigida a usuarios interesados en realizar viajes grupales y que necesitan ayuda para encontrar compañeros, fechas comunes y un destino ideal. Además, fomenta la conexión entre personas con intereses similares mediante grupos públicos y privados.
-
-### Características Principales
-1. **Gestor de Grupos:**
-   - **Grupos Públicos:** Cualquier usuario puede unirse y el administrador elige las fechas y el destino del viaje.
-   - **Grupos Privados:** Solo accesibles mediante invitación, con votación para decidir fechas y destino.
-2. **Recomendación de Destinos:** Basada en las preferencias de los usuarios.
-3. **Cálculo de Fechas Óptimas:** Uso de algoritmos como "Sliding Window" para encontrar las fechas que mejor se adapten a los participantes.
-4. **Internacionalización:** La aplicación está disponible en español, inglés, francés y alemán.
-5. **Inicio de sesión con Google:** Para facilitar el acceso de los usuarios.
+Este proyecto consiste en una aplicación web basada en microservicios para la organización de viajes en grupo. La aplicación está dirigida a usuarios interesados en realizar viajes grupales y que necesitan ayuda para encontrar compañeros, fechas comunes y un destino ideal. Además, fomenta la conexión entre personas con intereses similares mediante grupos públicos y privados y actividades públicas.
 
 ## Arquitectura del Sistema
 La aplicación se implementó utilizando una arquitectura basada en microservicios, distribuidos en diferentes contenedores Docker:
@@ -39,7 +40,7 @@ La aplicación se implementó utilizando una arquitectura basada en microservici
 ### Pasos de Instalación
 1. Clona el repositorio:
    ```bash
-   git clone https://github.com/cdsgarage/cdsgarage.git
+   git clone https://github.com/yaloncu/trip_recommender.git
    cd cdsgarage/projects/ule/2024_2025/mi_proyecto
    ```
 
@@ -63,7 +64,3 @@ La aplicación se implementó utilizando una arquitectura basada en microservici
 
 4. **Revisión del Administrador:**
    - El administrador cierra el grupo y los usuarios votan por el destino final.
-
-
-
-
