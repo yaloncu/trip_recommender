@@ -1,35 +1,51 @@
 <template>
   <div class="signup-container">
     <div class="container">
-      <div class="heading">{{ $t('signup') }}</div>
-      <form class="form" @submit.prevent="signup">
-        <input
-          :placeholder="$t('name')"
-          id="name"
-          v-model="name"
-          type="text"
-          class="input"
-          required
-        />
-        <input
-          :placeholder="$t('email')"
-          id="email"
-          v-model="email"
-          type="email"
-          class="input"
-          required
-        />
-        <input
-          :placeholder="$t('password')"
-          id="password"
-          v-model="password"
-          type="password"
-          class="input"
-          required
-        />
-        <button type="submit" class="signup-button">{{ $t('signup') }}</button>
+      <h1 class="heading" id="signup-title">{{ $t('signup') }}</h1>
+
+      <form class="form" @submit.prevent="signup" aria-labelledby="signup-title">
+        <div class="form-group">
+          <label :for="'name'">{{ $t('name') }}</label>
+          <input
+            id="name"
+            v-model="name"
+            type="text"
+            class="input"
+            required
+            :placeholder="$t('name')"
+          />
+        </div>
+
+        <div class="form-group">
+          <label :for="'email'">{{ $t('email') }}</label>
+          <input
+            id="email"
+            v-model="email"
+            type="email"
+            class="input"
+            required
+            :placeholder="$t('email')"
+          />
+        </div>
+
+        <div class="form-group">
+          <label :for="'password'">{{ $t('password') }}</label>
+          <input
+            id="password"
+            v-model="password"
+            type="password"
+            class="input"
+            required
+            :placeholder="$t('password')"
+          />
+        </div>
+
+        <button type="submit" class="signup-button" :aria-label="$t('signup')">
+          {{ $t('signup') }}
+        </button>
       </form>
-      <button class="google-signup-button" @click="signupWithGoogle">
+
+      <button class="google-signup-button" @click="signupWithGoogle" :aria-label="$t('signupWithGoogle')">
         {{ $t('signupWithGoogle') }}
       </button>
     </div>
@@ -198,6 +214,30 @@ export default {
 
 .google-signup-button:active {
   transform: scale(0.95);
+}
+:focus {
+  outline: 3px solid #1abc9c;
+  outline-offset: 2px;
+}
+input::placeholder {
+  color: #bdc3c7;
+}
+#sendButton {
+  min-width: 44px;
+  min-height: 44px;
+}
+.form-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-top: 15px;
+}
+
+label {
+  font-weight: bold;
+  color: #ecf0f1;
+  margin-bottom: 5px;
+  font-size: 0.95rem;
 }
 
 </style>

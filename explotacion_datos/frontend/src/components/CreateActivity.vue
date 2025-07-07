@@ -1,48 +1,65 @@
 <template>
   <div class="page-with-menu">
     <SideMenu />
-    <div class="create-group-container">
-      <h1 class="main-title">{{ $t('createActivity') }}</h1>
+    <main class="create-group-container" role="main" aria-labelledby="main-title">
+      <h1 class="main-title" id="main-title">{{ $t('createActivity') }}</h1>
 
-      <div class="form-card">
+      <form class="form-card" @submit.prevent="createActivity" aria-label="{{ $t('createActivity') }}">
+        <label for="title" class="sr-only">{{ $t('activityTitle') }}</label>
         <input
+          id="title"
           v-model="title"
           type="text"
           :placeholder="$t('activityTitle')"
           class="input"
+          required
         />
+
+        <label for="description" class="sr-only">{{ $t('description') }}</label>
         <textarea
+          id="description"
           v-model="description"
           :placeholder="$t('description')"
           class="input"
           rows="4"
         ></textarea>
+
+        <label for="location" class="sr-only">{{ $t('location') }}</label>
         <input
+          id="location"
           v-model="location"
           type="text"
           :placeholder="$t('location')"
           class="input"
+          required
         />
 
         <h3 class="title">{{ $t('activityType') }}</h3>
-        <div class="checkbox-column">
+        <fieldset class="checkbox-column" aria-label="{{ $t('activityType') }}">
+          <legend class="sr-only">{{ $t('activityType') }}</legend>
           <label v-for="type in activityTypes" :key="type" class="radio-box">
-            <input type="radio" :value="type" v-model="selectedType" />
+            <input type="radio" :value="type" v-model="selectedType" required />
             {{ $t(type) }}
           </label>
-        </div>
+        </fieldset>
 
         <h3 class="title">{{ $t('startDateTime') }}</h3>
-        <input v-model="startDateTime" type="datetime-local" class="input" />
+        <label for="startDateTime" class="sr-only">{{ $t('startDateTime') }}</label>
+        <input
+          id="startDateTime"
+          v-model="startDateTime"
+          type="datetime-local"
+          class="input"
+          required
+        />
 
-        <button @click="createActivity" class="create-group-button">
+        <button type="submit" class="create-group-button">
           {{ $t('createActivity') }}
         </button>
-      </div>
-    </div>
+      </form>
+    </main>
   </div>
 </template>
-
 
 <script>
 import axios from 'axios';
@@ -67,52 +84,51 @@ export default {
         'Aventura',
         'Gastronómica',
         'Bienestar',
-        'Montaña'
+        'Montana'
       ]
     };
   },
   methods: {
     async createActivity() {
-        if (!this.title || !this.location || !this.selectedType || !this.startDateTime) {
-            alert('Por favor, completa todos los campos obligatorios.');
-            return;
-        }
+      if (!this.title || !this.location || !this.selectedType || !this.startDateTime) {
+        alert('Por favor, completa todos los campos obligatorios.');
+        return;
+      }
 
-        const email = localStorage.getItem('email');
-        if (!email) {
-            alert('Por favor, inicia sesión nuevamente.');
-            this.$router.push('/login');
-            return;
-        }
+      const email = localStorage.getItem('email');
+      if (!email) {
+        alert('Por favor, inicia sesión nuevamente.');
+        this.$router.push('/login');
+        return;
+      }
 
-        const localDateTime = new Date(this.startDateTime);
-        const offsetMinutes = localDateTime.getTimezoneOffset();
-        const offsetHours = String(Math.abs(offsetMinutes / 60)).padStart(2, '0');
-        const offset = `${offsetMinutes <= 0 ? '+' : '-'}${offsetHours}:00`;
+      const localDateTime = new Date(this.startDateTime);
+      const offsetMinutes = localDateTime.getTimezoneOffset();
+      const offsetHours = String(Math.abs(offsetMinutes / 60)).padStart(2, '0');
+      const offset = `${offsetMinutes <= 0 ? '+' : '-'}${offsetHours}:00`;
 
-        const isoWithoutZ = localDateTime.toISOString().split('.')[0]; 
-        const formattedDate = `${isoWithoutZ}${offset}`;
+      const isoWithoutZ = localDateTime.toISOString().split('.')[0]; 
+      const formattedDate = `${isoWithoutZ}${offset}`;
 
-        const payload = {
-            title: this.title,
-            description: this.description,
-            location: this.location,
-            type: this.selectedType,
-            startDateTime: formattedDate,
-            email,
-            adminEmail: email
-        };
+      const payload = {
+        title: this.title,
+        description: this.description,
+        location: this.location,
+        type: this.selectedType,
+        startDateTime: formattedDate,
+        email,
+        adminEmail: email
+      };
 
-        try {
-            await axios.post('/api/activities', payload);
-            alert('¡Actividad creada con éxito!');
-            this.$router.push('/activities');
-        } catch (error) {
-            console.error('Error al crear la actividad:', error);
-            alert('Hubo un error al crear la actividad.');
-        }
-        }
-
+      try {
+        await axios.post('/api/activities', payload);
+        alert('¡Actividad creada con éxito!');
+        this.$router.push('/activities');
+      } catch (error) {
+        console.error('Error al crear la actividad:', error);
+        alert('Hubo un error al crear la actividad.');
+      }
+    }
   }
 };
 </script>
@@ -353,6 +369,17 @@ export default {
   flex: 1;
   padding: 10px 15px;
   border-radius: 12px;
+}
+:focus {
+  outline: 3px solid #1abc9c;
+  outline-offset: 2px;
+}
+input::placeholder {
+  color: #bdc3c7;
+}
+#sendButton {
+  min-width: 44px;
+  min-height: 44px;
 }
 
 </style>

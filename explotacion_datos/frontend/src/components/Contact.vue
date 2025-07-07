@@ -1,13 +1,21 @@
 <template>
   <div class="page-with-menu">
     <SideMenu />
-    <div class="contact-container">
-      <h1 class="main-title">{{ $t('contact.title') }}</h1>
-      <div class="contact-card">
+    <main class="contact-container" role="main" aria-labelledby="contact-heading">
+      <h1 id="contact-heading" class="main-title">
+        {{ $t('contact.title') }}
+      </h1>
+      <section class="contact-card" role="region" aria-label="{{ $t('contact.title') }}">
         <p>{{ $t('contact.description') }}</p>
-        <p><strong>yaizaalonsocuervo@gmail.com</strong></p>
-      </div>
-    </div>
+        <p>
+          <strong>
+            <a href="mailto:yaizaalonsocuervo@gmail.com" class="contact-email">
+              yaizaalonsocuervo@gmail.com
+            </a>
+          </strong>
+        </p>
+      </section>
+    </main>
   </div>
 </template>
 
@@ -59,5 +67,31 @@ export default {
   font-size: 1.1rem;
   line-height: 1.6;
   text-align: center;
+}
+
+.contact-email {
+  color: #1abc9c;
+  text-decoration: underline;
+}
+
+.contact-email:focus,
+.contact-email:hover {
+  text-decoration: none;
+  outline: 3px solid #1abc9c;
+  outline-offset: 2px;
+}
+
+:focus {
+  outline: 3px solid #1abc9c;
+  outline-offset: 2px;
+}
+
+input::placeholder {
+  color: #bdc3c7;
+}
+
+#sendButton {
+  min-width: 44px;
+  min-height: 44px;
 }
 </style>

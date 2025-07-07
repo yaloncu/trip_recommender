@@ -2,7 +2,8 @@
   <div class="login-container">
     <div class="container">
       <div class="heading">{{ $t('login') }}</div>
-      <form class="form" @submit.prevent="login">
+      <form class="form" @submit.prevent="login" aria-labelledby="loginTitle">
+        <label for="email" class="visually-hidden">{{ $t('email') }}</label>
         <input
           :placeholder="$t('email')"
           id="email"
@@ -11,6 +12,8 @@
           class="input"
           required
         />
+
+        <label for="password" class="visually-hidden">{{ $t('password') }}</label>
         <input
           :placeholder="$t('password')"
           id="password"
@@ -19,8 +22,10 @@
           class="input"
           required
         />
+
         <button type="submit" class="login-button">{{ $t('login') }}</button>
       </form>
+
       <button class="google-button" @click="loginWithGoogle">
         {{ $t('login_with_google') }}
       </button>
@@ -185,12 +190,34 @@ export default {
 }
 
 .google-button:hover {
-  background: #3367D6; /* Azul más oscuro al hacer hover */
+  background: #3367D6; 
   transform: scale(1.03);
 }
 
 .google-button:active {
   transform: scale(0.95);
+}
+:focus {
+  outline: 3px solid #1abc9c;
+  outline-offset: 2px;
+}
+input::placeholder {
+  color: #bdc3c7;
+}
+#sendButton {
+  min-width: 44px;
+  min-height: 44px;
+}
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 </style>

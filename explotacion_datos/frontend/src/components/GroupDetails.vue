@@ -445,4 +445,15 @@ h1,
 h3 {
   font-family: 'Poppins', sans-serif !important;
 }
+:focus {
+  outline: 3px solid #1abc9c;
+  outline-offset: 2px;
+}
+input::placeholder {
+  color: #bdc3c7;
+}
+#sendButton {
+  min-width: 44px;
+  min-height: 44px;
+}
 </style>

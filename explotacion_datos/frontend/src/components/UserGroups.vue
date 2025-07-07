@@ -6,33 +6,33 @@
       <h1 class="main-title">{{ $t('yourGroups') }}</h1>
 
       <div class="cards-container">
-        <div class="form-card">
-          <h1 class="main-title">{{ $t('yourGroups') }}</h1>
+        <div class="form-card" role="region" :aria-label="$t('yourGroups')">
+          <h2 class="main-title">{{ $t('yourGroups') }}</h2>
           <div v-if="groups.length" class="groups-grid">
-            <div v-for="group in groups" :key="group.id" class="group-card">
+            <div v-for="group in groups" :key="group.id" class="group-card" role="region" :aria-label="`${$t('group')}: ${group.name}`">
               <h3 class="group-name">{{ group.name }}</h3>
               <p>
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plane-takeoff-icon lucide-plane-takeoff">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plane-takeoff" aria-hidden="true">
                   <path d="M2 22h20"/>
                   <path d="M6.36 17.4 4 17l-2-4 1.1-.55a2 2 0 0 1 1.8 0l.17.1a2 2 0 0 0 1.8 0L8 12 5 6l.9-.45a2 2 0 0 1 2.09.2l4.02 3a2 2 0 0 0 2.1.2l4.19-2.06a2.41 2.41 0 0 1 1.73-.17L21 7a1.4 1.4 0 0 1 .87 1.99l-.38.76c-.23.46-.6.84-1.07 1.08L7.58 17.2a2 2 0 0 1-1.22.18Z"/>
                 </svg>
                 {{ group.departureDate ? new Date(group.departureDate).toLocaleDateString() : $t('noDepartureDate') }}
               </p>
               <div class="button-row">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plane-landing-icon lucide-plane-landing">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plane-landing" aria-hidden="true">
                   <path d="M2 22h20"/>
                   <path d="M3.77 10.77 2 9l2-4.5 1.1.55c.55.28.9.84.9 1.45s.35 1.17.9 1.45L8 8.5l3-6 1.05.53a2 2 0 0 1 1.09 1.52l.72 5.4a2 2 0 0 0 1.09 1.52l4.4 2.2c.42.22.78.55 1.01.96l.6 1.03c.49.88-.06 1.98-1.06 2.1l-1.18.15c-.47.06-.95-.02-1.37-.24L4.29 11.15a2 2 0 0 1-.52-.38Z"/>
                 </svg>
                 {{ group.returnDate ? new Date(group.returnDate).toLocaleDateString() : $t('noReturnDate') }}
               </div>
               <div v-if="isAdmin(group.email) && group.privated === 'private'" class="admin-actions">
-                <input v-model="inviteEmail" type="email" :placeholder="$t('enterEmailToInvite')" class="input" />
-                <button @click="inviteUser(group.name)" class="invite-button">{{ $t('invite') }}</button>
+                <label :for="`invite-${group.id}`" class="sr-only">{{ $t('enterEmailToInvite') }}</label>
+                <input v-model="inviteEmail" type="email" :id="`invite-${group.id}`" :placeholder="$t('enterEmailToInvite')" class="input" />
+                <button @click="inviteUser(group.name)" class="invite-button" :aria-label="`${$t('invite')} ${inviteEmail}`">{{ $t('invite') }}</button>
               </div>
-
               <div class="group-actions">
                 <div v-if="group.finalDestination">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin-icon lucide-map-pin">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin" aria-hidden="true">
                     <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/>
                     <circle cx="12" cy="10" r="3"/>
                   </svg>
@@ -40,15 +40,15 @@
                 </div>
               </div>
               <div class="group-actions">
-                <button @click="$router.push(`/chat/${group.id}`)" class="recommend-button">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-message-square-text-icon lucide-message-square-text">
+                <button @click="$router.push(`/chat/${group.id}`)" class="recommend-button" :aria-label="$t('openChat')">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-message-square-text" aria-hidden="true">
                     <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
                     <path d="M13 8H7"/>
                     <path d="M17 12H7"/>
                   </svg>
                 </button>
-                <button @click="$router.push(`/group-participants/${group.id}`)" class="recommend-button">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users-icon lucide-users">
+                <button @click="$router.push(`/group-participants/${group.id}`)" class="recommend-button" :aria-label="$t('viewParticipants')">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users" aria-hidden="true">
                     <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
                     <path d="M16 3.128a4 4 0 0 1 0 7.744"/>
                     <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
@@ -57,19 +57,11 @@
                 </button>
               </div>
               <div class="group-actions">
-                <button v-if="isAdmin(group.email) && !group.closed && group.privated === 'public'" @click="closeGroup(group.name)" class="close-button">
-                  {{ $t('closeGroup') }}
-                </button>
-                <button v-if="isAdmin(group.email) && !group.closed && group.privated === 'private'" @click="closeGroupPrivate(group.name)" class="close-button">
-                  {{ $t('closeGroup') }}
-                </button>
-                <button v-if="group.closed && !group.closedVoting" @click="goToVoting(group.id)" class="recommend-button">
-                  {{ $t('vote') }}
-                </button>
-                <button v-if="isAdmin(group.email) && group.closed && !group.closedVoting" @click="closeVoting(group.name)" class="close-button">
-                  {{ $t('closeVoting') }}
-                </button>
-                <button @click="leaveGroup(group.name)" class="leave-button">{{ $t('leaveGroup') }}</button>
+                <button v-if="isAdmin(group.email) && !group.closed && group.privated === 'public'" @click="closeGroup(group.name)" class="close-button" :aria-label="$t('closeGroup')">{{ $t('closeGroup') }}</button>
+                <button v-if="isAdmin(group.email) && !group.closed && group.privated === 'private'" @click="closeGroupPrivate(group.name)" class="close-button" :aria-label="$t('closeGroup')">{{ $t('closeGroup') }}</button>
+                <button v-if="group.closed && !group.closedVoting" @click="goToVoting(group.id)" class="recommend-button" :aria-label="$t('vote')">{{ $t('vote') }}</button>
+                <button v-if="isAdmin(group.email) && group.closed && !group.closedVoting" @click="closeVoting(group.name)" class="close-button" :aria-label="$t('closeVoting')">{{ $t('closeVoting') }}</button>
+                <button @click="leaveGroup(group.name)" class="leave-button" :aria-label="$t('leaveGroup')">{{ $t('leaveGroup') }}</button>
               </div>
             </div>
           </div>
@@ -679,5 +671,15 @@ button.invite-button:hover {
   margin-top: 10px;
   justify-content: center;
 }
-
+:focus {
+  outline: 3px solid #1abc9c;
+  outline-offset: 2px;
+}
+input::placeholder {
+  color: #bdc3c7;
+}
+#sendButton {
+  min-width: 44px;
+  min-height: 44px;
+}
 </style>

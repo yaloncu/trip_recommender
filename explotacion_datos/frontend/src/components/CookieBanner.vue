@@ -1,9 +1,19 @@
 <template>
-  <div v-if="showBanner" class="cookie-banner">
-    <p>{{ $t('cookies.message') }}</p>
-    <div class="cookie-actions">
-      <button @click="acceptCookies">{{ $t('cookies.accept') }}</button>
-      <button @click="rejectCookies">{{ $t('cookies.reject') }}</button>
+  <div
+    v-if="showBanner"
+    class="cookie-banner"
+    role="dialog"
+    aria-live="polite"
+    aria-label="{{ $t('cookies.message') }}"
+  >
+    <p id="cookie-message">{{ $t('cookies.message') }}</p>
+    <div class="cookie-actions" role="group" aria-labelledby="cookie-message">
+      <button @click="acceptCookies" aria-label="{{ $t('cookies.accept') }}">
+        {{ $t('cookies.accept') }}
+      </button>
+      <button @click="rejectCookies" aria-label="{{ $t('cookies.reject') }}">
+        {{ $t('cookies.reject') }}
+      </button>
     </div>
   </div>
 </template>
@@ -55,5 +65,9 @@ export default {
   color: white;
   border-radius: 5px;
   font-family: 'Poppins', sans-serif;
+}
+.cookie-actions button:focus {
+  outline: 3px solid #1abc9c;
+  outline-offset: 2px;
 }
 </style>
